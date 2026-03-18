@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEXCARD — Espace Client</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #080b14; --bg2: #0d1120; --bg3: #111827;
+  --violet: #6c63ff; --violet2: #8b85ff; --green: #43e97b;
+  --gold: #f7c948; --red: #ff4d6d; --blue: #38bdf8;
+  --text: #f0f2f8; --text2: #8892a4; --text3: #3d4a5c;
+  --glass: rgba(255,255,255,0.03); --glass2: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+  --sidebar-w: 240px;
+}
+html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+
+/* ─── LAYOUT ─── */
+.layout { display: flex; height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+.sidebar::after {
+  content: '';
+  position: absolute; top: 0; right: 0; width: 1px; height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(108,99,255,0.3) 40%, rgba(108,99,255,0.3) 60%, transparent);
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #6c63ff, #43e97b);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 15px; color: white;
+}
+.sidebar-logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 16px;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, #fff, #a09fff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* User info */
+.sidebar-user {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #43e97b);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: white;
+  flex-shrink: 0;
+}
+.user-info-name { font-size: 13px; font-weight: 600; }
+.user-info-tier {
+  font-size: 10px; color: var(--green);
+  background: rgba(67,233,123,0.12); border-radius: 4px;
+  padding: 2px 6px; font-weight: 500;
+}
+
+/* Nav */
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.nav-section-label {
+  padding: 10px 20px 6px;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--text3); text-transform: uppercase;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border-radius: 0;
+  position: relative;
+  font-size: 13.5px;
+  color: var(--text2);
+  margin: 1px 0;
+}
+.nav-item:hover { background: var(--glass2); color: var(--text); }
+.nav-item.active {
+  background: rgba(108,99,255,0.12);
+  color: var(--text);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--violet);
+  border-radius: 0 2px 2px 0;
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-label { flex: 1; font-weight: 500; }
+.nav-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 10px;
+  background: rgba(108,99,255,0.25); color: var(--violet2);
+}
+.nav-badge.green { background: rgba(67,233,123,0.15); color: var(--green); }
+.nav-badge.gold { background: rgba(247,201,72,0.15); color: var(--gold); }
+
+.sidebar-bottom { padding: 12px 0; border-top: 1px solid var(--border); }
+.nav-item.logout { color: var(--text3); }
+.nav-item.logout:hover { background: rgba(255,77,109,0.08); color: var(--red); }
+
+/* ─── CONTENT ─── */
+.content { flex: 1; overflow-y: auto; background: var(--bg); }
+.page { display: none; padding: 32px 36px; min-height: 100%; animation: fadeIn 0.2s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── COMMON COMPONENTS ─── */
+.page-header { margin-bottom: 28px; }
+.page-title { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { font-size: 14px; color: var(--text2); }
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; }
+.stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-change { font-size: 12px; margin-top: 6px; font-weight: 500; }
+.stat-change.pos { color: var(--green); }
+.stat-change.neg { color: var(--red); }
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  padding: 10px 20px;
+  border-radius: 10px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s;
+  display: inline-flex; align-items: center; gap: 8px;
+  letter-spacing: 0.02em;
+}
+.btn-primary { background: linear-gradient(135deg, #6c63ff, #8b85ff); color: white; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,99,255,0.35); }
+.btn-secondary { background: var(--glass2); border: 1px solid var(--border2); color: var(--text); }
+.btn-secondary:hover { background: rgba(255,255,255,0.08); }
+.btn-success { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #001a0e; }
+.btn-success:hover { box-shadow: 0 6px 20px rgba(67,233,123,0.3); }
+.btn-gold { background: linear-gradient(135deg, #f7c948, #ffab00); color: #1a1200; }
+.btn-gold:hover { box-shadow: 0 6px 20px rgba(247,201,72,0.3); }
+.btn-danger { background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3); color: var(--red); }
+.btn-danger:hover { background: rgba(255,77,109,0.25); }
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+.btn-lg { padding: 14px 28px; font-size: 15px; }
+.btn.loading::after {
+  content: ''; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── TOASTS ─── */
+#toast-container {
+  position: fixed; top: 20px; right: 20px;
+  z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  padding: 14px 20px;
+  border-radius: 12px; border: 1px solid var(--border2);
+  background: #1a2035; backdrop-filter: blur(20px);
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; font-weight: 500;
+  animation: toastIn 0.3s ease; min-width: 260px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.toast-success { border-color: rgba(67,233,123,0.3); }
+.toast-error { border-color: rgba(255,77,109,0.3); }
+.toast-info { border-color: rgba(108,99,255,0.3); }
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+@keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes toastOut { to { transform: translateX(120%); opacity: 0; } }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+  z-index: 1000; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #0f1629;
+  border: 1px solid var(--border2);
+  border-radius: 20px; padding: 32px;
+  width: 100%; max-width: 480px;
+  animation: modalIn 0.25s ease;
+  position: relative;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modalIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px; font-weight: 600;
+  margin-bottom: 20px;
+  padding-right: 30px;
+}
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 30px; height: 30px;
+  background: var(--glass2); border: 1px solid var(--border);
+  border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 16px;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--glass2); color: var(--text); border-color: var(--border2); }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+.form-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--violet); }
+.form-input::placeholder { color: var(--text3); }
+.form-select {
+  width: 100%; padding: 12px 14px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+  cursor: pointer;
+}
+
+/* ─── TOGGLE SWITCH ─── */
+.switch-wrap { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+.switch-label { font-size: 13px; color: var(--text2); }
+.switch {
+  width: 44px; height: 24px; position: relative; cursor: pointer;
+  background: var(--text3); border-radius: 12px;
+  transition: background 0.25s;
+  flex-shrink: 0;
+}
+.switch.on { background: var(--violet); }
+.switch::after {
+  content: ''; position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: white; border-radius: 50%;
+  transition: transform 0.25s;
+}
+.switch.on::after { transform: translateX(20px); }
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar { height: 6px; background: var(--glass2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+
+/* ─── TABLE ─── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 10px 14px; text-align: left; font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 1px solid var(--border); }
+td { padding: 13px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--glass); }
+
+/* ─── TICKER ─── */
+.ticker-wrap {
+  overflow: hidden; padding: 12px 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin: 16px 0;
+}
+.ticker-track {
+  display: flex; gap: 0;
+  animation: ticker 30s linear infinite;
+  width: max-content;
+}
+.ticker-track:hover { animation-play-state: paused; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 28px; white-space: nowrap;
+  font-size: 13px;
+}
+.ticker-sym { font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.ticker-price { color: var(--text2); }
+.ticker-chg { font-size: 12px; font-weight: 600; }
+.ticker-chg.up { color: var(--green); }
+.ticker-chg.dn { color: var(--red); }
+
+/* ─── CRYPTO CARD ─── */
+.crypto-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.crypto-row:last-child { border-bottom: none; }
+.crypto-icon {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.crypto-name { font-weight: 600; font-size: 14px; }
+.crypto-sym { font-size: 11px; color: var(--text2); }
+.crypto-amount { text-align: right; font-size: 13px; font-weight: 600; }
+.crypto-val { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.crypto-chg { font-size: 12px; font-weight: 600; text-align: right; min-width: 50px; }
+
+/* ─── TX ROW ─── */
+.tx-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 11px 0; border-bottom: 1px solid var(--border);
+}
+.tx-row:last-child { border-bottom: none; }
+.tx-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.tx-meta { flex: 1; }
+.tx-name { font-size: 13px; font-weight: 500; }
+.tx-date { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.tx-amount { font-size: 14px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+.tx-status { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; }
+.status-done { background: rgba(67,233,123,0.12); color: var(--green); }
+.status-pend { background: rgba(247,201,72,0.12); color: var(--gold); }
+
+/* ─── DONUT ─── */
+.donut-wrap { display: flex; align-items: center; gap: 28px; }
+.donut-legend { flex: 1; }
+.legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ─── CREDIT CARD ─── */
+.cc-card {
+  width: 340px; height: 200px;
+  border-radius: 18px;
+  padding: 24px;
+  position: relative; overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.cc-card:hover { transform: translateY(-4px) rotateX(2deg); }
+.cc-card.virtual {
+  background: linear-gradient(135deg, #1a1445 0%, #6c63ff 50%, #4a3fcf 100%);
+}
+.cc-card.gold {
+  background: linear-gradient(135deg, #2a1e00 0%, #c8960c 40%, #f7c948 70%, #e8a800 100%);
+}
+.cc-logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: 0.1em; opacity: 0.9;
+}
+.cc-chip {
+  width: 36px; height: 28px;
+  background: linear-gradient(135deg, #d4a853, #f0c060);
+  border-radius: 5px; margin: 18px 0 12px;
+  position: relative; overflow: hidden;
+}
+.cc-chip::after {
+  content: ''; position: absolute;
+  top: 50%; left: 0; right: 0; height: 1px;
+  background: rgba(0,0,0,0.3);
+  transform: translateY(-50%);
+}
+.cc-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; letter-spacing: 0.2em;
+  margin-bottom: 16px;
+  transition: filter 0.3s;
+}
+.cc-number.blurred { filter: blur(6px); user-select: none; }
+.cc-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.cc-holder { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.1em; }
+.cc-exp { font-size: 11px; opacity: 0.75; }
+.cc-network {
+  position: absolute; bottom: 20px; right: 24px;
+  display: flex; gap: -8px;
+}
+.cc-circle {
+  width: 30px; height: 30px; border-radius: 50%;
+  opacity: 0.8;
+}
+.cc-circle-1 { background: #eb001b; }
+.cc-circle-2 { background: #f79e1b; margin-left: -12px; mix-blend-mode: multiply; }
+
+/* ─── SPARKLINE ─── */
+.sparkline { width: 80px; height: 32px; }
+
+/* ─── YIELD SLIDER ─── */
+.slider-input {
+  width: 100%; height: 6px;
+  -webkit-appearance: none; background: var(--glass2);
+  border-radius: 3px; outline: none; cursor: pointer;
+}
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #8b85ff);
+  cursor: pointer; border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(108,99,255,0.5);
+}
+
+/* ─── STEP INDICATOR ─── */
+.steps { display: flex; align-items: center; gap: 0; margin-bottom: 28px; }
+.step-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.step-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  color: var(--text3); background: var(--bg);
+  transition: all 0.3s; position: relative; z-index: 1;
+}
+.step-circle.done { border-color: var(--green); color: var(--green); background: rgba(67,233,123,0.1); }
+.step-circle.active { border-color: var(--violet); color: var(--violet); background: rgba(108,99,255,0.15); }
+.step-label { font-size: 11px; margin-top: 6px; color: var(--text2); font-weight: 500; }
+.step-line { flex: 1; height: 2px; background: var(--border2); margin-top: -24px; }
+.step-line.done { background: var(--green); }
+
+/* ─── AFFILIÉ TREE ─── */
+.tree-level { margin-bottom: 20px; }
+.tree-level-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.tree-badge {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.lvl1 .tree-badge { background: rgba(108,99,255,0.2); color: var(--violet); }
+.lvl2 .tree-badge { background: rgba(56,189,248,0.2); color: var(--blue); }
+.lvl3 .tree-badge { background: rgba(247,201,72,0.2); color: var(--gold); }
+.tree-stats { display: flex; gap: 20px; font-size: 12px; color: var(--text2); }
+.tree-stat strong { color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+
+/* ─── IBAN CARD ─── */
+.iban-card {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px;
+}
+.iban-flag { font-size: 24px; margin-bottom: 8px; }
+.iban-ccy { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; }
+.iban-balance { font-size: 28px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; margin: 8px 0; }
+.iban-number {
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px;
+  color: var(--text2); letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 8px;
+}
+.copy-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 14px; transition: color 0.15s;
+}
+.copy-btn:hover { color: var(--violet); }
+.iban-status-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+}
+.badge-active { background: rgba(67,233,123,0.12); color: var(--green); }
+.badge-pending { background: rgba(247,201,72,0.12); color: var(--gold); }
+
+/* ─── KYC ─── */
+.kyc-tier-card {
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; margin-bottom: 12px;
+  background: var(--glass);
+  transition: all 0.2s;
+}
+.kyc-tier-card.current { border-color: var(--violet); background: rgba(108,99,255,0.07); }
+.kyc-tier-card.done { border-color: rgba(67,233,123,0.3); }
+.kyc-tier-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.kyc-check { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.kyc-check.done { background: rgba(67,233,123,0.15); color: var(--green); }
+.kyc-check.current { background: rgba(108,99,255,0.15); color: var(--violet); }
+.kyc-check.locked { background: var(--glass2); color: var(--text3); }
+
+/* ─── ACTION BUTTONS ─── */
+.action-buttons { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+.action-btn {
+  flex: 1; min-width: 100px;
+  padding: 16px 12px;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 14px; cursor: pointer;
+  text-align: center; transition: all 0.2s; color: var(--text);
+}
+.action-btn:hover { border-color: var(--violet); background: rgba(108,99,255,0.08); transform: translateY(-2px); }
+.action-btn-icon { font-size: 22px; margin-bottom: 6px; }
+.action-btn-label { font-size: 12px; font-weight: 600; }
+
+/* ─── BALANCE HERO ─── */
+.balance-hero {
+  background: linear-gradient(135deg, rgba(108,99,255,0.15) 0%, rgba(67,233,123,0.05) 100%);
+  border: 1px solid rgba(108,99,255,0.2);
+  border-radius: 20px; padding: 32px;
+  margin-bottom: 24px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.balance-hero::before {
+  content: '';
+  position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 0%, rgba(108,99,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.balance-label { font-size: 12px; color: var(--text2); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+.balance-amount {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 52px; font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, #a09fff 60%, #6c63ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1;
+}
+.balance-change { font-size: 14px; color: var(--green); margin-top: 8px; font-weight: 500; }
+
+/* ─── SWAP UI ─── */
+.swap-box {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+.swap-token-row {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.swap-token-select {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 6px 14px 6px 10px;
+  color: var(--text); font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  min-width: 110px;
+}
+.swap-amount-input {
+  flex: 1; background: none; border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px; font-weight: 700; color: var(--text);
+  outline: none; text-align: right;
+}
+.swap-amount-input::placeholder { color: var(--text3); }
+.swap-inverter {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--glass2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; margin: 12px auto;
+  font-size: 20px; transition: all 0.2s;
+  color: var(--violet2);
+}
+.swap-inverter:hover { background: rgba(108,99,255,0.2); transform: rotate(180deg); }
+.swap-info { font-size: 12px; color: var(--text2); padding: 12px 0; }
+.swap-info-row { display: flex; justify-content: space-between; padding: 4px 0; }
+.slippage-btn {
+  padding: 5px 12px; border-radius: 8px;
+  background: var(--glass2); border: 1px solid var(--border);
+  color: var(--text2); font-size: 12px; cursor: pointer;
+  transition: all 0.15s;
+}
+.slippage-btn.active { background: rgba(108,99,255,0.2); border-color: var(--violet); color: var(--violet2); }
+
+/* ─── SETTINGS ─── */
+.settings-section { margin-bottom: 28px; }
+.settings-section h3 { font-size: 14px; font-weight: 600; color: var(--text2); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Referral box */
+.ref-box {
+  background: var(--glass); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">A</div>
+      <div class="sidebar-logo-text">APEXCARD</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">JP</div>
+      <div>
+        <div class="user-info-name">Jean-Philippe N.</div>
+        <div class="user-info-tier">✓ KYC Tier 2</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="showPage('cards')">
+        <span class="nav-icon">💳</span>
+        <span class="nav-label">Mes Cartes</span>
+      </div>
+      <div class="nav-item" onclick="showPage('wallet')">
+        <span class="nav-icon">🔐</span>
+        <span class="nav-label">Crypto Wallet</span>
+      </div>
+      <div class="nav-item" onclick="showPage('swap')">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-label">Swap</span>
+      </div>
+      <div class="nav-item" onclick="showPage('iban')">
+        <span class="nav-icon">🏦</span>
+        <span class="nav-label">Comptes IBAN</span>
+      </div>
+      <div class="nav-item" onclick="showPage('yield')">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Yield & Staking</span>
+        <span class="nav-badge green">24%</span>
+      </div>
+      <div class="nav-item" onclick="showPage('affiliate')">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Affilié</span>
+        <span class="nav-badge gold">$320</span>
+      </div>
+      <div class="nav-item" onclick="showPage('kyc')">
+        <span class="nav-icon">🪪</span>
+        <span class="nav-label">KYC</span>
+      </div>
+      <div class="nav-item" onclick="showPage('settings')">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Paramètres</span>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="nav-item logout" onclick="window.location.href='index.html'">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-label">Déconnexion</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="page active" id="page-dashboard">
+      <!-- Balance Hero -->
+      <div class="balance-hero">
+        <div class="balance-label">Solde total portfolio</div>
+        <div class="balance-amount" id="balance-counter">$0</div>
+        <div class="balance-change">↑ +$1,240 ce mois (+4.3%)</div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker-wrap">
+        <div class="ticker-track" id="ticker"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <div class="action-btn" onclick="openModal('modal-send')">
+          <div class="action-btn-icon">↗️</div>
+          <div class="action-btn-label">Envoyer</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-receive')">
+          <div class="action-btn-icon">↙️</div>
+          <div class="action-btn-label">Recevoir</div>
+        </div>
+        <div class="action-btn" onclick="showPage('swap')">
+          <div class="action-btn-icon">🔄</div>
+          <div class="action-btn-label">Swap</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-topup')">
+          <div class="action-btn-icon">⚡</div>
+          <div class="action-btn-label">Recharger</div>
+        </div>
+      </div>
+
+      <!-- Stats + Chart -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <!-- Stats left -->
+        <div>
+          <div class="grid-3" style="margin-bottom:16px">
+            <div class="card" style="padding:18px">
+              <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Cartes actives</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700">3</div>
+            </div>
+            <div class="card" style="padding:18px">
+              <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Yield mensuel</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--green)">+$240</div>
+            </div>
+            <div class="card" style="padding:18px">
+              <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Affilié mois</div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--gold)">$320</div>
+            </div>
+          </div>
+
+          <!-- Crypto holdings -->
+          <div class="card">
+            <div class="section-title">Crypto Holdings</div>
+            <div id="holdings-list"></div>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="card">
+          <div class="section-title">Répartition Portfolio</div>
+          <div class="donut-wrap">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="55" fill="none" stroke="#1a2035" stroke-width="24"/>
+              <!-- BTC 45% -->
+              <circle cx="70" cy="70" r="55" fill="none" stroke="#f7931a" stroke-width="24"
+                stroke-dasharray="155.5 345.6" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+              <!-- ETH 30% -->
+              <circle cx="70" cy="70" r="55" fill="none" stroke="#38bdf8" stroke-width="24"
+                stroke-dasharray="103.7 397.4" stroke-dashoffset="-155.5" transform="rotate(-90 70 70)"/>
+              <!-- USDT 15% -->
+              <circle cx="70" cy="70" r="55" fill="none" stroke="#43e97b" stroke-width="24"
+                stroke-dasharray="51.8 449.3" stroke-dashoffset="-259.2" transform="rotate(-90 70 70)"/>
+              <!-- SOL 10% -->
+              <circle cx="70" cy="70" r="55" fill="none" stroke="#9945ff" stroke-width="24"
+                stroke-dasharray="34.6 466.5" stroke-dashoffset="-311.0" transform="rotate(-90 70 70)"/>
+              <text x="70" y="66" text-anchor="middle" font-family="Space Grotesk" font-size="18" font-weight="700" fill="white">$30k</text>
+              <text x="70" y="82" text-anchor="middle" font-family="Inter" font-size="11" fill="#8892a4">portfolio</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#f7931a"></div><div><div style="font-size:13px;font-weight:600">Bitcoin</div><div style="font-size:11px;color:var(--text2)">45% — $13,519</div></div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#38bdf8"></div><div><div style="font-size:13px;font-weight:600">Ethereum</div><div style="font-size:11px;color:var(--text2)">30% — $9,012</div></div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#43e97b"></div><div><div style="font-size:13px;font-weight:600">USDT</div><div style="font-size:11px;color:var(--text2)">15% — $4,506</div></div></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#9945ff"></div><div><div style="font-size:13px;font-weight:600">Solana</div><div style="font-size:11px;color:var(--text2)">10% — $3,004</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transactions -->
+      <div class="card">
+        <div class="section-title">Dernières transactions</div>
+        <div id="tx-list"></div>
+      </div>
+    </div>
+
+    <!-- ══ CARDS ══ -->
+    <div class="page" id="page-cards">
+      <div class="page-header">
+        <div class="page-title">Mes Cartes</div>
+        <div class="page-subtitle">Gérez vos cartes de paiement APEXCARD</div>
+      </div>
+
+      <div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:28px">
+        <!-- Virtual Card -->
+        <div>
+          <div class="cc-card virtual" onclick="toggleCardNumber('virtual')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="cc-logo">APEXCARD</div>
+              <div style="font-size:11px;opacity:0.6;background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:10px">VIRTUELLE</div>
+            </div>
+            <div class="cc-chip"></div>
+            <div class="cc-number blurred" id="cc-num-virtual">4111 •••• •••• 7823</div>
+            <div class="cc-bottom">
+              <div>
+                <div class="cc-holder">Jean-Philippe Nové</div>
+                <div class="cc-exp">Exp: 08/28</div>
+              </div>
+            </div>
+            <div class="cc-network">
+              <div class="cc-circle cc-circle-1"></div>
+              <div class="cc-circle cc-circle-2"></div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;width:100%" onclick="toggleCardNumber('virtual')">
+            <span id="toggle-text-virtual">👁 Révéler numéro</span>
+          </button>
+        </div>
+
+        <!-- Gold Card -->
+        <div>
+          <div class="cc-card gold" onclick="toggleCardNumber('gold')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="cc-logo" style="color:#1a1200">APEXCARD</div>
+              <div style="font-size:11px;color:rgba(0,0,0,0.5);background:rgba(0,0,0,0.1);padding:3px 8px;border-radius:10px">GOLD</div>
+            </div>
+            <div class="cc-chip"></div>
+            <div class="cc-number blurred" id="cc-num-gold" style="color:#1a1200">5412 •••• •••• 3091</div>
+            <div class="cc-bottom" style="color:#1a1200">
+              <div>
+                <div class="cc-holder" style="color:rgba(0,0,0,0.6)">Jean-Philippe Nové</div>
+                <div class="cc-exp" style="color:rgba(0,0,0,0.6)">Exp: 12/27</div>
+              </div>
+            </div>
+            <div class="cc-network">
+              <div class="cc-circle cc-circle-1"></div>
+              <div class="cc-circle cc-circle-2"></div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;width:100%" onclick="toggleCardNumber('gold')">
+            <span id="toggle-text-gold">👁 Révéler numéro</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Virtual Card Controls -->
+        <div class="card">
+          <div class="section-title">💜 Carte Virtuelle — Contrôles</div>
+          <div class="switch-wrap"><span class="switch-label">Paiements en ligne</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Paiements ATM</span><div class="switch" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Paiements internationaux</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Apple Pay / Google Pay</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px">
+              <span>Limite mensuelle</span><span style="color:var(--text)">$2,840 / $5,000</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:56.8%;background:linear-gradient(90deg,#6c63ff,#8b85ff)"></div></div>
+          </div>
+        </div>
+
+        <!-- Gold Card Controls -->
+        <div class="card">
+          <div class="section-title">🥇 Carte Gold — Contrôles</div>
+          <div class="switch-wrap"><span class="switch-label">Paiements en ligne</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Paiements ATM</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Paiements internationaux</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+          <div class="switch-wrap"><span class="switch-label">Apple Pay / Google Pay</span><div class="switch" onclick="toggleSwitch(this)"></div></div>
+          <div style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px">
+              <span>Limite mensuelle</span><span style="color:var(--text)">$8,200 / $15,000</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:54.7%;background:linear-gradient(90deg,#f7c948,#ffab00)"></div></div>
+          </div>
+          <button class="btn btn-gold btn-sm" style="margin-top:16px;width:100%" onclick="openModal('modal-order-card')">+ Commander carte physique</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WALLET ══ -->
+    <div class="page" id="page-wallet">
+      <div class="page-header">
+        <div class="page-title">Crypto Wallet</div>
+        <div class="page-subtitle">Gérez vos actifs numériques</div>
+      </div>
+
+      <div class="card" style="text-align:center;margin-bottom:20px;padding:28px">
+        <div style="font-size:12px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Valeur totale</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700">$26,041</div>
+        <div style="color:var(--green);font-size:13px;margin-top:6px">↑ +$342 (24h) +1.33%</div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
+          <button class="btn btn-primary" onclick="openModal('modal-deposit')">↙ Déposer</button>
+          <button class="btn btn-secondary" onclick="openModal('modal-withdraw')">↗ Retirer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Actifs</div>
+        <div id="wallet-assets"></div>
+      </div>
+    </div>
+
+    <!-- ══ SWAP ══ -->
+    <div class="page" id="page-swap">
+      <div class="page-header">
+        <div class="page-title">Swap</div>
+        <div class="page-subtitle">Échangez vos cryptos instantanément</div>
+      </div>
+
+      <div style="max-width:500px;margin:0 auto">
+        <div class="card">
+          <!-- Slippage -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <div style="font-size:13px;font-weight:600">Slippage tolérance</div>
+            <div style="display:flex;gap:6px" id="slippage-btns">
+              <button class="slippage-btn active" onclick="setSlippage(this,'0.1%')">0.1%</button>
+              <button class="slippage-btn" onclick="setSlippage(this,'0.5%')">0.5%</button>
+              <button class="slippage-btn" onclick="setSlippage(this,'1%')">1%</button>
+            </div>
+          </div>
+
+          <!-- Token From -->
+          <div class="swap-box" style="margin-bottom:0">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Vous envoyez</div>
+            <div class="swap-token-row">
+              <select class="swap-token-select" id="swap-from" onchange="calcSwap()">
+                <option>🟠 BTC</option><option selected>⚪ ETH</option><option>🔵 USDT</option>
+                <option>🟣 SOL</option><option>🟡 BNB</option><option>🔷 MATIC</option>
+              </select>
+              <input class="swap-amount-input" id="swap-amount-from" type="number" placeholder="0.0" value="1" oninput="calcSwap()">
+            </div>
+            <div style="font-size:12px;color:var(--text2);margin-top:8px;text-align:right">Solde: 2.847 ETH</div>
+          </div>
+
+          <!-- Inverter -->
+          <div class="swap-inverter" onclick="invertSwap()">⇅</div>
+
+          <!-- Token To -->
+          <div class="swap-box">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Vous recevez</div>
+            <div class="swap-token-row">
+              <select class="swap-token-select" id="swap-to" onchange="calcSwap()">
+                <option>🟠 BTC</option><option>⚪ ETH</option><option selected>🔵 USDT</option>
+                <option>🟣 SOL</option><option>🟡 BNB</option><option>🔷 MATIC</option>
+              </select>
+              <div class="swap-amount-input" id="swap-amount-to" style="display:flex;align-items:center;justify-content:flex-end;font-size:28px;font-weight:700;color:var(--green)">3,124.80</div>
+            </div>
+            <div style="font-size:12px;color:var(--text2);margin-top:8px;text-align:right">≈ $3,124.80</div>
+          </div>
+
+          <!-- Swap Info -->
+          <div class="swap-info">
+            <div class="swap-info-row"><span>Taux</span><span style="color:var(--text)">1 ETH = 3,124.80 USDT</span></div>
+            <div class="swap-info-row"><span>Impact prix</span><span style="color:var(--green)">0.04%</span></div>
+            <div class="swap-info-row"><span>Frais réseau</span><span style="color:var(--text)">$2.14</span></div>
+            <div class="swap-info-row"><span>Route</span><span style="color:var(--violet2)">ETH → USDT (direct)</span></div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="confirmSwap()">
+            Confirmer le Swap
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IBAN ══ -->
+    <div class="page" id="page-iban">
+      <div class="page-header">
+        <div class="page-title">Comptes IBAN</div>
+        <div class="page-subtitle">Vos comptes bancaires multi-devises</div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="iban-card">
+          <div class="iban-flag">🇫🇷</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div class="iban-ccy">EUR</div>
+            <span class="iban-status-badge badge-active">Actif</span>
+          </div>
+          <div class="iban-balance">€8,420.50</div>
+          <div class="iban-number">
+            FR76 3000 4028 3788 0012 3456 789
+            <button class="copy-btn" onclick="copyText('FR76 3000 4028 3788 0012 3456 789')">📋</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-wire')">Virer</button>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('modal-rib')">RIB</button>
+          </div>
+        </div>
+
+        <div class="iban-card">
+          <div class="iban-flag">🇬🇧</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div class="iban-ccy">GBP</div>
+            <span class="iban-status-badge badge-active">Actif</span>
+          </div>
+          <div class="iban-balance">£3,180.00</div>
+          <div class="iban-number">
+            GB29 NWBK 6016 1331 9268 19
+            <button class="copy-btn" onclick="copyText('GB29 NWBK 6016 1331 9268 19')">📋</button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-wire')">Virer</button>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('modal-rib')">RIB</button>
+          </div>
+        </div>
+
+        <div class="iban-card" style="opacity:0.6">
+          <div class="iban-flag">🇺🇸</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div class="iban-ccy">USD</div>
+            <span class="iban-status-badge badge-pending">En cours</span>
+          </div>
+          <div class="iban-balance" style="color:var(--text2)">— en attente</div>
+          <div class="iban-number">Activation sous 2-3 jours ouvrés</div>
+          <div style="margin-top:16px">
+            <button class="btn btn-secondary btn-sm" disabled>Bientôt disponible</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Virement history -->
+      <div class="card">
+        <div class="section-title">Historique des virements</div>
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>IBAN dest.</th><th>Montant</th><th>Statut</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>14 mars 2026</td><td>Virement Airbnb</td><td>FR76 1027 8022...</td><td style="color:var(--red)">-€1,200.00</td><td><span class="tx-status status-done">✓ Exécuté</span></td></tr>
+            <tr><td>10 mars 2026</td><td>Salaire mars</td><td>FR76 3000 4028...</td><td style="color:var(--green)">+€5,800.00</td><td><span class="tx-status status-done">✓ Reçu</span></td></tr>
+            <tr><td>07 mars 2026</td><td>Transfert interne</td><td>GB29 NWBK 6016...</td><td style="color:var(--text)">€800.00</td><td><span class="tx-status status-done">✓ Exécuté</span></td></tr>
+            <tr><td>01 mars 2026</td><td>Loyer bureaux</td><td>FR76 1448 9000...</td><td style="color:var(--red)">-€2,100.00</td><td><span class="tx-status status-done">✓ Exécuté</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ YIELD ══ -->
+    <div class="page" id="page-yield">
+      <div class="page-header">
+        <div class="page-title">Yield & Staking</div>
+        <div class="page-subtitle">Faites fructifier vos actifs — 24% APY</div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card" style="background:linear-gradient(135deg,rgba(108,99,255,0.1),rgba(67,233,123,0.05));border-color:rgba(108,99,255,0.25)">
+          <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Mon investissement</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;margin-bottom:4px">$12,000</div>
+          <div style="color:var(--green);font-size:14px;font-weight:600">24% APY → +$240/mois</div>
+          <div style="margin-top:20px;display:flex;gap:12px">
+            <button class="btn btn-primary" onclick="openModal('modal-invest')">+ Investir plus</button>
+            <button class="btn btn-secondary">Historique</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Round 1 — Actif</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:8px">
+            <span>Capital collecté</span><span style="color:var(--text);font-weight:600">$650k / $1M</span>
+          </div>
+          <div class="progress-bar" style="height:10px;margin-bottom:16px">
+            <div class="progress-fill" style="width:65%;background:linear-gradient(90deg,#6c63ff,#43e97b)"></div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:12px">35% restants · Ferme dans 18 jours</div>
+
+          <!-- Rounds -->
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>
+              <span>Presale</span><span style="color:var(--green);margin-left:auto;font-size:11px">✓ Terminé</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--violet);animation:pulse-dot 2s infinite"></div>
+              <span style="font-weight:600">Round 1</span><span style="color:var(--violet2);margin-left:auto;font-size:11px">● En cours</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;opacity:.5">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--text3)"></div>
+              <span>Round 2</span><span style="color:var(--text3);margin-left:auto;font-size:11px">🔒 À venir</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulateur -->
+      <div class="card">
+        <div class="section-title">📐 Simulateur de rendement</div>
+        <div style="margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:12px">
+            <span style="color:var(--text2)">Montant investi</span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700" id="sim-amount">$5,000</span>
+          </div>
+          <input type="range" class="slider-input" min="500" max="50000" step="500" value="5000" oninput="updateSimulator(this.value)">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px">
+            <span>$500</span><span>$50,000</span>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:6px">/ mois</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--green)" id="sim-monthly">$100</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:6px">/ an</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--violet2)" id="sim-yearly">$1,200</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:6px">/ 3 ans</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--gold)" id="sim-3yr">$3,600</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AFFILIATE ══ -->
+    <div class="page" id="page-affiliate">
+      <div class="page-header">
+        <div class="page-title">Programme Affilié</div>
+        <div class="page-subtitle">Invitez, gagnez, encaissez</div>
+      </div>
+
+      <!-- Ref link -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Votre lien de parrainage</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="ref-box" style="flex:1">
+            apexcard.io/ref/<span style="color:var(--violet2)">JP7X9K</span>
+          </div>
+          <button class="btn btn-primary" onclick="copyText('https://apexcard.io/ref/JP7X9K')">📋 Copier</button>
+          <button class="btn btn-secondary">Partager</button>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="card" style="text-align:center">
+          <div style="font-size:36px;margin-bottom:4px">👥</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700">47</div>
+          <div style="font-size:12px;color:var(--text2)">Filleuls actifs</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:36px;margin-bottom:4px">💰</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--green)">$1,840</div>
+          <div style="font-size:12px;color:var(--text2)">Total gagné</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:36px;margin-bottom:4px">📅</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--gold)">$320</div>
+          <div style="font-size:12px;color:var(--text2)">Ce mois</div>
+          <button class="btn btn-gold btn-sm" style="margin-top:10px;width:100%" onclick="openModal('modal-withdraw-aff')">Retirer</button>
+        </div>
+      </div>
+
+      <!-- Network tree -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="section-title">🌳 Réseau Affilié</div>
+        <div class="tree-level lvl1" style="margin-bottom:20px">
+          <div class="tree-level-header">
+            <div class="tree-badge">L1</div>
+            <div>
+              <div style="font-size:14px;font-weight:600">Niveau 1 — 10% commission</div>
+              <div class="tree-stats">
+                <div><strong>23</strong> membres</div>
+                <div><strong style="color:var(--violet)">$212</strong>/mois</div>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:77%;background:var(--violet)"></div></div>
+        </div>
+        <div class="tree-level lvl2" style="margin-bottom:20px">
+          <div class="tree-level-header">
+            <div class="tree-badge">L2</div>
+            <div>
+              <div style="font-size:14px;font-weight:600">Niveau 2 — 5% commission</div>
+              <div class="tree-stats">
+                <div><strong>18</strong> membres</div>
+                <div><strong style="color:var(--blue)">$74</strong>/mois</div>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:60%;background:var(--blue)"></div></div>
+        </div>
+        <div class="tree-level lvl3">
+          <div class="tree-level-header">
+            <div class="tree-badge">L3</div>
+            <div>
+              <div style="font-size:14px;font-weight:600">Niveau 3 — 2% commission</div>
+              <div class="tree-stats">
+                <div><strong>6</strong> membres</div>
+                <div><strong style="color:var(--gold)">$34</strong>/mois</div>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--gold)"></div></div>
+        </div>
+      </div>
+
+      <!-- Recent referrals -->
+      <div class="card">
+        <div class="section-title">Filleuls récents</div>
+        <table>
+          <thead><tr><th>Utilisateur</th><th>Date</th><th>Volume 30j</th><th>Commission</th><th>Niveau</th></tr></thead>
+          <tbody>
+            <tr><td>Alex M.</td><td>12 mars 2026</td><td>$4,200</td><td style="color:var(--green)">$42.00</td><td><span class="tx-status status-done">L1</span></td></tr>
+            <tr><td>Sophie K.</td><td>08 mars 2026</td><td>$8,900</td><td style="color:var(--green)">$89.00</td><td><span class="tx-status status-done">L1</span></td></tr>
+            <tr><td>Marcus T.</td><td>05 mars 2026</td><td>$2,100</td><td style="color:var(--blue)">$10.50</td><td><span class="tx-status" style="background:rgba(56,189,248,0.12);color:var(--blue)">L2</span></td></tr>
+            <tr><td>Julie R.</td><td>28 fév 2026</td><td>$6,500</td><td style="color:var(--green)">$65.00</td><td><span class="tx-status status-done">L1</span></td></tr>
+            <tr><td>Nadia B.</td><td>20 fév 2026</td><td>$1,700</td><td style="color:var(--gold)">$3.40</td><td><span class="tx-status" style="background:rgba(247,201,72,0.12);color:var(--gold)">L3</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ KYC ══ -->
+    <div class="page" id="page-kyc">
+      <div class="page-header">
+        <div class="page-title">Vérification KYC</div>
+        <div class="page-subtitle">Votre identité est vérifiée — Tier 2</div>
+      </div>
+
+      <!-- Steps visual -->
+      <div class="steps" style="max-width:600px;margin-bottom:32px">
+        <div class="step-item">
+          <div class="step-circle done">✓</div>
+          <div class="step-label">Tier 0</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle done">✓</div>
+          <div class="step-label">Tier 1</div>
+        </div>
+        <div class="step-line done"></div>
+        <div class="step-item">
+          <div class="step-circle active">2</div>
+          <div class="step-label">Tier 2</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div class="step-label">Tier 3</div>
+        </div>
+      </div>
+
+      <div style="max-width:700px">
+        <div class="kyc-tier-card done">
+          <div class="kyc-tier-header">
+            <div class="kyc-check done">✓</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">Tier 1 — Vérification de base</div>
+              <div style="font-size:12px;color:var(--text2)">Email + Téléphone + Adresse</div>
+            </div>
+            <div style="margin-left:auto;font-size:11px;color:var(--green)">Vérifié le 15 jan. 2026</div>
+          </div>
+          <div style="font-size:12px;color:var(--text2)">Limite: 2,000€/mois · ATM 500€/jour</div>
+        </div>
+
+        <div class="kyc-tier-card current">
+          <div class="kyc-tier-header">
+            <div class="kyc-check current">●</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">Tier 2 — Vérification d'identité</div>
+              <div style="font-size:12px;color:var(--text2)">CNI/Passeport + Selfie + Justificatif domicile</div>
+            </div>
+            <div style="margin-left:auto;font-size:11px;color:var(--violet2)">Actif</div>
+          </div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span>📄 Passeport</span><span style="color:var(--green)">✓ Vérifié — 02 fév. 2026</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span>🤳 Selfie</span><span style="color:var(--green)">✓ Vérifié — 02 fév. 2026</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span>🏠 Justificatif domicile</span><span style="color:var(--green)">✓ Vérifié — 05 fév. 2026</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text2)">Limite: 10,000€/mois · ATM 2,000€/jour</div>
+        </div>
+
+        <div class="kyc-tier-card">
+          <div class="kyc-tier-header">
+            <div class="kyc-check locked">🔒</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">Tier 3 — Vérification avancée</div>
+              <div style="font-size:12px;color:var(--text2)">Documents financiers + Entretien vidéo</div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Limite: illimitée · Accès VIP · Manager dédié</div>
+          <button class="btn btn-primary btn-sm">Demander l'upgrade Tier 3</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <div class="page-title">Paramètres</div>
+        <div class="page-subtitle">Gérez votre compte et vos préférences</div>
+      </div>
+
+      <div style="max-width:600px">
+        <div class="card" style="margin-bottom:16px">
+          <div class="settings-section">
+            <h3>Profil</h3>
+            <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" value="Jean-Philippe"></div>
+            <div class="form-group"><label class="form-label">Nom</label><input class="form-input" value="Nové"></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="jp@apexcard.io"></div>
+            <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" value="+1 (415) 555 0198"></div>
+            <button class="btn btn-primary btn-sm">Sauvegarder</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="settings-section">
+            <h3>Sécurité</h3>
+            <div class="switch-wrap"><span class="switch-label">Authentification 2FA (TOTP)</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+            <div class="switch-wrap"><span class="switch-label">Notifications login</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+            <div class="switch-wrap"><span class="switch-label">Whitelist adresses crypto</span><div class="switch" onclick="toggleSwitch(this)"></div></div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:12px">Changer mot de passe</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="settings-section">
+            <h3>Notifications</h3>
+            <div class="switch-wrap"><span class="switch-label">Transactions</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+            <div class="switch-wrap"><span class="switch-label">Alertes prix</span><div class="switch on" onclick="toggleSwitch(this)"></div></div>
+            <div class="switch-wrap"><span class="switch-label">Newsletter</span><div class="switch" onclick="toggleSwitch(this)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-overlay" id="modal-send">
+  <div class="modal">
+    <div class="modal-title">Envoyer des fonds</div>
+    <button class="modal-close" onclick="closeModal('modal-send')">✕</button>
+    <div class="form-group"><label class="form-label">Adresse ou email</label><input class="form-input" placeholder="0x... ou user@exemple.com"></div>
+    <div class="form-group"><label class="form-label">Montant</label><input class="form-input" type="number" placeholder="0.00"></div>
+    <div class="form-group"><label class="form-label">Devise</label>
+      <select class="form-select"><option>USDT</option><option>BTC</option><option>ETH</option><option>EUR</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Note (optionnel)</label><input class="form-input" placeholder="Pour..."></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-send')">Annuler</button>
+      <button class="btn btn-primary" style="flex:1" onclick="simulateAction('modal-send','Envoi effectué avec succès')">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-receive">
+  <div class="modal">
+    <div class="modal-title">Recevoir des fonds</div>
+    <button class="modal-close" onclick="closeModal('modal-receive')">✕</button>
+    <div style="text-align:center;padding:20px 0">
+      <div style="width:160px;height:160px;background:white;border-radius:12px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <rect width="120" height="120" fill="white"/>
+          <rect x="10" y="10" width="40" height="40" rx="4" fill="#080b14"/>
+          <rect x="15" y="15" width="30" height="30" rx="2" fill="white"/>
+          <rect x="20" y="20" width="20" height="20" fill="#080b14"/>
+          <rect x="70" y="10" width="40" height="40" rx="4" fill="#080b14"/>
+          <rect x="75" y="15" width="30" height="30" rx="2" fill="white"/>
+          <rect x="80" y="20" width="20" height="20" fill="#080b14"/>
+          <rect x="10" y="70" width="40" height="40" rx="4" fill="#080b14"/>
+          <rect x="15" y="75" width="30" height="30" rx="2" fill="white"/>
+          <rect x="20" y="80" width="20" height="20" fill="#080b14"/>
+          <rect x="60" y="60" width="8" height="8" fill="#080b14"/>
+          <rect x="72" y="60" width="8" height="8" fill="#080b14"/>
+          <rect x="84" y="60" width="8" height="8" fill="#080b14"/>
+          <rect x="96" y="60" width="16" height="8" fill="#080b14"/>
+          <rect x="60" y="72" width="8" height="8" fill="#080b14"/>
+          <rect x="60" y="84" width="8" height="8" fill="#080b14"/>
+          <rect x="72" y="84" width="8" height="8" fill="#080b14"/>
+          <rect x="84" y="72" width="28" height="8" fill="#080b14"/>
+          <rect x="84" y="96" width="28" height="8" fill="#080b14"/>
+          <rect x="108" y="72" width="4" height="32" fill="#080b14"/>
+        </svg>
+      </div>
+      <div style="font-size:11px;color:var(--text2)">Adresse USDT (TRC20)</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;word-break:break-all;margin:8px 0;padding:10px;background:var(--glass);border-radius:8px;border:1px solid var(--border)">
+        TRx9KpApex7Card4JPN0vX8A2cFin42mB</div>
+      <button class="btn btn-secondary btn-sm" onclick="copyText('TRx9KpApex7Card4JPN0vX8A2cFin42mB')">📋 Copier l'adresse</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Réseau</label>
+      <select class="form-select"><option>TRC20 (TRON)</option><option>ERC20 (Ethereum)</option><option>BEP20 (BSC)</option></select>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-deposit">
+  <div class="modal">
+    <div class="modal-title">Déposer des cryptos</div>
+    <button class="modal-close" onclick="closeModal('modal-deposit')">✕</button>
+    <div class="form-group"><label class="form-label">Actif</label>
+      <select class="form-select"><option>USDT</option><option>BTC</option><option>ETH</option><option>SOL</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Réseau</label>
+      <select class="form-select"><option>TRC20 (TRON)</option><option>ERC20 (Ethereum)</option><option>BEP20 (BSC)</option></select>
+    </div>
+    <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;margin-bottom:16px">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Adresse de dépôt</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:11px;word-break:break-all;margin-bottom:10px">TRx9KpApex7Card4JPN0vX8A2cFin42mB</div>
+      <button class="btn btn-secondary btn-sm" onclick="copyText('TRx9KpApex7Card4JPN0vX8A2cFin42mB')">📋 Copier</button>
+    </div>
+    <div style="font-size:12px;color:var(--gold)">⚠️ Envoyez uniquement USDT sur TRC20 à cette adresse</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-withdraw">
+  <div class="modal" id="withdraw-modal-content">
+    <div id="withdraw-step-1">
+      <div class="modal-title">Retirer des cryptos</div>
+      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
+      <div class="form-group"><label class="form-label">Actif</label>
+        <select class="form-select"><option>USDT</option><option>BTC</option><option>ETH</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Adresse de destination</label>
+        <input class="form-input" placeholder="0x... ou adresse crypto">
+      </div>
+      <div class="form-group"><label class="form-label">Montant</label>
+        <input class="form-input" type="number" placeholder="0.00">
+      </div>
+      <div style="background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2)">
+        Frais réseau: ~$2.50 · Temps: 5-30 min
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="document.getElementById('withdraw-step-1').style.display='none';document.getElementById('withdraw-step-2').style.display='block'">Continuer →</button>
+    </div>
+    <div id="withdraw-step-2" style="display:none">
+      <div class="modal-title">Confirmer le retrait</div>
+      <div style="background:var(--glass);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--text2)">Montant</span><span style="font-weight:700">500 USDT</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="color:var(--text2)">Frais</span><span>~$2.50</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Total reçu</span><span style="color:var(--green);font-weight:700">497.50 USDT</span></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1" onclick="document.getElementById('withdraw-step-2').style.display='none';document.getElementById('withdraw-step-1').style.display='block'">← Retour</button>
+        <button class="btn btn-primary" style="flex:1" onclick="simulateAction('modal-withdraw','Retrait initié — 5-30 min')">✓ Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-topup">
+  <div class="modal">
+    <div class="modal-title">Recharger</div>
+    <button class="modal-close" onclick="closeModal('modal-topup')">✕</button>
+    <div class="form-group"><label class="form-label">Méthode</label>
+      <select class="form-select"><option>Virement SEPA</option><option>Carte bancaire</option><option>Crypto (USDT)</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Montant (€)</label>
+      <input class="form-input" type="number" placeholder="0.00" value="1000">
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="simulateAction('modal-topup','Recharge initiée')">Recharger</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-order-card">
+  <div class="modal">
+    <div class="modal-title">Commander une carte physique</div>
+    <button class="modal-close" onclick="closeModal('modal-order-card')">✕</button>
+    <div style="display:flex;gap:12px;margin-bottom:20px">
+      <div class="card" style="flex:1;cursor:pointer;border-color:var(--violet);background:rgba(108,99,255,0.08)">
+        <div style="font-weight:700;margin-bottom:4px">Standard</div>
+        <div style="color:var(--green);font-weight:700">Gratuit</div>
+        <div style="font-size:11px;color:var(--text2)">Livraison 7-10j</div>
+      </div>
+      <div class="card" style="flex:1;cursor:pointer">
+        <div style="font-weight:700;margin-bottom:4px">Express Gold</div>
+        <div style="color:var(--gold);font-weight:700">€9.99</div>
+        <div style="font-size:11px;color:var(--text2)">Livraison 2-3j</div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Adresse de livraison</label>
+      <input class="form-input" placeholder="Rue, Numéro">
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Ville</label><input class="form-input" placeholder="Paris"></div>
+      <div class="form-group"><label class="form-label">Code postal</label><input class="form-input" placeholder="75001"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="simulateAction('modal-order-card','Commande enregistrée !')">Commander</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-invest">
+  <div class="modal">
+    <div class="modal-title">Investir dans le Yield</div>
+    <button class="modal-close" onclick="closeModal('modal-invest')">✕</button>
+    <div style="background:linear-gradient(135deg,rgba(108,99,255,0.15),rgba(67,233,123,0.08));border:1px solid rgba(108,99,255,0.2);border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">
+      <div style="font-size:12px;color:var(--text2)">APY garanti</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--green)">24%</div>
+    </div>
+    <div class="form-group"><label class="form-label">Montant à investir ($)</label>
+      <input class="form-input" type="number" placeholder="1000" min="500">
+    </div>
+    <div class="form-group"><label class="form-label">Durée de blocage</label>
+      <select class="form-select"><option>3 mois (lock)</option><option>6 mois (bonus +2%)</option><option>12 mois (bonus +5%)</option></select>
+    </div>
+    <div class="switch-wrap" style="margin-bottom:12px"><span class="switch-label" style="font-size:12px">J'ai lu et j'accepte le contrat d'investissement</span><div class="switch" onclick="toggleSwitch(this)" id="invest-agree"></div></div>
+    <button class="btn btn-primary" style="width:100%" onclick="simulateAction('modal-invest','Investissement confirmé !')">Confirmer l'investissement</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-withdraw-aff">
+  <div class="modal">
+    <div class="modal-title">Retirer les commissions</div>
+    <button class="modal-close" onclick="closeModal('modal-withdraw-aff')">✕</button>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--gold);text-align:center;margin:16px 0">$320.00</div>
+    <div class="form-group"><label class="form-label">Vers</label>
+      <select class="form-select"><option>Wallet USDT (TRC20)</option><option>Carte Virtuelle APEXCARD</option><option>Carte Gold APEXCARD</option></select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-withdraw-aff')">Annuler</button>
+      <button class="btn btn-gold" style="flex:1" onclick="simulateAction('modal-withdraw-aff','Retrait en cours de traitement')">Retirer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-wire">
+  <div class="modal">
+    <div class="modal-title">Virement SEPA</div>
+    <button class="modal-close" onclick="closeModal('modal-wire')">✕</button>
+    <div class="form-group"><label class="form-label">IBAN bénéficiaire</label><input class="form-input" placeholder="FR76..."></div>
+    <div class="form-group"><label class="form-label">BIC / SWIFT</label><input class="form-input" placeholder="BNPAFRPP"></div>
+    <div class="form-group"><label class="form-label">Nom bénéficiaire</label><input class="form-input" placeholder="Nom et prénom"></div>
+    <div class="form-group"><label class="form-label">Montant (€)</label><input class="form-input" type="number" placeholder="0.00"></div>
+    <div class="form-group"><label class="form-label">Motif</label><input class="form-input" placeholder="Ref. facture..."></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="simulateAction('modal-wire','Virement SEPA initié (1-2 jours)')">Envoyer le virement</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-rib">
+  <div class="modal">
+    <div class="modal-title">RIB / Coordonnées bancaires</div>
+    <button class="modal-close" onclick="closeModal('modal-rib')">✕</button>
+    <div style="background:var(--glass);border:1px solid var(--border2);border-radius:12px;padding:20px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--text2)">Titulaire</span><span style="font-weight:600">Jean-Philippe Nové</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--text2)">IBAN</span><span style="font-family:'Space Grotesk',sans-serif;font-size:12px">FR76 3000 4028 3788 0012 3456 789</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--text2)">BIC</span><span>APEXFRP1</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Banque</span><span>APEXCARD FINANCIAL SAS</span></div>
+    </div>
+    <button class="btn btn-secondary" style="width:100%" onclick="copyText('FR76 3000 4028 3788 0012 3456 789')">📋 Copier l'IBAN</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-swap-confirm">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:56px;margin-bottom:16px" id="swap-result-icon">⚡</div>
+    <div class="modal-title" style="text-align:center;padding-right:0" id="swap-result-title">Swap en cours...</div>
+    <div style="color:var(--text2);font-size:14px;margin-bottom:24px" id="swap-result-sub">Transaction soumise au réseau</div>
+    <button class="btn btn-primary" id="swap-ok-btn" style="display:none;margin:0 auto" onclick="closeModal('modal-swap-confirm')">Parfait !</button>
+  </div>
+</div>
+
+<script>
+// ═══ NAVIGATION ═══
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ═══ MODALS ═══
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  // Reset withdraw steps
+  if (id === 'modal-withdraw') {
+    document.getElementById('withdraw-step-1').style.display = 'block';
+    document.getElementById('withdraw-step-2').style.display = 'none';
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+// ═══ TOASTS ═══
+function toast(msg, type = 'success') {
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `<span class="toast-icon">${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => { el.style.animation = 'toastOut 0.3s forwards'; setTimeout(() => el.remove(), 300); }, 3000);
+}
+
+function simulateAction(modalId, successMsg) {
+  closeModal(modalId);
+  setTimeout(() => toast(successMsg, 'success'), 200);
+}
+
+// ═══ COPY ═══
+function copyText(text) {
+  navigator.clipboard.writeText(text).catch(() => {});
+  toast('Copié dans le presse-papiers', 'info');
+}
+
+// ═══ SWITCH ═══
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+  toast(el.classList.contains('on') ? 'Activé' : 'Désactivé', 'info');
+}
+
+// ═══ CARD NUMBER REVEAL ═══
+const revealed = { virtual: false, gold: false };
+function toggleCardNumber(type) {
+  revealed[type] = !revealed[type];
+  const numEl = document.getElementById(`cc-num-${type}`);
+  const btnEl = document.getElementById(`toggle-text-${type}`);
+  if (revealed[type]) {
+    numEl.classList.remove('blurred');
+    btnEl.textContent = '🙈 Masquer';
+  } else {
+    numEl.classList.add('blurred');
+    btnEl.textContent = '👁 Révéler numéro';
+  }
+}
+
+// ═══ BALANCE COUNTER ═══
+function animateCounter(el, target, duration = 1800) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = '$' + Math.floor(start).toLocaleString('en-US');
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+// ═══ TICKER ═══
+const cryptoData = [
+  { sym: 'BTC', price: '$67,420', chg: '+2.4%', up: true },
+  { sym: 'ETH', price: '$3,124', chg: '+1.8%', up: true },
+  { sym: 'SOL', price: '$142.30', chg: '-0.7%', up: false },
+  { sym: 'USDT', price: '$1.000', chg: '+0.01%', up: true },
+  { sym: 'BNB', price: '$412.80', chg: '+3.2%', up: true },
+  { sym: 'MATIC', price: '$0.8840', chg: '-1.1%', up: false },
+  { sym: 'XRP', price: '$0.5280', chg: '+0.9%', up: true },
+  { sym: 'AVAX', price: '$38.40', chg: '+4.7%', up: true },
+];
+const colors = { BTC: '#f7931a', ETH: '#38bdf8', SOL: '#9945ff', USDT: '#43e97b', BNB: '#f7c948', MATIC: '#8247e5', XRP: '#00aae4', AVAX: '#e84142' };
+
+function buildTicker() {
+  const track = document.getElementById('ticker');
+  const items = [...cryptoData, ...cryptoData].map(c => {
+    return `<div class="ticker-item">
+      <div style="width:8px;height:8px;border-radius:50%;background:${colors[c.sym]||'#fff'};flex-shrink:0"></div>
+      <span class="ticker-sym">${c.sym}</span>
+      <span class="ticker-price">${c.price}</span>
+      <span class="ticker-chg ${c.up?'up':'dn'}">${c.chg}</span>
+    </div>`;
+  }).join('');
+  track.innerHTML = items;
+}
+
+// ═══ HOLDINGS ═══
+const holdings = [
+  { icon: '₿', name: 'Bitcoin', sym: 'BTC', amount: '0.2012', val: '$13,519', chg: '+2.4%', up: true, color: '#f7931a' },
+  { icon: 'Ξ', name: 'Ethereum', sym: 'ETH', amount: '2.847', val: '$9,012', chg: '+1.8%', up: true, color: '#38bdf8' },
+  { icon: '₮', name: 'Tether', sym: 'USDT', amount: '4,506', val: '$4,506', chg: '+0.01%', up: true, color: '#43e97b' },
+  { icon: '◎', name: 'Solana', sym: 'SOL', amount: '21.1', val: '$3,004', chg: '-0.7%', up: false, color: '#9945ff' },
+];
+function buildHoldings() {
+  const el = document.getElementById('holdings-list');
+  if (!el) return;
+  el.innerHTML = holdings.map(h => `
+    <div class="crypto-row">
+      <div class="crypto-icon" style="background:${h.color}22;color:${h.color};font-weight:700">${h.icon}</div>
+      <div style="flex:1">
+        <div class="crypto-name">${h.name}</div>
+        <div class="crypto-sym">${h.amount} ${h.sym}</div>
+      </div>
+      <div>
+        <div class="crypto-amount" style="text-align:right">${h.val}</div>
+        <div class="crypto-chg ${h.up?'pos':'neg'}">${h.chg}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══ WALLET ASSETS ═══
+const walletAssets = [
+  { icon: '₿', name: 'Bitcoin', sym: 'BTC', amount: '0.2012 BTC', val: '$13,519', pct: '51.9%', color: '#f7931a', spark: [40,45,38,52,48,56,50,55,60,58,65,62] },
+  { icon: 'Ξ', name: 'Ethereum', sym: 'ETH', amount: '2.847 ETH', val: '$9,012', pct: '34.6%', color: '#38bdf8', spark: [30,35,28,40,38,42,44,40,48,46,50,52] },
+  { icon: '₮', name: 'Tether USD', sym: 'USDT', amount: '4,506 USDT', val: '$4,506', pct: '17.3%', color: '#43e97b', spark: [50,50,50,50,50,50,50,50,50,50,50,50] },
+  { icon: '◎', name: 'Solana', sym: 'SOL', amount: '0 SOL', val: '$0', pct: '0%', color: '#9945ff', spark: [20,25,22,18,24,20,16,22,18,20,22,20] },
+];
+function buildWalletAssets() {
+  const el = document.getElementById('wallet-assets');
+  if (!el) return;
+  el.innerHTML = walletAssets.map(a => `
+    <div class="crypto-row">
+      <div class="crypto-icon" style="background:${a.color}22;color:${a.color};font-weight:700;font-size:20px">${a.icon}</div>
+      <div style="flex:1">
+        <div class="crypto-name">${a.name} <span style="font-size:11px;color:var(--text3);font-weight:400">${a.sym}</span></div>
+        <div class="crypto-sym">${a.amount}</div>
+      </div>
+      <div style="margin:0 16px">
+        ${sparklineSVG(a.spark, a.color)}
+      </div>
+      <div style="text-align:right">
+        <div class="crypto-amount">${a.val}</div>
+        <div style="font-size:11px;color:var(--text2)">${a.pct} portfolio</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function sparklineSVG(data, color) {
+  const w = 80, h = 32;
+  const max = Math.max(...data), min = Math.min(...data);
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((v - min) / (max - min + 0.01)) * h;
+    return `${x},${y}`;
+  }).join(' ');
+  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ═══ TRANSACTIONS ═══
+const txs = [
+  { icon: '🛒', name: 'Amazon Prime', date: '16 mars 2026', amount: '-$14.99', pos: false, status: 'done' },
+  { icon: '💹', name: 'Swap ETH → USDT', date: '15 mars 2026', amount: '+$3,124', pos: true, status: 'done' },
+  { icon: '📥', name: 'Dépôt USDT', date: '14 mars 2026', amount: '+$2,000', pos: true, status: 'done' },
+  { icon: '✈️', name: 'Air France', date: '13 mars 2026', amount: '-$420', pos: false, status: 'done' },
+  { icon: '🍕', name: 'Deliveroo', date: '12 mars 2026', amount: '-$28.50', pos: false, status: 'done' },
+  { icon: '📈', name: 'Yield mensuel', date: '10 mars 2026', amount: '+$240', pos: true, status: 'done' },
+  { icon: '🔄', name: 'Virement SEPA reçu', date: '10 mars 2026', amount: '+$5,800', pos: true, status: 'done' },
+  { icon: '👥', name: 'Commission affilié', date: '08 mars 2026', amount: '+$89', pos: true, status: 'done' },
+];
+function buildTxList() {
+  const el = document.getElementById('tx-list');
+  if (!el) return;
+  el.innerHTML = txs.map(t => `
+    <div class="tx-row">
+      <div class="tx-icon" style="background:${t.pos?'rgba(67,233,123,0.1)':'rgba(255,77,109,0.08)'}">${t.icon}</div>
+      <div class="tx-meta">
+        <div class="tx-name">${t.name}</div>
+        <div class="tx-date">${t.date}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="tx-amount" style="color:${t.pos?'var(--green)':'var(--text)'}">${t.amount}</div>
+        <span class="tx-status status-done">✓ Exécuté</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══ SWAP ═══
+let slippage = '0.1%';
+const rates = { BTC: 67420, ETH: 3124.8, USDT: 1, SOL: 142.3, BNB: 412.8, MATIC: 0.884 };
+
+function getTokenKey(selectEl) {
+  const val = selectEl.value.split(' ').pop();
+  return val;
+}
+
+function calcSwap() {
+  const fromSel = document.getElementById('swap-from');
+  const toSel = document.getElementById('swap-to');
+  const amt = parseFloat(document.getElementById('swap-amount-from').value) || 0;
+  const fromKey = getTokenKey(fromSel);
+  const toKey = getTokenKey(toSel);
+  const fromRate = rates[fromKey] || 1;
+  const toRate = rates[toKey] || 1;
+  const result = (amt * fromRate / toRate);
+  document.getElementById('swap-amount-to').textContent = result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
+}
+
+function setSlippage(btn, val) {
+  slippage = val;
+  document.querySelectorAll('.slippage-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function invertSwap() {
+  const f = document.getElementById('swap-from');
+  const t = document.getElementById('swap-to');
+  const tmp = f.value;
+  f.value = t.value;
+  t.value = tmp;
+  calcSwap();
+}
+
+function confirmSwap() {
+  openModal('modal-swap-confirm');
+  const icon = document.getElementById('swap-result-icon');
+  const title = document.getElementById('swap-result-title');
+  const sub = document.getElementById('swap-result-sub');
+  const btn = document.getElementById('swap-ok-btn');
+  btn.style.display = 'none';
+  icon.textContent = '⚡';
+  title.textContent = 'Transaction en cours...';
+  sub.textContent = 'Soumission au réseau';
+  setTimeout(() => {
+    icon.textContent = '✅';
+    title.textContent = 'Swap réussi !';
+    sub.textContent = 'Vos fonds ont été échangés avec succès';
+    btn.style.display = 'inline-flex';
+  }, 2000);
+}
+
+// ═══ SIMULATOR ═══
+function updateSimulator(val) {
+  const amount = parseInt(val);
+  const monthly = Math.round(amount * 0.24 / 12);
+  const yearly = Math.round(amount * 0.24);
+  const threeYr = Math.round(amount * 0.24 * 3);
+  document.getElementById('sim-amount').textContent = '$' + amount.toLocaleString('en-US');
+  document.getElementById('sim-monthly').textContent = '$' + monthly.toLocaleString('en-US');
+  document.getElementById('sim-yearly').textContent = '$' + yearly.toLocaleString('en-US');
+  document.getElementById('sim-3yr').textContent = '$' + threeYr.toLocaleString('en-US');
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => {
+  animateCounter(document.getElementById('balance-counter'), 30041);
+  buildTicker();
+  buildHoldings();
+  buildWalletAssets();
+  buildTxList();
+  calcSwap();
+});
+</script>
+</body>
+</html>

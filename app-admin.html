@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEXCARD — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080b14; --bg2:#0d1221; --bg3:#111827;
+  --card:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08);
+  --accent:#6c63ff; --green:#43e97b; --red:#ff4d6a; --gold:#f7c948;
+  --blue:#4facfe; --text:#f0f4ff; --muted:#6b7a99;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 14px;position:fixed;height:100vh;z-index:100;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:28px}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--red),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:1px;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.admin-badge{font-size:10px;background:rgba(255,77,106,0.15);color:var(--red);border:1px solid rgba(255,77,106,0.3);padding:2px 8px;border-radius:10px;margin-left:auto;font-weight:600;-webkit-text-fill-color:var(--red)}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:0 10px;margin:14px 0 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all .2s;margin-bottom:2px;position:relative}
+.nav-item:hover{background:var(--card);color:var(--text)}
+.nav-item.active{background:linear-gradient(135deg,rgba(108,99,255,.2),rgba(108,99,255,.05));color:var(--text);border:1px solid rgba(108,99,255,.3)}
+.nav-icon{font-size:16px;width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.nav-badge.green{background:var(--green);color:#000}
+.sidebar-user{margin-top:auto;padding:14px;background:linear-gradient(135deg,rgba(255,77,106,.12),rgba(108,99,255,.08));border-radius:14px;border:1px solid rgba(255,77,106,.2)}
+.sidebar-user .role{font-size:10px;color:var(--red);font-weight:700;margin-bottom:3px}
+.sidebar-user .name{font-size:13px;font-weight:600}
+.sidebar-user .email{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;padding:28px;min-height:100vh}
+.page{display:none}.page.active{display:block}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.header h1{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700}
+.header-right{display:flex;gap:10px;align-items:center}
+
+/* BTN */
+.btn{padding:9px 18px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#8b84ff);color:#fff;box-shadow:0 4px 16px rgba(108,99,255,.35)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:rgba(255,77,106,.15);border:1px solid rgba(255,77,106,.3);color:var(--red)}
+.btn-success{background:rgba(67,233,123,.15);border:1px solid rgba(67,233,123,.3);color:var(--green)}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px}
+.card-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+
+/* KPI */
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:-20px;right:-20px;width:70px;height:70px;border-radius:50%;opacity:.12}
+.kpi.purple::after{background:var(--accent)}.kpi.green::after{background:var(--green)}.kpi.red::after{background:var(--red)}.kpi.gold::after{background:var(--gold)}.kpi.blue::after{background:var(--blue)}
+.kpi-icon{font-size:22px;margin-bottom:10px}
+.kpi-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:4px}
+.kpi-value{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02);cursor:pointer}
+.td-bold{font-weight:600}
+.td-muted{color:var(--muted);font-size:12px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-green{background:rgba(67,233,123,.12);color:var(--green);border:1px solid rgba(67,233,123,.25)}
+.badge-red{background:rgba(255,77,106,.12);color:var(--red);border:1px solid rgba(255,77,106,.25)}
+.badge-purple{background:rgba(108,99,255,.12);color:var(--accent);border:1px solid rgba(108,99,255,.25)}
+.badge-gold{background:rgba(247,201,72,.12);color:var(--gold);border:1px solid rgba(247,201,72,.25)}
+.badge-blue{background:rgba(79,172,254,.12);color:var(--blue);border:1px solid rgba(79,172,254,.25)}
+.badge-gray{background:rgba(107,122,153,.12);color:var(--muted);border:1px solid rgba(107,122,153,.25)}
+
+/* SEARCH */
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none}
+.search-input:focus{border-color:var(--accent)}
+.filter-select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;cursor:pointer}
+
+/* CHART */
+.chart-box{position:relative;height:160px;margin-top:8px}
+
+/* ALERT */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:12px;margin-bottom:10px}
+.alert-red{background:rgba(255,77,106,.08);border:1px solid rgba(255,77,106,.2)}
+.alert-gold{background:rgba(247,201,72,.08);border:1px solid rgba(247,201,72,.2)}
+.alert-icon{font-size:18px;flex-shrink:0}
+.alert-text{flex:1}
+.alert-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.alert-sub{font-size:12px;color:var(--muted)}
+
+/* TOGGLE */
+.toggle{position:relative;display:inline-block;width:40px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:11px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--green)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
+
+/* STATUS DOT */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot-green{background:var(--green)}.dot-red{background:var(--red)}.dot-gold{background:var(--gold)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0f1628;border:1px solid var(--border);border-radius:20px;padding:28px;width:90%;max-width:520px;max-height:85vh;overflow-y:auto;animation:slideUp .25s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700}
+.modal-close{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-close:hover{color:var(--text)}
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:6px;display:block}
+.form-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none}
+.form-input:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+/* TOAST */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast{padding:12px 18px;border-radius:12px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:slideIn .3s ease;min-width:260px;max-width:360px}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast.success{background:#0a2a1a;border:1px solid rgba(67,233,123,.3);color:var(--green)}
+.toast.error{background:#2a0a10;border:1px solid rgba(255,77,106,.3);color:var(--red)}
+.toast.info{background:#0a0e2a;border:1px solid rgba(108,99,255,.3);color:var(--accent)}
+
+/* KYC CARDS */
+.kyc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.kyc-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;transition:all .3s}
+.kyc-card.removing{opacity:0;transform:scale(.95)}
+.kyc-docs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.kyc-doc{background:rgba(255,255,255,.04);border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.kyc-actions{display:flex;gap:8px;margin-top:12px}
+
+/* PROGRESS */
+.progress{background:rgba(255,255,255,.08);border-radius:6px;height:6px;overflow:hidden}
+.progress-fill{height:100%;border-radius:6px;transition:width 1s ease}
+
+/* PAGINATION */
+.pagination{display:flex;gap:6px;justify-content:flex-end;margin-top:16px;align-items:center}
+.page-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.page-btn:hover,.page-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.page-info{font-size:12px;color:var(--muted);margin:0 8px}
+
+/* SPARKLINE */
+.sparkline{display:inline-block}
+
+/* API STATUS */
+.api-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(255,255,255,.03);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-user" onclick="if(event.target===this)closeModal('modal-user')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Détail utilisateur</div>
+      <button class="modal-close" onclick="closeModal('modal-user')">✕</button>
+    </div>
+    <div id="modal-user-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" onclick="toast('Utilisateur suspendu','error');closeModal('modal-user')">Suspendre</button>
+      <button class="btn btn-success btn-sm" onclick="toast('Limites modifiées','success');closeModal('modal-user')">Modifier limites</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-user')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirm" onclick="if(event.target===this)closeModal('modal-confirm')">
+  <div class="modal" style="max-width:400px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px" id="confirm-icon">⚠️</div>
+    <div class="modal-title" id="confirm-title" style="margin-bottom:8px">Confirmation</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px" id="confirm-text">Êtes-vous sûr ?</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn btn-primary" id="confirm-ok">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-card" onclick="if(event.target===this)closeModal('modal-card')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Détail carte</div>
+      <button class="modal-close" onclick="closeModal('modal-card')">✕</button>
+    </div>
+    <div id="modal-card-content"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" onclick="toast('Carte bloquée','error');closeModal('modal-card')">Bloquer</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-card')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    <div class="logo-text">APEXCARD</div>
+    <span class="admin-badge">ADMIN</span>
+  </div>
+
+  <div class="nav-label">Principal</div>
+  <div class="nav-item active" onclick="showPage('overview')"><span class="nav-icon">◈</span> Overview</div>
+  <div class="nav-item" onclick="showPage('users')"><span class="nav-icon">◉</span> Utilisateurs</div>
+  <div class="nav-item" onclick="showPage('cards')"><span class="nav-icon">▭</span> Cartes</div>
+  <div class="nav-item" onclick="showPage('transactions')"><span class="nav-icon">⇄</span> Transactions</div>
+
+  <div class="nav-label">Compliance</div>
+  <div class="nav-item" onclick="showPage('kyc')"><span class="nav-icon">✦</span> KYC Pending <span class="nav-badge">12</span></div>
+  <div class="nav-item" onclick="showPage('affiliates')"><span class="nav-icon">◉</span> Affiliés</div>
+
+  <div class="nav-label">Finance</div>
+  <div class="nav-item" onclick="showPage('yield')"><span class="nav-icon">◈</span> Yield</div>
+  <div class="nav-item" onclick="showPage('finances')"><span class="nav-icon">$</span> Finances</div>
+
+  <div class="nav-label">Système</div>
+  <div class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙</span> Paramètres</div>
+  <div class="nav-item" onclick="window.location='index.html'"><span class="nav-icon">←</span> Déconnexion</div>
+
+  <div class="sidebar-user">
+    <div class="role">SUPER ADMIN</div>
+    <div class="name">Admin APEXCARD</div>
+    <div class="email">admin@apexcard.io</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="page active" id="page-overview">
+  <div class="header">
+    <div><h1>Vue d'ensemble</h1><p style="color:var(--muted);font-size:13px;margin-top:3px">Mardi 17 Mars 2026 — <span style="color:var(--green)">● Live</span></p></div>
+    <div class="header-right">
+      <button class="btn btn-ghost btn-sm">📥 Export</button>
+      <button class="btn btn-primary btn-sm">⟳ Actualiser</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid-4" style="margin-bottom:18px">
+    <div class="kpi purple"><div class="kpi-icon">◉</div><div class="kpi-label">Utilisateurs totaux</div><div class="kpi-value">3,847</div><div class="kpi-sub">↑ +124 ce mois</div></div>
+    <div class="kpi green"><div class="kpi-icon">▭</div><div class="kpi-label">Cartes actives</div><div class="kpi-value">2,341</div><div class="kpi-sub">↑ +89 cette semaine</div></div>
+    <div class="kpi blue"><div class="kpi-icon">⇄</div><div class="kpi-label">Volume 30 jours</div><div class="kpi-value">$1.2M</div><div class="kpi-sub">↑ +18.4% vs mois dernier</div></div>
+    <div class="kpi gold"><div class="kpi-icon">$</div><div class="kpi-label">Revenue 30 jours</div><div class="kpi-value">$42,800</div><div class="kpi-sub">Marge nette: $21,400</div></div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="kpi red"><div class="kpi-icon">◈</div><div class="kpi-label">Yield géré</div><div class="kpi-value">$284k</div><div class="kpi-sub">47 investisseurs</div></div>
+    <div class="kpi purple"><div class="kpi-icon">◉</div><div class="kpi-label">Affiliés actifs</div><div class="kpi-value">847</div><div class="kpi-sub">Commissions pending: $12,400</div></div>
+    <div class="kpi green"><div class="kpi-icon">✦</div><div class="kpi-label">KYC en attente</div><div class="kpi-value" style="color:var(--red)">12</div><div class="kpi-sub">3 urgents</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- LINE CHART -->
+    <div class="card">
+      <div class="card-title">Revenue mensuel (12 mois)</div>
+      <div class="chart-box">
+        <svg width="100%" height="100%" viewBox="0 0 500 150" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6c63ff" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#6c63ff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <!-- Area -->
+          <path d="M0,130 L42,120 L84,110 L126,105 L168,95 L210,88 L252,80 L294,70 L336,60 L378,50 L420,42 L462,30 L500,20 L500,150 L0,150 Z" fill="url(#chartGrad)"/>
+          <!-- Line -->
+          <path d="M0,130 L42,120 L84,110 L126,105 L168,95 L210,88 L252,80 L294,70 L336,60 L378,50 L420,42 L462,30 L500,20" fill="none" stroke="#6c63ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Dots -->
+          <circle cx="500" cy="20" r="4" fill="#6c63ff"/>
+          <circle cx="462" cy="30" r="3" fill="#6c63ff" opacity="0.6"/>
+          <!-- Labels -->
+          <text x="0" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Avr</text>
+          <text x="80" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Juin</text>
+          <text x="165" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Août</text>
+          <text x="248" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Oct</text>
+          <text x="330" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Déc</text>
+          <text x="415" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Fév</text>
+          <text x="465" y="148" fill="rgba(107,122,153,0.8)" font-size="10">Mar</text>
+          <!-- Y labels -->
+          <text x="0" y="28" fill="rgba(107,122,153,0.8)" font-size="9">$50k</text>
+          <text x="0" y="73" fill="rgba(107,122,153,0.8)" font-size="9">$25k</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="card">
+      <div class="card-title">Transactions / jour (30j)</div>
+      <div class="chart-box">
+        <svg width="100%" height="100%" viewBox="0 0 500 150" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#43e97b"/>
+              <stop offset="100%" stop-color="#1a9a4a"/>
+            </linearGradient>
+          </defs>
+          <script type="text/javascript">
+          </script>
+          <!-- Bars (30 bars) -->
+          <rect x="2" y="100" width="13" height="40" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="18" y="90" width="13" height="50" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="34" y="80" width="13" height="60" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="50" y="95" width="13" height="45" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="66" y="75" width="13" height="65" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="82" y="85" width="13" height="55" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="98" y="70" width="13" height="70" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="114" y="60" width="13" height="80" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="130" y="78" width="13" height="62" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="146" y="65" width="13" height="75" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="162" y="55" width="13" height="85" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="178" y="72" width="13" height="68" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="194" y="48" width="13" height="92" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="210" y="58" width="13" height="82" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="226" y="42" width="13" height="98" fill="url(#barGrad)" rx="3" opacity="0.7"/>
+          <rect x="242" y="35" width="13" height="105" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="258" y="50" width="13" height="90" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="274" y="38" width="13" height="102" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="290" y="28" width="13" height="112" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="306" y="45" width="13" height="95" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="322" y="32" width="13" height="108" fill="url(#barGrad)" rx="3" opacity="0.8"/>
+          <rect x="338" y="22" width="13" height="118" fill="url(#barGrad)" rx="3" opacity="0.9"/>
+          <rect x="354" y="40" width="13" height="100" fill="url(#barGrad)" rx="3" opacity="0.9"/>
+          <rect x="370" y="18" width="13" height="122" fill="url(#barGrad)" rx="3" opacity="0.9"/>
+          <rect x="386" y="30" width="13" height="110" fill="url(#barGrad)" rx="3" opacity="0.9"/>
+          <rect x="402" y="15" width="13" height="125" fill="url(#barGrad)" rx="3"/>
+          <rect x="418" y="25" width="13" height="115" fill="url(#barGrad)" rx="3"/>
+          <rect x="434" y="10" width="13" height="130" fill="url(#barGrad)" rx="3"/>
+          <rect x="450" y="20" width="13" height="120" fill="url(#barGrad)" rx="3"/>
+          <rect x="466" y="5" width="13" height="135" fill="url(#barGrad)" rx="3"/>
+          <!-- Baseline -->
+          <line x1="0" y1="140" x2="500" y2="140" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="0" y="148" fill="rgba(107,122,153,0.8)" font-size="10">15 Fév</text>
+          <text x="220" y="148" fill="rgba(107,122,153,0.8)" font-size="10">1 Mars</text>
+          <text x="440" y="148" fill="rgba(107,122,153,0.8)" font-size="10">17 Mars</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- ALERTES -->
+    <div class="card">
+      <div class="card-title">Alertes système</div>
+      <div class="alert alert-red">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-text">
+          <div class="alert-title">Transaction suspecte flagged</div>
+          <div class="alert-sub">User #3841 — $24,800 USDT en 3 transferts rapides · Il y a 12 min</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="toast('Dossier ouvert','error')">Voir</button>
+      </div>
+      <div class="alert alert-red">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text">
+          <div class="alert-title">3 KYC Tier 2 urgents (>48h)</div>
+          <div class="alert-sub">En attente de révision manuelle depuis 2+ jours</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="showPage('kyc')">Traiter</button>
+      </div>
+      <div class="alert alert-gold">
+        <div class="alert-icon">💰</div>
+        <div class="alert-text">
+          <div class="alert-title">Float Wallester bas — $8,200 restants</div>
+          <div class="alert-sub">Recommander rebalancement si volume >$50k/jour</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="toast('Rebalancement initié','success')">Rebalancer</button>
+      </div>
+    </div>
+
+    <!-- TOP USERS -->
+    <div class="card">
+      <div class="card-title">Top 5 users par volume (30j)</div>
+      <table>
+        <thead><tr><th>Utilisateur</th><th>Volume</th><th>Cartes</th><th>Tier</th></tr></thead>
+        <tbody>
+          <tr onclick="openUserModal('Nikita V.','nikita@mail.ru','$84,200','3',2)"><td class="td-bold">Nikita V.</td><td style="color:var(--green)">$84,200</td><td>3</td><td><span class="badge badge-purple">Tier 2</span></td></tr>
+          <tr onclick="openUserModal('Alex M.','alex@nomad.io','$61,400','2',2)"><td class="td-bold">Alex M.</td><td style="color:var(--green)">$61,400</td><td>2</td><td><span class="badge badge-purple">Tier 2</span></td></tr>
+          <tr onclick="openUserModal('Valentina S.','val@gmail.com','$48,900','2',1)"><td class="td-bold">Valentina S.</td><td style="color:var(--green)">$48,900</td><td>2</td><td><span class="badge badge-blue">Tier 1</span></td></tr>
+          <tr onclick="openUserModal('Terry R.','terry@blog.com','$32,100','1',2)"><td class="td-bold">Terry R.</td><td style="color:var(--green)">$32,100</td><td>1</td><td><span class="badge badge-purple">Tier 2</span></td></tr>
+          <tr onclick="openUserModal('Maria K.','maria@kz.kz','$28,400','2',1)"><td class="td-bold">Maria K.</td><td style="color:var(--green)">$28,400</td><td>2</td><td><span class="badge badge-blue">Tier 1</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ UTILISATEURS ═══════════════ -->
+<div class="page" id="page-users">
+  <div class="header">
+    <h1>Utilisateurs <span style="color:var(--muted);font-size:16px">(3,847)</span></h1>
+    <div class="header-right">
+      <button class="btn btn-ghost btn-sm">📥 Export CSV</button>
+      <button class="btn btn-primary btn-sm">+ Ajouter</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="search-bar">
+      <input class="search-input" placeholder="🔍 Rechercher par nom, email, ID..." oninput="filterUsers(this.value)">
+      <select class="filter-select"><option>Tous les tiers</option><option>Tier 0</option><option>Tier 1</option><option>Tier 2</option></select>
+      <select class="filter-select"><option>Tous les statuts</option><option>Actif</option><option>Suspendu</option></select>
+    </div>
+    <div class="table-wrap">
+      <table id="users-table">
+        <thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Tier KYC</th><th>Cartes</th><th>Solde</th><th>Volume 30j</th><th>Inscription</th><th>Statut</th></tr></thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span class="page-info">Page 1 / 193</span>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">...</button>
+      <button class="page-btn">193</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CARTES ═══════════════ -->
+<div class="page" id="page-cards">
+  <div class="header">
+    <h1>Cartes <span style="color:var(--muted);font-size:16px">(2,341)</span></h1>
+    <div class="header-right">
+      <button class="btn btn-ghost btn-sm">📥 Export</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="search-bar">
+      <input class="search-input" placeholder="🔍 Rechercher par ID, user, numéro...">
+      <select class="filter-select"><option>Tous types</option><option>Virtuelle</option><option>Physique</option></select>
+      <select class="filter-select"><option>Tous statuts</option><option>Active</option><option>Bloquée</option><option>En attente</option></select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID Carte</th><th>Utilisateur</th><th>Type</th><th>Numéro</th><th>Statut</th><th>Solde</th><th>Limite mois</th><th>Dernière tx</th><th>Actions</th></tr></thead>
+        <tbody id="cards-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span class="page-info">Page 1 / 118</span>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TRANSACTIONS ═══════════════ -->
+<div class="page" id="page-transactions">
+  <div class="header">
+    <h1>Transactions</h1>
+    <div class="header-right">
+      <button class="btn btn-ghost btn-sm">📥 Export CSV</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="search-bar">
+      <input class="search-input" placeholder="🔍 Rechercher par ID, user, montant...">
+      <select class="filter-select"><option>Tous types</option><option>Recharge</option><option>Paiement</option><option>Virement</option><option>Swap</option><option>Commission</option></select>
+      <select class="filter-select"><option>Tous statuts</option><option>Complété</option><option>Pending</option><option>Échoué</option><option>Flagged</option></select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Utilisateur</th><th>Type</th><th>Montant</th><th>Devise</th><th>Statut</th><th>Date</th></tr></thead>
+        <tbody id="tx-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span class="page-info">Page 1 / 4,200</span>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ KYC PENDING ═══════════════ -->
+<div class="page" id="page-kyc">
+  <div class="header">
+    <h1>KYC Pending <span class="badge badge-red" style="font-size:14px" id="kyc-count">12</span></h1>
+    <div class="header-right">
+      <select class="filter-select"><option>Tous tiers</option><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option></select>
+    </div>
+  </div>
+  <div class="kyc-grid" id="kyc-grid"></div>
+</div>
+
+<!-- ═══════════════ AFFILIÉS ═══════════════ -->
+<div class="page" id="page-affiliates">
+  <div class="header">
+    <h1>Affiliés</h1>
+    <button class="btn btn-primary" onclick="confirmAction('Exécuter le paiement batch de $12,400 ?','💰',()=>toast('Paiement batch exécuté — $12,400 USDT envoyés','success'))">💸 Paiement batch</button>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="kpi purple"><div class="kpi-icon">◉</div><div class="kpi-label">Affiliés actifs</div><div class="kpi-value">847</div><div class="kpi-sub">↑ +32 ce mois</div></div>
+    <div class="kpi gold"><div class="kpi-icon">💰</div><div class="kpi-label">Commissions pending</div><div class="kpi-value" style="color:var(--gold)">$12,400</div><div class="kpi-sub">Prochain versement: 1 Avril</div></div>
+    <div class="kpi green"><div class="kpi-icon">⇄</div><div class="kpi-label">Volume réseau total</div><div class="kpi-value">$840k</div><div class="kpi-sub">Ce mois</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Top affiliés</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Affilié</th><th>Filleuls directs</th><th>Réseau total</th><th>Volume réseau</th><th>Comm. versée</th><th>Comm. pending</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr><td class="td-bold">Nikita V.</td><td>23</td><td>124</td><td style="color:var(--green)">$184,000</td><td>$4,200</td><td style="color:var(--gold)">$1,840</td><td><span class="badge badge-green">● Actif</span></td></tr>
+          <tr><td class="td-bold">Alex M.</td><td>18</td><td>87</td><td style="color:var(--green)">$142,000</td><td>$3,100</td><td style="color:var(--gold)">$1,420</td><td><span class="badge badge-green">● Actif</span></td></tr>
+          <tr><td class="td-bold">Dmitri K.</td><td>15</td><td>64</td><td style="color:var(--green)">$98,000</td><td>$2,400</td><td style="color:var(--gold)">$980</td><td><span class="badge badge-green">● Actif</span></td></tr>
+          <tr><td class="td-bold">Valentina S.</td><td>12</td><td>48</td><td style="color:var(--green)">$76,000</td><td>$1,800</td><td style="color:var(--gold)">$760</td><td><span class="badge badge-green">● Actif</span></td></tr>
+          <tr><td class="td-bold">Terry R.</td><td>9</td><td>31</td><td style="color:var(--green)">$54,000</td><td>$1,200</td><td style="color:var(--gold)">$540</td><td><span class="badge badge-green">● Actif</span></td></tr>
+          <tr><td class="td-bold">Maria K.</td><td>6</td><td>18</td><td style="color:var(--green)">$28,000</td><td>$640</td><td style="color:var(--gold)">$280</td><td><span class="badge badge-gray">● Inactif</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ YIELD ═══════════════ -->
+<div class="page" id="page-yield">
+  <div class="header">
+    <h1>Yield & Investissements</h1>
+    <button class="btn btn-primary" onclick="confirmAction('Exécuter le versement mensuel de $5,688 ?','💸',()=>toast('Versement mensuel exécuté — $5,688 distribués','success'))">💸 Versement mensuel</button>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="kpi gold"><div class="kpi-icon">◈</div><div class="kpi-label">Capital géré total</div><div class="kpi-value" style="color:var(--gold)">$284,000</div><div class="kpi-sub">47 investisseurs</div></div>
+    <div class="kpi green"><div class="kpi-icon">$</div><div class="kpi-label">Yield à verser ce mois</div><div class="kpi-value" style="color:var(--green)">$5,688</div><div class="kpi-sub">APY moyen: 24%</div></div>
+    <div class="kpi purple"><div class="kpi-icon">⇄</div><div class="kpi-label">Total versé depuis début</div><div class="kpi-value">$34,120</div><div class="kpi-sub">Depuis Juin 2024</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Investisseurs</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Investisseur</th><th>Montant investi</th><th>Round</th><th>APY</th><th>Date</th><th>Gain cumulé</th><th>Prochain versement</th></tr></thead>
+        <tbody>
+          <tr><td class="td-bold">Nikita V.</td><td>$50,000</td><td><span class="badge badge-purple">Round 1</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">02/06/2024</td><td style="color:var(--green)">+$10,000</td><td style="color:var(--gold)">$1,000</td></tr>
+          <tr><td class="td-bold">Alex M.</td><td>$30,000</td><td><span class="badge badge-purple">Round 1</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">15/07/2024</td><td style="color:var(--green)">+$5,400</td><td style="color:var(--gold)">$600</td></tr>
+          <tr><td class="td-bold">Dmitri K.</td><td>$25,000</td><td><span class="badge badge-blue">Presale</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">10/06/2024</td><td style="color:var(--green)">+$4,500</td><td style="color:var(--gold)">$500</td></tr>
+          <tr><td class="td-bold">Valentina S.</td><td>$20,000</td><td><span class="badge badge-purple">Round 1</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">01/09/2024</td><td style="color:var(--green)">+$2,800</td><td style="color:var(--gold)">$400</td></tr>
+          <tr><td class="td-bold">Terry R.</td><td>$15,000</td><td><span class="badge badge-purple">Round 1</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">20/10/2024</td><td style="color:var(--green)">+$1,800</td><td style="color:var(--gold)">$300</td></tr>
+          <tr><td class="td-bold">JP Nové (toi)</td><td>$12,000</td><td><span class="badge badge-purple">Round 1</span></td><td style="color:var(--gold)">24%</td><td class="td-muted">12/01/2026</td><td style="color:var(--green)">+$1,440</td><td style="color:var(--gold)">$240</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FINANCES ═══════════════ -->
+<div class="page" id="page-finances">
+  <div class="header">
+    <h1>Finances</h1>
+    <button class="btn btn-ghost btn-sm">📥 Export P&L</button>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">P&L — Mars 2026</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(67,233,123,.06);border-radius:10px;border:1px solid rgba(67,233,123,.15)">
+          <span style="font-size:13px;font-weight:600">Ventes cartes (50 × $50)</span>
+          <span style="color:var(--green);font-weight:700">+$2,500</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(67,233,123,.06);border-radius:10px;border:1px solid rgba(67,233,123,.15)">
+          <span style="font-size:13px;font-weight:600">Frais recharge (3.5% × $1.14M)</span>
+          <span style="color:var(--green);font-weight:700">+$39,900</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(67,233,123,.06);border-radius:10px;border:1px solid rgba(67,233,123,.15)">
+          <span style="font-size:13px;font-weight:600">Frais swap + autres</span>
+          <span style="color:var(--green);font-weight:700">+$400</span>
+        </div>
+        <div style="height:1px;background:var(--border);margin:4px 0"></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(255,77,106,.06);border-radius:10px;border:1px solid rgba(255,77,106,.15)">
+          <span style="font-size:13px;font-weight:600">Coût BIN (1.8% × $1.14M)</span>
+          <span style="color:var(--red);font-weight:700">-$20,520</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(255,77,106,.06);border-radius:10px;border:1px solid rgba(255,77,106,.15)">
+          <span style="font-size:13px;font-weight:600">Coût cartes ($2 × 50)</span>
+          <span style="color:var(--red);font-weight:700">-$100</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(255,77,106,.06);border-radius:10px;border:1px solid rgba(255,77,106,.15)">
+          <span style="font-size:13px;font-weight:600">Yield versé</span>
+          <span style="color:var(--red);font-weight:700">-$5,688</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;background:rgba(255,77,106,.06);border-radius:10px;border:1px solid rgba(255,77,106,.15)">
+          <span style="font-size:13px;font-weight:600">Commissions affiliés</span>
+          <span style="color:var(--red);font-weight:700">-$12,400</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:14px 16px;background:linear-gradient(135deg,rgba(67,233,123,.12),rgba(67,233,123,.04));border-radius:12px;border:2px solid rgba(67,233,123,.3)">
+          <span style="font-size:14px;font-weight:700">MARGE NETTE</span>
+          <span style="color:var(--green);font-weight:800;font-size:18px">+$4,092</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- PIE CHART revenus -->
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Répartition revenus</div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <!-- Pie chart segments (pre-calculated for 60/25/10/5) -->
+            <circle cx="60" cy="60" r="48" fill="transparent" stroke="#6c63ff" stroke-width="24" stroke-dasharray="180 301" stroke-dashoffset="0"/>
+            <circle cx="60" cy="60" r="48" fill="transparent" stroke="#43e97b" stroke-width="24" stroke-dasharray="75 301" stroke-dashoffset="-180"/>
+            <circle cx="60" cy="60" r="48" fill="transparent" stroke="#f7c948" stroke-width="24" stroke-dasharray="30 301" stroke-dashoffset="-255"/>
+            <circle cx="60" cy="60" r="48" fill="transparent" stroke="#4facfe" stroke-width="24" stroke-dasharray="16 301" stroke-dashoffset="-285"/>
+            <circle cx="60" cy="60" r="30" fill="var(--bg2)"/>
+          </svg>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--accent);border-radius:2px;display:inline-block"></span><span style="font-size:12px">Ventes cartes</span></span><strong>60%</strong></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--green);border-radius:2px;display:inline-block"></span><span style="font-size:12px">Frais recharge</span></span><strong>25%</strong></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--gold);border-radius:2px;display:inline-block"></span><span style="font-size:12px">Swap fees</span></span><strong>10%</strong></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--blue);border-radius:2px;display:inline-block"></span><span style="font-size:12px">Autres</span></span><strong>5%</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLOAT -->
+      <div class="card">
+        <div class="card-title">Float providers</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Wallester (fiat cards)</span><span style="color:var(--gold);font-weight:600">$8,200</span></div>
+            <div class="progress"><div class="progress-fill" style="width:16%;background:var(--gold)"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">⚠ Bas — recommander recharge $50k</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Clearjunction (IBAN)</span><span style="color:var(--green);font-weight:600">$124,000</span></div>
+            <div class="progress"><div class="progress-fill" style="width:62%;background:var(--green)"></div></div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">✓ Niveau correct</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">B2BX (OTC desk)</span><span style="color:var(--green);font-weight:600">$84,500</span></div>
+            <div class="progress"><div class="progress-fill" style="width:42%;background:var(--blue)"></div></div>
+          </div>
+          <button class="btn btn-primary btn-sm" style="width:100%;margin-top:4px" onclick="toast('Rebalancement initié','success')">⟳ Rebalancer les floats</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PARAMÈTRES ═══════════════ -->
+<div class="page" id="page-settings">
+  <div class="header">
+    <h1>Paramètres système</h1>
+    <button class="btn btn-primary" onclick="toast('Configuration sauvegardée','success')">💾 Sauvegarder</button>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Frais & Prix</div>
+        <div class="form-group">
+          <label class="form-label">Frais recharge crypto (%)</label>
+          <input class="form-input" type="number" value="3.5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prix carte virtuelle ($)</label>
+          <input class="form-input" type="number" value="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prix carte physique ($)</label>
+          <input class="form-input" type="number" value="99">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Frais swap (%)</label>
+          <input class="form-input" type="number" value="0.25" step="0.05">
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Commissions affiliés</div>
+        <div class="form-group">
+          <label class="form-label">Niveau 1 — recharges (%)</label>
+          <input class="form-input" type="number" value="8" step="0.5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Niveau 2 — recharges (%)</label>
+          <input class="form-input" type="number" value="3" step="0.5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Niveau 3 — recharges (%)</label>
+          <input class="form-input" type="number" value="1" step="0.5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bonus vente carte N1 ($)</label>
+          <input class="form-input" type="number" value="5">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Limites par tier</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid var(--border)">
+            <div style="font-weight:600;margin-bottom:10px;color:var(--muted)">Tier 0 (Email only)</div>
+            <div class="form-group" style="margin-bottom:8px">
+              <label class="form-label">Limite mensuelle ($)</label>
+              <input class="form-input" type="number" value="500">
+            </div>
+          </div>
+          <div style="padding:14px;background:rgba(79,172,254,.05);border-radius:12px;border:1px solid rgba(79,172,254,.15)">
+            <div style="font-weight:600;margin-bottom:10px;color:var(--blue)">Tier 1 (Selfie + ID)</div>
+            <div class="form-group" style="margin-bottom:8px">
+              <label class="form-label">Limite mensuelle ($)</label>
+              <input class="form-input" type="number" value="5000">
+            </div>
+          </div>
+          <div style="padding:14px;background:rgba(108,99,255,.05);border-radius:12px;border:1px solid rgba(108,99,255,.15)">
+            <div style="font-weight:600;margin-bottom:10px;color:var(--accent)">Tier 2 (Adresse)</div>
+            <div class="form-group" style="margin-bottom:8px">
+              <label class="form-label">Limite mensuelle ($)</label>
+              <input class="form-input" type="number" value="50000">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="card-title">Statut APIs providers</div>
+        <div class="api-item">
+          <div><div style="font-size:13px;font-weight:600"><span class="status-dot dot-green"></span>Wallester</div><div style="font-size:11px;color:var(--muted)">Card issuing · Latence: 124ms</div></div>
+          <span class="badge badge-green">● Online</span>
+        </div>
+        <div class="api-item">
+          <div><div style="font-size:13px;font-weight:600"><span class="status-dot dot-green"></span>Tatum</div><div style="font-size:11px;color:var(--muted)">Crypto wallets · Latence: 89ms</div></div>
+          <span class="badge badge-green">● Online</span>
+        </div>
+        <div class="api-item">
+          <div><div style="font-size:13px;font-weight:600"><span class="status-dot dot-green"></span>Clearjunction</div><div style="font-size:11px;color:var(--muted)">IBAN · Latence: 201ms</div></div>
+          <span class="badge badge-green">● Online</span>
+        </div>
+        <div class="api-item">
+          <div><div style="font-size:13px;font-weight:600"><span class="status-dot dot-gold"></span>B2BX OTC</div><div style="font-size:11px;color:var(--muted)">Swap · Latence: 480ms</div></div>
+          <span class="badge badge-gold">⚠ Lent</span>
+        </div>
+        <div class="api-item">
+          <div><div style="font-size:13px;font-weight:600"><span class="status-dot dot-red"></span>Sumsub</div><div style="font-size:11px;color:var(--muted)">KYC · Incident en cours</div></div>
+          <span class="badge badge-red">● Dégradé</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mode maintenance</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,77,106,.06);border-radius:12px;border:1px solid rgba(255,77,106,.15)">
+          <div>
+            <div style="font-size:14px;font-weight:600">Maintenance générale</div>
+            <div style="font-size:12px;color:var(--muted)">Désactive l'accès client à la plateforme</div>
+          </div>
+          <label class="toggle"><input type="checkbox" onchange="toast(this.checked?'Mode maintenance activé':'Mode maintenance désactivé',this.checked?'error':'success')"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ═══ NAVIGATION ═══
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-'+name);
+  if(page) page.classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ═══ TOAST ═══
+function toast(msg, type='success') {
+  const icons = {success:'✅',error:'❌',info:'ℹ️'};
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ═══ MODAL ═══
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
+
+// ═══ CONFIRM ═══
+function confirmAction(text, icon, cb) {
+  document.getElementById('confirm-icon').textContent = icon || '⚠️';
+  document.getElementById('confirm-text').textContent = text;
+  const btn = document.getElementById('confirm-ok');
+  btn.onclick = () => { cb(); closeModal('modal-confirm'); };
+  openModal('modal-confirm');
+}
+
+// ═══ USER MODAL ═══
+function openUserModal(name, email, volume, cards, tier) {
+  document.getElementById('modal-user-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Nom</div>
+        <div style="font-weight:600">${name}</div>
+      </div>
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Email</div>
+        <div style="font-weight:600">${email}</div>
+      </div>
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Volume 30j</div>
+        <div style="font-weight:700;color:var(--green)">${volume}</div>
+      </div>
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Tier KYC</div>
+        <div><span class="badge badge-purple">Tier ${tier}</span></div>
+      </div>
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Cartes actives</div>
+        <div style="font-weight:600">${cards}</div>
+      </div>
+      <div style="padding:14px;background:rgba(255,255,255,.03);border-radius:12px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Statut</div>
+        <div><span class="badge badge-green">● Actif</span></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.8px">Dernières transactions</div>
+    <div style="background:rgba(255,255,255,.03);border-radius:10px;overflow:hidden">
+      <table style="width:100%;font-size:12px"><thead><tr style="border-bottom:1px solid var(--border)"><th style="padding:8px 12px;text-align:left;color:var(--muted)">Type</th><th style="padding:8px 12px;text-align:left;color:var(--muted)">Montant</th><th style="padding:8px 12px;text-align:left;color:var(--muted)">Date</th></tr></thead><tbody>
+      <tr><td style="padding:8px 12px">Recharge USDT</td><td style="color:var(--green)">+$500</td><td style="color:var(--muted)">17/03</td></tr>
+      <tr><td style="padding:8px 12px">Starbucks</td><td>-$12.40</td><td style="color:var(--muted)">17/03</td></tr>
+      <tr><td style="padding:8px 12px">Yield</td><td style="color:var(--green)">+$240</td><td style="color:var(--muted)">16/03</td></tr>
+      </tbody></table>
+    </div>
+  `;
+  openModal('modal-user');
+}
+
+// ═══ CARD MODAL ═══
+function openCardModal(id, user, type, num, bal, limit) {
+  document.getElementById('modal-card-content').innerHTML = `
+    <div style="background:linear-gradient(135deg,#1a1f3a,#2d1b69);border-radius:16px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(108,99,255,.4),transparent 70%);border-radius:50%"></div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;margin-bottom:20px">APEXCARD</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:3px;margin-bottom:20px">${num}</div>
+      <div style="display:flex;justify-content:space-between"><div style="font-size:12px">${user}</div><div style="font-style:italic;font-weight:800">VISA</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="padding:12px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:11px;color:var(--muted)">Solde</div><div style="font-weight:700;color:var(--green)">$${bal}</div></div>
+      <div style="padding:12px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:11px;color:var(--muted)">Limite mensuelle</div><div style="font-weight:700">$${limit}</div></div>
+      <div style="padding:12px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:11px;color:var(--muted)">Type</div><div style="font-weight:600">${type}</div></div>
+      <div style="padding:12px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:11px;color:var(--muted)">Statut</div><div><span class="badge badge-green">● Active</span></div></div>
+    </div>
+  `;
+  openModal('modal-card');
+}
+
+// ═══ DATA ═══
+const USERS = [
+  ['#3847','Nikita V.','nikita@mail.ru',2,'3','$12,400','$84,200','02/06/2024','active'],
+  ['#3841','Alex M.','alex@nomad.io',2,'2','$8,500','$61,400','15/07/2024','active'],
+  ['#3820','Dmitri K.','dmitri@kz.kz',2,'2','$6,200','$48,900','10/08/2024','active'],
+  ['#3810','Valentina S.','val@gmail.com',1,'2','$3,240','$32,100','01/09/2024','active'],
+  ['#3798','Terry R.','terry@blog.com',2,'1','$2,100','$28,400','20/10/2024','active'],
+  ['#3784','Maria K.','maria@mail.ru',1,'1','$1,840','$21,000','05/11/2024','active'],
+  ['#3770','Ivan P.','ivan@outlook.com',0,'1','$480','$9,400','12/11/2024','active'],
+  ['#3762','Olga T.','olga@yandex.ru',1,'1','$920','$14,200','28/11/2024','suspended'],
+  ['#3748','Boris L.','boris@gmail.com',2,'2','$5,400','$38,000','03/12/2024','active'],
+  ['#3740','Anastasia R.','anas@mail.ru',1,'1','$1,200','$18,600','10/12/2024','active'],
+  ['#3735','Mikhail Z.','mikh@pm.me',0,'1','$320','$4,800','15/12/2024','active'],
+  ['#3720','Elena V.','elena@proton.me',1,'2','$2,800','$24,000','22/12/2024','active'],
+  ['#3710','Andrei S.','andrei@mail.ru',2,'1','$7,200','$52,000','02/01/2025','active'],
+  ['#3698','Yuki T.','yuki@gmail.com',1,'1','$1,600','$19,000','14/01/2025','active'],
+  ['#3685','Carlos M.','carlos@hotmail.com',1,'1','$1,100','$16,400','20/01/2025','active'],
+  ['#3670','Fatima A.','fatima@gmail.com',0,'1','$290','$3,200','28/01/2025','active'],
+  ['#3655','Jean-P. N.','jp@apexcard.io',2,'3','$30,041','$48,000','12/01/2026','active'],
+  ['#3640','Sergei K.','sergei@mail.ru',1,'1','$840','$12,000','18/02/2025','suspended'],
+  ['#3620','Wei C.','wei@gmail.com',2,'2','$4,100','$34,000','05/03/2025','active'],
+  ['#3600','Ahmed H.','ahmed@outlook.com',1,'1','$1,400','$17,200','12/03/2025','active'],
+];
+
+function renderUsers(list) {
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = list.map(u => `
+    <tr onclick="openUserModal('${u[1]}','${u[2]}','${u[6]}','${u[4]}',${u[3]})">
+      <td class="td-muted">${u[0]}</td>
+      <td class="td-bold">${u[1]}</td>
+      <td class="td-muted">${u[2]}</td>
+      <td><span class="badge ${u[3]===2?'badge-purple':u[3]===1?'badge-blue':'badge-gray'}">Tier ${u[3]}</span></td>
+      <td>${u[4]}</td>
+      <td style="color:var(--green);font-weight:600">${u[5]}</td>
+      <td>${u[6]}</td>
+      <td class="td-muted">${u[7]}</td>
+      <td><span class="badge ${u[8]==='active'?'badge-green':'badge-red'}">${u[8]==='active'?'● Actif':'● Suspendu'}</span></td>
+    </tr>
+  `).join('');
+}
+
+function filterUsers(q) {
+  const f = q.toLowerCase();
+  renderUsers(USERS.filter(u => u[1].toLowerCase().includes(f) || u[2].toLowerCase().includes(f) || u[0].toLowerCase().includes(f)));
+}
+
+const CARDS = [
+  ['#C8471','Nikita V.','Physique','5289 •••• •••• 1847','3,200','50,000','17/03 14:32'],
+  ['#C8470','Nikita V.','Virtuelle','4821 •••• •••• 7432','800','5,000','17/03 11:14'],
+  ['#C8442','Alex M.','Virtuelle','4532 •••• •••• 9021','2,400','5,000','16/03 18:42'],
+  ['#C8398','Dmitri K.','Physique','5412 •••• •••• 3312','8,500','100,000','17/03 09:22'],
+  ['#C8320','Valentina S.','Virtuelle','4721 •••• •••• 5544','1,240','5,000','15/03 22:10'],
+  ['#C8298','Terry R.','Virtuelle','4891 •••• •••• 7788','580','5,000','14/03 16:33'],
+  ['#C8241','Maria K.','Virtuelle','4312 •••• •••• 2209','320','500','13/03 08:11'],
+  ['#C8188','Ivan P.','Virtuelle','4001 •••• •••• 4412','180','500','12/03 14:55'],
+  ['#C8102','Boris L.','Physique','5523 •••• •••• 8871','5,400','100,000','17/03 10:00'],
+  ['#C7980','Andrei S.','Physique','5614 •••• •••• 3390','7,200','100,000','17/03 07:45'],
+];
+
+function renderCards() {
+  document.getElementById('cards-tbody').innerHTML = CARDS.map(c => `
+    <tr onclick="openCardModal('${c[0]}','${c[1]}','${c[2]}','${c[3]}','${c[4]}','${c[5]}')">
+      <td class="td-muted">${c[0]}</td>
+      <td class="td-bold">${c[1]}</td>
+      <td><span class="badge ${c[2]==='Physique'?'badge-gold':'badge-purple'}">${c[2]}</span></td>
+      <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${c[3]}</td>
+      <td><span class="badge badge-green">● Active</span></td>
+      <td style="color:var(--green);font-weight:600">$${c[4]}</td>
+      <td>$${c[5]}</td>
+      <td class="td-muted">${c[6]}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();toast('Carte bloquée','error')">Bloquer</button></td>
+    </tr>
+  `).join('');
+}
+
+const TX_TYPES = ['Recharge','Paiement','Swap','Virement','Commission','Yield'];
+const TX_USERS = ['Nikita V.','Alex M.','Dmitri K.','Valentina S.','Terry R.','Ivan P.','Maria K.','Boris L.','Andrei S.','JP Nové'];
+const TX_CURRENCIES = ['USDT','USD','EUR','GBP'];
+
+function renderTx() {
+  const rows = [];
+  for(let i=0;i<20;i++){
+    const type = TX_TYPES[Math.floor(Math.random()*TX_TYPES.length)];
+    const user = TX_USERS[Math.floor(Math.random()*TX_USERS.length)];
+    const amount = (Math.random()*5000+10).toFixed(2);
+    const currency = TX_CURRENCIES[Math.floor(Math.random()*TX_CURRENCIES.length)];
+    const flagged = parseFloat(amount)>4000;
+    const statuses = ['Complété','Complété','Complété','Pending','Échoué'];
+    const status = statuses[Math.floor(Math.random()*statuses.length)];
+    const d = Math.floor(Math.random()*17)+1;
+    rows.push(`<tr style="${flagged?'background:rgba(255,77,106,0.04)':''}">
+      <td class="td-muted">#TX${Math.floor(Math.random()*90000+10000)}</td>
+      <td class="td-bold">${user}</td>
+      <td><span class="badge badge-purple">${type}</span></td>
+      <td style="${type==='Recharge'||type==='Yield'||type==='Commission'?'color:var(--green)':''}font-weight:600">${type==='Recharge'||type==='Yield'||type==='Commission'?'+':'−'}$${amount}</td>
+      <td><span class="badge badge-gray">${currency}</span></td>
+      <td><span class="badge ${status==='Complété'?'badge-green':status==='Pending'?'badge-gold':'badge-red'}">${flagged?'🚨 ':''} ${status}</span></td>
+      <td class="td-muted">${d.toString().padStart(2,'0')}/03/2026</td>
+    </tr>`);
+  }
+  document.getElementById('tx-tbody').innerHTML = rows.join('');
+}
+
+// ═══ KYC ═══
+const KYC_NAMES = ['Alexei B.','Natasha K.','Dmitri V.','Yuki T.','Carlos M.','Fatima A.','Wei C.','Ahmed H.','Olga P.','Sergei L.','Irina M.','Boris T.'];
+const KYC_TIERS = [1,1,2,1,2,1,1,2,1,1,2,1];
+const KYC_DOCS = ['🪪','🤳'];
+let kycPending = 12;
+
+function renderKYC() {
+  const grid = document.getElementById('kyc-grid');
+  grid.innerHTML = KYC_NAMES.map((name, i) => `
+    <div class="kyc-card" id="kyc-card-${i}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:700">${name}</div>
+          <div style="font-size:12px;color:var(--muted)">Tier ${KYC_TIERS[i]} demandé · Il y a ${Math.floor(Math.random()*72)+1}h</div>
+        </div>
+        <span class="badge ${KYC_TIERS[i]===2?'badge-purple':'badge-blue'}">Tier ${KYC_TIERS[i]}</span>
+      </div>
+      <div class="kyc-docs">
+        <div class="kyc-doc">🪪</div>
+        <div class="kyc-doc">🤳</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Passeport + Selfie soumis</div>
+      <div class="kyc-actions">
+        <button class="btn btn-success btn-sm" style="flex:1" onclick="approveKYC(${i},'${name}')">✓ Approuver</button>
+        <button class="btn btn-danger btn-sm" style="flex:1" onclick="rejectKYC(${i},'${name}')">✗ Rejeter</button>
+        <button class="btn btn-ghost btn-sm" onclick="toast('Demande info envoyée à ${name}','info')">?</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function approveKYC(i, name) {
+  const card = document.getElementById('kyc-card-'+i);
+  card.classList.add('removing');
+  setTimeout(() => { card.remove(); kycPending--; document.getElementById('kyc-count').textContent = kycPending; }, 300);
+  toast(`KYC approuvé — ${name} upgraded au Tier suivant`,'success');
+}
+
+function rejectKYC(i, name) {
+  const card = document.getElementById('kyc-card-'+i);
+  card.classList.add('removing');
+  setTimeout(() => { card.remove(); kycPending--; document.getElementById('kyc-count').textContent = kycPending; }, 300);
+  toast(`KYC rejeté — ${name} notifié`,'error');
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => {
+  renderUsers(USERS);
+  renderCards();
+  renderTx();
+  renderKYC();
+});
+</script>
+</body>
+</html>
