@@ -370,7 +370,14 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const { createClient } = supabase;
+const sb = createClient(
+  'https://vhdgqtwsxasuggbeujoo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODU2MzIsImV4cCI6MjA4OTk2MTYzMn0.J_9V--cflujeSnOsc_3wYDOgiMi54RTF5aDHC4fMZVI'
+);
+
 let currentRole = 'user';
 
 function selectRole(role, el) {
@@ -380,18 +387,64 @@ function selectRole(role, el) {
   document.getElementById('email').value = role === 'admin' ? 'admin@apexcard.io' : 'jp@apexcard.io';
 }
 
-function doLogin() {
-  const btn = document.querySelector('.btn-cta');
-  btn.textContent = 'Authenticating…';
-  btn.style.opacity = '0.8';
-  setTimeout(() => {
-    window.location.href = currentRole === 'admin' ? 'app-admin.html' : 'app-user.html';
-  }, 900);
+function showError(msg) {
+  let errDiv = document.getElementById('login-error');
+  if (!errDiv) {
+    errDiv = document.createElement('div');
+    errDiv.id = 'login-error';
+    errDiv.style.cssText = 'color:#EF4444;text-align:center;margin-top:12px;font-size:0.9rem;';
+    document.querySelector('.btn-cta').insertAdjacentElement('afterend', errDiv);
+  }
+  errDiv.textContent = msg;
 }
 
-function quickLogin(role) {
+async function doLogin() {
+  const btn = document.querySelector('.btn-cta');
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  btn.textContent = 'Authenticating…';
+  btn.style.opacity = '0.8';
+  btn.disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    // Log failed attempt
+    await sb.from('login_attempts').insert({ email, success: false });
+    showError(error.message);
+    btn.textContent = 'Sign in to APEXCARD';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+    return;
+  }
+
+  // Log success
+  await sb.from('login_attempts').insert({ email, success: true });
+  await sb.from('audit_logs').insert({
+    user_id: data.user.id,
+    action: 'login',
+    metadata: { email }
+  });
+
+  // Redirect based on role
+  if (currentRole === 'admin') {
+    window.location.href = 'app-admin.html';
+  } else {
+    window.location.href = 'app-user.html';
+  }
+}
+
+async function quickLogin(role) {
   currentRole = role;
-  doLogin();
+  if (role === 'admin') {
+    document.getElementById('email').value = 'jp@apexcard.io';
+    document.getElementById('password').value = 'Demo2026!';
+  } else {
+    document.getElementById('email').value = 'jp@apexcard.io';
+    document.getElementById('password').value = 'Demo2026!';
+  }
+  await doLogin();
 }
 
 // Particles

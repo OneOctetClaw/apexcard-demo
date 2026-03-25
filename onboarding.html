@@ -878,6 +878,7 @@ input, select, textarea { font-family: inherit; }
   .funding-methods { gap: 8px; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1111,7 +1112,7 @@ input, select, textarea { font-family: inherit; }
         </div>
         <div class="btn-nav">
           <button class="btn-back" onclick="goToStep(0)">← Retour</button>
-          <button class="btn-continue" id="step1Btn" onclick="goToStep(2)" disabled>Continuer →</button>
+          <button class="btn-continue" id="step1Btn" onclick="handleSignUp()" disabled>Continuer →</button>
         </div>
       </div>
       <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
@@ -2416,6 +2417,108 @@ function showToast(msg, type = 'success') {
 // ═══════════════════════════════════════════
 updateProgressBar();
 generateQR();
+
+// ═══════════════════════════════════════════
+// SUPABASE INTEGRATION
+// ═══════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(
+  'https://vhdgqtwsxasuggbeujoo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODU2MzIsImV4cCI6MjA4OTk2MTYzMn0.J_9V--cflujeSnOsc_3wYDOgiMi54RTF5aDHC4fMZVI'
+);
+
+// Step 1 : signup réel
+async function signUp() {
+  const { data, error } = await sb.auth.signUp({
+    email: formState.email,
+    password: formState.password,
+    options: {
+      data: {
+        first_name: formState.firstName,
+        last_name: formState.lastName,
+        phone: formState.phone,
+        plan: formState.plan
+      }
+    }
+  });
+  if (error) { showToast(error.message, 'error'); return false; }
+  formState.userId = data.user?.id;
+  return true;
+}
+
+async function handleSignUp() {
+  const btn = document.getElementById('step1Btn');
+  btn.disabled = true;
+  btn.textContent = 'Création du compte…';
+  
+  // Collect form data
+  formState.firstName = document.getElementById('firstName')?.value || formState.firstName;
+  formState.lastName = document.getElementById('lastName')?.value || formState.lastName;
+  formState.email = document.getElementById('email')?.value || formState.email;
+  formState.password = document.getElementById('password')?.value || formState.password;
+  formState.phone = document.getElementById('phone')?.value || formState.phone;
+  
+  const ok = await signUp();
+  if (ok) {
+    goToStep(2);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Continuer →';
+}
+
+// Step 3 : update profile
+async function updateProfile() {
+  if (!formState.userId) return true;
+  const { error } = await sb.from('profiles').upsert({
+    id: formState.userId,
+    first_name: formState.firstName,
+    last_name: formState.lastName,
+    plan: formState.plan,
+    nationality: formState.nationality,
+    country: formState.country,
+    address_line1: formState.address,
+    city: formState.city,
+    postal_code: formState.postalCode,
+    profession: formState.profession,
+    income_source: formState.incomeSource,
+    referred_by: new URLSearchParams(window.location.search).get('ref')
+  });
+  return !error;
+}
+
+// Step 5 : créer la carte
+async function createCard() {
+  if (!formState.userId) return true;
+  const { error } = await sb.from('cards').insert({
+    user_id: formState.userId,
+    type: formState.plan === 'premium' ? 'gold' : (formState.cardType || 'virtual'),
+    card_holder: formState.cardName,
+    currency: formState.currency || 'EUR',
+    monthly_limit: formState.plan === 'starter' ? 500 : formState.plan === 'standard' ? 5000 : 99999,
+    masked_number: '•••• •••• •••• ' + Math.floor(1000 + Math.random() * 9000),
+    status: 'active'
+  });
+  return !error;
+}
+
+// Step 7 : audit log
+async function logOnboardingComplete() {
+  if (!formState.userId) return;
+  await sb.from('audit_logs').insert({
+    user_id: formState.userId,
+    action: 'onboarding_completed',
+    metadata: { plan: formState.plan, cardType: formState.cardType }
+  });
+}
+
+// Override fillSummary to also save data
+const _origGoToStep7 = goToStep;
+// Hook into step 7 to save profile + card + log
+async function onStep7Enter() {
+  await updateProfile();
+  await createCard();
+  await logOnboardingComplete();
+}
 </script>
 </body>
 </html>

@@ -348,6 +348,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
   .action-btn{min-width:80px;font-size:0.78rem}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1007,6 +1008,69 @@ function copyCode() {
   navigator.clipboard.writeText('https://apexcard.io/r/JP7X9K').catch(()=>{});
   showToast('✅ Referral link copied to clipboard!');
 }
+
+// ═══════════════════════════════════════════
+// SUPABASE AUTH & DATA
+// ═══════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(
+  'https://vhdgqtwsxasuggbeujoo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODU2MzIsImV4cCI6MjA4OTk2MTYzMn0.J_9V--cflujeSnOsc_3wYDOgiMi54RTF5aDHC4fMZVI'
+);
+
+async function initApp() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const userId = session.user.id;
+
+  // Charger le profil
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', userId).single();
+  if (profile) {
+    const nameEl = document.querySelector('.sb-name');
+    if (nameEl) nameEl.textContent = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || session.user.email;
+    // Update referral code if shown
+    const refCodeEl = document.getElementById('refCode');
+    if (refCodeEl && profile.referral_code) refCodeEl.textContent = profile.referral_code;
+  }
+
+  // Charger les transactions
+  const { data: txs } = await sb.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10);
+  if (txs && txs.length > 0) {
+    const txFeed = document.querySelector('.tx-feed');
+    if (txFeed) {
+      txFeed.innerHTML = txs.map(tx => `
+        <div class="tx-row">
+          <div class="tx-icon">${tx.type === 'deposit' ? '⬇' : tx.type === 'withdrawal' ? '⬆' : tx.type === 'payment' ? '💳' : tx.type === 'yield' ? '📈' : '↔'}</div>
+          <div>
+            <div class="tx-name">${tx.description || tx.type}</div>
+            <div class="tx-date">${new Date(tx.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
+          </div>
+          <div class="tx-amount ${tx.type === 'deposit' || tx.type === 'yield' ? 'tx-up' : 'tx-dn'}">${tx.type === 'deposit' || tx.type === 'yield' ? '+' : '-'}${Math.abs(tx.amount).toLocaleString()} ${tx.currency}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Charger les IBANs
+  const { data: ibans } = await sb.from('ibans').select('*').eq('user_id', userId);
+  if (ibans && ibans.length > 0) {
+    const ibanEl = document.querySelector('.iban-number');
+    if (ibanEl) ibanEl.textContent = ibans[0].iban || ibanEl.textContent;
+  }
+}
+
+// Déconnexion réelle
+async function doLogout() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+// Init app on load
+initApp();
 </script>
 </body>
 </html>
