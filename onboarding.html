@@ -902,7 +902,13 @@ input, select, textarea { font-family: inherit; }
 <!-- Navbar -->
 <nav class="navbar">
   <a href="index.html" class="logo">APEX<span style="color:white">CARD</span></a>
-  <div class="nav-login">Déjà client ? <a href="login.html">Se connecter</a></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="lang-switcher">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
+    <div class="nav-login"><span data-i18n="onboarding.existing">Déjà client ?</span> <a href="login.html" data-i18n="nav.login">Se connecter</a></div>
+  </div>
 </nav>
 
 <!-- Progress Bar -->
@@ -910,35 +916,35 @@ input, select, textarea { font-family: inherit; }
   <div class="steps-track" id="stepsTrack">
     <div class="step-item active" data-step="0">
       <div class="step-dot">1</div>
-      <div class="step-label">Plan</div>
+      <div class="step-label" data-i18n="onboarding.step.plan">Plan</div>
     </div>
     <div class="step-item" data-step="1">
       <div class="step-dot">2</div>
-      <div class="step-label">Compte</div>
+      <div class="step-label" data-i18n="onboarding.step.account">Compte</div>
     </div>
     <div class="step-item" data-step="2">
       <div class="step-dot">3</div>
-      <div class="step-label">Email</div>
+      <div class="step-label" data-i18n="onboarding.step.email">Email</div>
     </div>
     <div class="step-item" data-step="3">
       <div class="step-dot">4</div>
-      <div class="step-label">Profil</div>
+      <div class="step-label" data-i18n="onboarding.step.profile">Profil</div>
     </div>
     <div class="step-item" data-step="4">
       <div class="step-dot">5</div>
-      <div class="step-label">KYC</div>
+      <div class="step-label" data-i18n="onboarding.step.kyc">KYC</div>
     </div>
     <div class="step-item" data-step="5">
       <div class="step-dot">6</div>
-      <div class="step-label">Carte</div>
+      <div class="step-label" data-i18n="onboarding.step.card">Carte</div>
     </div>
     <div class="step-item" data-step="6">
       <div class="step-dot">7</div>
-      <div class="step-label">Recharge</div>
+      <div class="step-label" data-i18n="onboarding.step.topup">Recharge</div>
     </div>
     <div class="step-item" data-step="7">
       <div class="step-dot">🎉</div>
-      <div class="step-label">Bienvenue</div>
+      <div class="step-label" data-i18n="onboarding.step.welcome">Bienvenue</div>
     </div>
   </div>
   <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
@@ -951,9 +957,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 0 — PLAN ══ -->
     <div class="step-content active" id="step-0">
       <div class="step-header">
-        <div class="step-tag">Étape 1 sur 8</div>
-        <h1 class="step-title">Choisissez votre plan</h1>
-        <p class="step-subtitle">Commencez gratuitement ou débloquez toutes les fonctionnalités dès le départ</p>
+        <div class="step-tag" data-i18n="onboarding.s1.tag">Étape 1 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s1.title">Choisissez votre plan</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s1.sub">Commencez gratuitement ou débloquez toutes les fonctionnalités dès le départ</p>
       </div>
       <div class="plans-grid">
         <!-- Starter -->
@@ -1014,16 +1020,16 @@ input, select, textarea { font-family: inherit; }
           <button class="plan-cta">Choisir ce plan</button>
         </div>
       </div>
-      <p class="plans-note">🔄 Changez de plan à tout moment · Sans engagement · Annulation en 1 clic</p>
+      <p class="plans-note" data-i18n="onboarding.plan.note">🔄 Changez de plan à tout moment · Sans engagement · Annulation en 1 clic</p>
       <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
     </div>
 
     <!-- ══ STEP 1 — ACCOUNT ══ -->
     <div class="step-content" id="step-1">
       <div class="step-header">
-        <div class="step-tag">Étape 2 sur 8</div>
-        <h1 class="step-title">Créer votre compte</h1>
-        <p class="step-subtitle">Vos informations de connexion sécurisées</p>
+        <div class="step-tag" data-i18n="onboarding.s2.tag">Étape 2 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s2.title">Créer votre compte</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s2.sub">Vos informations de connexion sécurisées</p>
       </div>
       <div class="glass">
         <div class="form-row">
@@ -1125,9 +1131,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 2 — EMAIL VERIFY ══ -->
     <div class="step-content" id="step-2">
       <div class="step-header">
-        <div class="step-tag">Étape 3 sur 8</div>
-        <h1 class="step-title">Vérification email</h1>
-        <p class="step-subtitle">Confirmez votre adresse pour sécuriser votre compte</p>
+        <div class="step-tag" data-i18n="onboarding.s3.tag">Étape 3 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s3.title">Vérification email</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s3.sub">Confirmez votre adresse pour sécuriser votre compte</p>
       </div>
       <div class="glass" style="max-width:480px;margin:0 auto">
         <div class="otp-visual">
@@ -1171,9 +1177,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 3 — PROFILE ══ -->
     <div class="step-content" id="step-3">
       <div class="step-header">
-        <div class="step-tag">Étape 4 sur 8</div>
-        <h1 class="step-title">Informations personnelles</h1>
-        <p class="step-subtitle">Pour votre sécurité et conformité réglementaire</p>
+        <div class="step-tag" data-i18n="onboarding.s4.tag">Étape 4 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s4.title">Informations personnelles</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s4.sub">Pour votre sécurité et conformité réglementaire</p>
       </div>
       <div class="glass">
         <div class="form-row">
@@ -1315,9 +1321,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 4 — KYC ══ -->
     <div class="step-content" id="step-4">
       <div class="step-header">
-        <div class="step-tag">Étape 5 sur 8</div>
-        <h1 class="step-title">Vérification d'identité</h1>
-        <p class="step-subtitle">KYC réglementaire — sécurisé et confidentiel</p>
+        <div class="step-tag" data-i18n="onboarding.s5.tag">Étape 5 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s5.title">Vérification d'identité</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s5.sub">KYC réglementaire — sécurisé et confidentiel</p>
       </div>
       <!-- KYC Sub-steps -->
       <div class="kyc-substeps">
@@ -1445,9 +1451,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 5 — CARD CONFIG ══ -->
     <div class="step-content" id="step-5">
       <div class="step-header">
-        <div class="step-tag">Étape 6 sur 8</div>
-        <h1 class="step-title">Configurez votre carte</h1>
-        <p class="step-subtitle">Personnalisez votre carte APEXCARD</p>
+        <div class="step-tag" data-i18n="onboarding.s6.tag">Étape 6 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s6.title">Configurez votre carte</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s6.sub">Personnalisez votre carte APEXCARD</p>
       </div>
       <div class="card-config-layout">
         <div>
@@ -1561,9 +1567,9 @@ input, select, textarea { font-family: inherit; }
     <!-- ══ STEP 6 — FUNDING ══ -->
     <div class="step-content" id="step-6">
       <div class="step-header">
-        <div class="step-tag">Étape 7 sur 8</div>
-        <h1 class="step-title">Rechargez votre carte</h1>
-        <p class="step-subtitle">Commencez à utiliser votre carte APEXCARD immédiatement</p>
+        <div class="step-tag" data-i18n="onboarding.s7.tag">Étape 7 sur 8</div>
+        <h1 class="step-title" data-i18n="onboarding.s7.title">Rechargez votre carte</h1>
+        <p class="step-subtitle" data-i18n="onboarding.s7.sub">Commencez à utiliser votre carte APEXCARD immédiatement</p>
       </div>
       <div class="glass" style="max-width:600px;margin:0 auto">
         <div class="funding-methods">
@@ -2524,5 +2530,7 @@ async function onStep7Enter() {
   await logOnboardingComplete();
 }
 </script>
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 </body>
 </html>

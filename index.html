@@ -1510,15 +1510,19 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
       <span class="nav-logo-text">APEXCARD</span>
     </a>
     <nav class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#security">Sécurité</a>
-      <a href="#affiliate">Affiliés</a>
-      <a href="#yield">Yield</a>
-      <a href="#pricing">Tarifs</a>
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#security" data-i18n="nav.security">Sécurité</a>
+      <a href="#affiliate" data-i18n="nav.affiliate">Affiliés</a>
+      <a href="#yield" data-i18n="nav.yield">Yield</a>
+      <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
     </nav>
     <div class="nav-cta">
-      <a href="login.html" class="btn-ghost">Se connecter</a>
-      <a href="onboarding.html" class="btn-gradient magnetic">Ouvrir un compte</a>
+      <div class="lang-switcher">
+        <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+        <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+      </div>
+      <a href="login.html" class="btn-ghost" data-i18n="nav.login">Se connecter</a>
+      <a href="onboarding.html" class="btn-gradient magnetic" data-i18n="nav.open_account">Ouvrir un compte</a>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -1538,7 +1542,7 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <section class="hero" id="hero">
   <div class="hero-badge">
     <span class="badge-dot"></span>
-    <span>🌍 Disponible dans 180+ pays</span>
+    <span data-i18n="index.badge">🌍 Disponible dans 180+ pays</span>
   </div>
 
   <h1 class="hero-title">
@@ -1546,14 +1550,14 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
     <div class="title-line gradient-text" id="line2" data-text="without borders."></div>
   </h1>
 
-  <p class="hero-sub">
+  <p class="hero-sub" data-i18n="index.hero.sub">
     La première plateforme financière qui combine crypto, IBAN personnel,
     et carte physique — sans compromis.
   </p>
 
   <div class="hero-cta">
     <a href="onboarding.html" class="btn-primary magnetic" id="cta-main">
-      <span>Ouvrir mon compte gratuitement</span>
+      <span data-i18n="index.hero.cta_main">Ouvrir mon compte gratuitement</span>
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M4 9h10M10 5l4 4-4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -1565,13 +1569,13 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
           <path d="M1 1.5l10 5.5-10 5.5V1.5z" fill="white"/>
         </svg>
       </span>
-      Voir la démo
+      <span data-i18n="index.hero.cta_demo">Voir la démo</span>
     </a>
   </div>
 
   <div class="social-proof">
     <span class="stars">⭐⭐⭐⭐⭐</span>
-    <span>Déjà <strong>3,847</strong> clients dans <strong>47</strong> pays</span>
+    <span data-i18n="index.social_proof">Déjà <strong>3,847</strong> clients dans <strong>47</strong> pays</span>
   </div>
 
   <!-- 3D Card Visual -->
@@ -1601,24 +1605,24 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
     <!-- Floating Stats -->
     <div class="hero-dashboard-preview" aria-hidden="true">
       <div class="float-stat fs-1 glass-card">
-        <div class="float-stat-label">Portfolio</div>
+        <div class="float-stat-label" data-i18n="index.fs1.label">Portfolio</div>
         <div class="float-stat-value">$12,450</div>
-        <div class="float-stat-change pos">▲ +4.2% aujourd'hui</div>
+        <div class="float-stat-change pos" data-i18n="index.fs1.change">▲ +4.2% aujourd'hui</div>
       </div>
       <div class="float-stat fs-2 glass-card">
-        <div class="float-stat-label">BTC Balance</div>
+        <div class="float-stat-label" data-i18n="index.fs2.label">BTC Balance</div>
         <div class="float-stat-value">0.184 ₿</div>
         <div class="float-stat-change pos">▲ +2.1%</div>
       </div>
       <div class="float-stat fs-3 glass-card">
-        <div class="float-stat-label">Yield accumulé</div>
+        <div class="float-stat-label" data-i18n="index.fs3.label">Yield accumulé</div>
         <div class="float-stat-value">+$328</div>
-        <div class="float-stat-change pos">24% APY</div>
+        <div class="float-stat-change pos" data-i18n="index.fs3.change">24% APY</div>
       </div>
       <div class="float-stat fs-4 glass-card">
-        <div class="float-stat-label">Transactions</div>
+        <div class="float-stat-label" data-i18n="index.fs4.label">Transactions</div>
         <div class="float-stat-value">847</div>
-        <div class="float-stat-change" style="color:var(--text-muted)">ce mois</div>
+        <div class="float-stat-change" style="color:var(--text-muted)" data-i18n="index.fs4.change">ce mois</div>
       </div>
     </div>
   </div>
@@ -1637,23 +1641,23 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
   <div class="stats-grid reveal">
     <div class="stat-item" data-target="3847" data-prefix="" data-suffix="" data-decimals="0">
       <div class="stat-value" id="stat-0">0</div>
-      <div class="stat-label">Clients actifs</div>
-      <div class="stat-sub">dans 47 pays</div>
+      <div class="stat-label" data-i18n="index.stat0.label">Clients actifs</div>
+      <div class="stat-sub" data-i18n="index.stat0.sub">dans 47 pays</div>
     </div>
     <div class="stat-item" data-target="180" data-prefix="" data-suffix="+" data-decimals="0">
       <div class="stat-value" id="stat-1">0</div>
-      <div class="stat-label">Pays supportés</div>
-      <div class="stat-sub">couverture mondiale</div>
+      <div class="stat-label" data-i18n="index.stat1.label">Pays supportés</div>
+      <div class="stat-sub" data-i18n="index.stat1.sub">couverture mondiale</div>
     </div>
     <div class="stat-item" data-target="1.2" data-prefix="$" data-suffix="M" data-decimals="1">
       <div class="stat-value" id="stat-2">$0</div>
-      <div class="stat-label">Volume traité</div>
-      <div class="stat-sub">ce mois</div>
+      <div class="stat-label" data-i18n="index.stat2.label">Volume traité</div>
+      <div class="stat-sub" data-i18n="index.stat2.sub">ce mois</div>
     </div>
     <div class="stat-item" data-target="24" data-prefix="" data-suffix="%" data-decimals="0">
       <div class="stat-value" id="stat-3">0</div>
-      <div class="stat-label">APY Yield</div>
-      <div class="stat-sub">rendement annuel</div>
+      <div class="stat-label" data-i18n="index.stat3.label">APY Yield</div>
+      <div class="stat-sub" data-i18n="index.stat3.sub">rendement annuel</div>
     </div>
   </div>
 </section>
@@ -1662,9 +1666,9 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <section class="features-section" id="features">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Features</div>
-      <h2>Tout ce dont vous avez besoin</h2>
-      <p>Une plateforme. Zéro compromis.</p>
+      <div class="section-tag" data-i18n="index.features.tag">Features</div>
+      <h2 data-i18n="index.features.title">Tout ce dont vous avez besoin</h2>
+      <p data-i18n="index.features.sub">Une plateforme. Zéro compromis.</p>
     </div>
 
     <div class="bento-grid">
@@ -1677,8 +1681,8 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
           <div class="mini-card-holo"></div>
         </div>
         <div class="card-info">
-          <h3>Votre carte. Partout dans le monde.</h3>
-          <p style="color:var(--text-muted);font-size:14px;margin-top:8px;line-height:1.6">Carte physique et virtuelle, acceptée dans 180+ pays. Paiements sans contact, retraits ATM, zéro frais cachés.</p>
+          <h3 data-i18n="index.card.title">Votre carte. Partout dans le monde.</h3>
+          <p style="color:var(--text-muted);font-size:14px;margin-top:8px;line-height:1.6" data-i18n="index.card.desc">Carte physique et virtuelle, acceptée dans 180+ pays. Paiements sans contact, retraits ATM, zéro frais cachés.</p>
           <div class="feature-tags">
             <span class="feature-tag">Apple Pay</span>
             <span class="feature-tag">Google Pay</span>
@@ -1691,9 +1695,9 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
       <!-- Card 2 : IBAN -->
       <div class="bento-card iban-feature reveal reveal-delay-2">
         <div class="iban-flags">🇫🇷 🇬🇧 🇺🇸</div>
-        <h3>Votre RIB à votre nom</h3>
+        <h3 data-i18n="index.iban.title">Votre RIB à votre nom</h3>
         <div class="iban-preview">FR76 3000 4028 ••••</div>
-        <p>Compte EUR, GBP, USD</p>
+        <p data-i18n="index.iban.sub">Compte EUR, GBP, USD</p>
       </div>
 
       <!-- Card 3 : Swap -->
@@ -1703,7 +1707,7 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
           <div class="swap-arrow">⇄</div>
           <div class="token usdt">$</div>
         </div>
-        <h3>Convertissez en secondes</h3>
+        <h3 data-i18n="index.swap.title">Convertissez en secondes</h3>
         <div class="swap-rate">1 BTC ≈ $67,420 · spread 0.1%</div>
       </div>
 
@@ -1711,8 +1715,8 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
       <div class="bento-card bento-wide yield-feature reveal reveal-delay-1">
         <div class="yield-header">
           <div>
-            <h3>Faites travailler votre argent</h3>
-            <p style="color:var(--text-muted);font-size:14px;margin-top:6px">Déposez vos stablecoins et regardez votre solde croître.</p>
+            <h3 data-i18n="index.yield_card.title">Faites travailler votre argent</h3>
+            <p style="color:var(--text-muted);font-size:14px;margin-top:6px" data-i18n="index.yield_card.desc">Déposez vos stablecoins et regardez votre solde croître.</p>
           </div>
           <div class="yield-badge">24% APY</div>
         </div>
@@ -1735,7 +1739,7 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
           </circle>
         </svg>
         <div class="yield-simulator">
-          <label>Simulez votre rendement mensuel</label>
+          <label data-i18n="index.yield_card.label">Simulez votre rendement mensuel</label>
           <input type="range" class="yield-slider" id="yield-input" min="500" max="50000" value="5000" style="--pct:9%">
           <div class="yield-result">
             <div>
@@ -1752,29 +1756,29 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 
       <!-- Card 5 : KYC -->
       <div class="bento-card kyc-feature reveal reveal-delay-2">
-        <h3>Vérification en 3 min</h3>
+        <h3 data-i18n="index.kyc.title">Vérification en 3 min</h3>
         <div class="kyc-steps">
           <div class="kyc-step">
             <div class="kyc-step-icon done">✓</div>
-            <div class="kyc-step-text">Email & téléphone</div>
-            <div class="kyc-step-status done">Fait</div>
+            <div class="kyc-step-text" data-i18n="index.kyc.step1">Email & téléphone</div>
+            <div class="kyc-step-status done" data-i18n="index.kyc.step1.status">Fait</div>
           </div>
           <div class="kyc-step">
             <div class="kyc-step-icon done">✓</div>
-            <div class="kyc-step-text">Pièce d'identité</div>
-            <div class="kyc-step-status done">Vérifié</div>
+            <div class="kyc-step-text" data-i18n="index.kyc.step2">Pièce d'identité</div>
+            <div class="kyc-step-status done" data-i18n="index.kyc.step2.status">Vérifié</div>
           </div>
           <div class="kyc-step">
             <div class="kyc-step-icon active">⊙</div>
-            <div class="kyc-step-text">Selfie liveness</div>
-            <div class="kyc-step-status active">En cours</div>
+            <div class="kyc-step-text" data-i18n="index.kyc.step3">Selfie liveness</div>
+            <div class="kyc-step-status active" data-i18n="index.kyc.step3.status">En cours</div>
           </div>
         </div>
       </div>
 
       <!-- Card 6 : Sécurité -->
       <div class="bento-card security-feature reveal reveal-delay-3">
-        <h3>Sécurité de niveau bancaire</h3>
+        <h3 data-i18n="index.security_card.title">Sécurité de niveau bancaire</h3>
         <div class="security-items">
           <div class="security-item"><span class="security-item-icon">🔐</span>2FA TOTP</div>
           <div class="security-item"><span class="security-item-icon">🛡️</span>Anti-fraude IA</div>
@@ -1800,29 +1804,29 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
       <div class="security-shield">🛡️</div>
     </div>
     <div class="security-text reveal reveal-delay-2">
-      <div class="section-tag">Sécurité</div>
-      <h2>Protégé à chaque instant</h2>
-      <p style="color:var(--text-muted);font-size:16px;line-height:1.7">Vos fonds et vos données sont protégés par des standards de sécurité bancaire de niveau institutionnel.</p>
+      <div class="section-tag" data-i18n="index.security.tag">Sécurité</div>
+      <h2 data-i18n="index.security.title">Protégé à chaque instant</h2>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7" data-i18n="index.security.sub">Vos fonds et vos données sont protégés par des standards de sécurité bancaire de niveau institutionnel.</p>
       <div class="security-features">
         <div class="security-feat">
           <span class="security-feat-icon">🔐</span>
           <div>
-            <div class="security-feat-title">Chiffrement AES-256 + TLS 1.3</div>
-            <div class="security-feat-desc">Toutes les communications sont chiffrées de bout en bout. Vos données ne quittent jamais nos serveurs sécurisés.</div>
+            <div class="security-feat-title" data-i18n="index.security.feat1.title">Chiffrement AES-256 + TLS 1.3</div>
+            <div class="security-feat-desc" data-i18n="index.security.feat1.desc">Toutes les communications sont chiffrées de bout en bout. Vos données ne quittent jamais nos serveurs sécurisés.</div>
           </div>
         </div>
         <div class="security-feat">
           <span class="security-feat-icon">🤖</span>
           <div>
-            <div class="security-feat-title">IA Anti-fraude en temps réel</div>
-            <div class="security-feat-desc">Notre modèle d'IA analyse chaque transaction et bloque les activités suspectes avant qu'elles n'arrivent.</div>
+            <div class="security-feat-title" data-i18n="index.security.feat2.title">IA Anti-fraude en temps réel</div>
+            <div class="security-feat-desc" data-i18n="index.security.feat2.desc">Notre modèle d'IA analyse chaque transaction et bloque les activités suspectes avant qu'elles n'arrivent.</div>
           </div>
         </div>
         <div class="security-feat">
           <span class="security-feat-icon">🏦</span>
           <div>
-            <div class="security-feat-title">Fonds ségrégués & assurés</div>
-            <div class="security-feat-desc">Vos fonds sont stockés séparément dans des comptes ségrégués, assurés jusqu'à €100,000.</div>
+            <div class="security-feat-title" data-i18n="index.security.feat3.title">Fonds ségrégués & assurés</div>
+            <div class="security-feat-desc" data-i18n="index.security.feat3.desc">Vos fonds sont stockés séparément dans des comptes ségrégués, assurés jusqu'à €100,000.</div>
           </div>
         </div>
       </div>
@@ -1834,31 +1838,31 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <section class="affiliate-section" id="affiliate">
   <div class="affiliate-content">
     <div class="reveal">
-      <div class="section-tag">Programme Affilié</div>
-      <h2 style="font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-0.03em;margin-bottom:16px">Gagnez en dormant</h2>
-      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:40px">Invitez vos amis et touchez des commissions sur 3 niveaux. Plus votre réseau grandit, plus vous gagnez.</p>
+      <div class="section-tag" data-i18n="index.affiliate.tag">Programme Affilié</div>
+      <h2 style="font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-0.03em;margin-bottom:16px" data-i18n="index.affiliate.title">Gagnez en dormant</h2>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:40px" data-i18n="index.affiliate.sub">Invitez vos amis et touchez des commissions sur 3 niveaux. Plus votre réseau grandit, plus vous gagnez.</p>
       <div class="affiliate-levels">
         <div class="affiliate-level affiliate-level-1">
           <div class="affiliate-level-badge level-1-badge">N1</div>
           <div class="affiliate-level-info">
-            <h4>Filleuls directs</h4>
-            <p>Commissions sur les transactions de vos filleuls directs</p>
+            <h4 data-i18n="index.affiliate.l1.title">Filleuls directs</h4>
+            <p data-i18n="index.affiliate.l1.desc">Commissions sur les transactions de vos filleuls directs</p>
           </div>
           <div class="affiliate-level-pct" style="color:var(--gold)">10%</div>
         </div>
         <div class="affiliate-level affiliate-level-2">
           <div class="affiliate-level-badge level-2-badge">N2</div>
           <div class="affiliate-level-info">
-            <h4>Filleuls de vos filleuls</h4>
-            <p>Commissions sur les transactions du 2ème niveau</p>
+            <h4 data-i18n="index.affiliate.l2.title">Filleuls de vos filleuls</h4>
+            <p data-i18n="index.affiliate.l2.desc">Commissions sur les transactions du 2ème niveau</p>
           </div>
           <div class="affiliate-level-pct" style="color:var(--violet)">5%</div>
         </div>
         <div class="affiliate-level affiliate-level-3">
           <div class="affiliate-level-badge level-3-badge">N3</div>
           <div class="affiliate-level-info">
-            <h4>3ème niveau</h4>
-            <p>Commissions passives sur le 3ème niveau de réseau</p>
+            <h4 data-i18n="index.affiliate.l3.title">3ème niveau</h4>
+            <p data-i18n="index.affiliate.l3.desc">Commissions passives sur le 3ème niveau de réseau</p>
           </div>
           <div class="affiliate-level-pct" style="color:var(--cyan)">2%</div>
         </div>
@@ -1935,15 +1939,15 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <section class="yield-section" id="yield">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Yield</div>
-      <h2>Votre argent ne dort jamais</h2>
+      <div class="section-tag" data-i18n="index.yield.tag">Yield</div>
+      <h2 data-i18n="index.yield.title">Votre argent ne dort jamais</h2>
     </div>
     <div class="yield-big-card reveal reveal-delay-1">
       <div class="blob-yield" aria-hidden="true"></div>
       <div class="yield-apy">24%</div>
-      <div class="yield-apy-label">APY sur stablecoins (USDT, USDC)</div>
+      <div class="yield-apy-label" data-i18n="index.yield.apy_label">APY sur stablecoins (USDT, USDC)</div>
       <div class="yield-big-simulator">
-        <h4>Calculez votre rendement annuel</h4>
+        <h4 data-i18n="index.yield.sim_title">Calculez votre rendement annuel</h4>
         <input type="range" class="yield-slider" id="yield-big-input" min="500" max="100000" value="10000" style="--pct:9.5%">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px">
           <span>$500</span>
@@ -1952,18 +1956,18 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
         </div>
         <div class="yield-big-result">
           <div>
-            <div class="yield-big-monthly-label">Gain mensuel estimé</div>
+            <div class="yield-big-monthly-label" data-i18n="index.yield.monthly_label">Gain mensuel estimé</div>
             <div class="yield-big-monthly-val" id="yield-big-monthly">+$200</div>
           </div>
           <div style="text-align:right">
-            <div class="yield-big-annual-label">Gain annuel estimé</div>
+            <div class="yield-big-annual-label" data-i18n="index.yield.annual_label">Gain annuel estimé</div>
             <div class="yield-big-annual-val" id="yield-big-annual">+$2,400</div>
           </div>
         </div>
       </div>
       <div style="margin-top:40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <a href="onboarding.html" class="btn-primary magnetic" style="font-size:15px;padding:14px 28px">
-          <span>Commencer à générer du yield</span>
+          <span data-i18n="index.yield.cta">Commencer à générer du yield</span>
           <div class="btn-shimmer"></div>
         </a>
       </div>
@@ -1976,7 +1980,7 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
   <div class="live-stats-content">
     <div class="live-header">
       <div class="live-dot"></div>
-      <span class="live-label">Activité en temps réel</span>
+      <span class="live-label" data-i18n="index.live.label">Activité en temps réel</span>
     </div>
     <div class="live-feed" id="live-feed"></div>
   </div>
@@ -1986,64 +1990,64 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <section class="pricing-section" id="pricing">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Tarifs</div>
-      <h2>Simple. Transparent. Honnête.</h2>
-      <p>Choisissez le plan qui vous correspond. Changez quand vous voulez.</p>
+      <div class="section-tag" data-i18n="index.pricing.tag">Tarifs</div>
+      <h2 data-i18n="index.pricing.title">Simple. Transparent. Honnête.</h2>
+      <p data-i18n="index.pricing.sub">Choisissez le plan qui vous correspond. Changez quand vous voulez.</p>
     </div>
 
     <div class="pricing-grid">
       <!-- Starter -->
       <div class="pricing-card pricing-starter reveal reveal-delay-1">
-        <div class="pricing-plan">Starter</div>
-        <div class="pricing-price">Gratuit</div>
-        <div class="pricing-period">Pour toujours</div>
+        <div class="pricing-plan" data-i18n="index.pricing.starter">Starter</div>
+        <div class="pricing-price" data-i18n="index.pricing.starter.price">Gratuit</div>
+        <div class="pricing-period" data-i18n="index.pricing.starter.period">Pour toujours</div>
         <ul class="pricing-features">
-          <li class="pricing-feature">Carte virtuelle Mastercard</li>
-          <li class="pricing-feature">IBAN personnel (EUR)</li>
-          <li class="pricing-feature">Limite €500/mois</li>
-          <li class="pricing-feature">KYC Tier 0</li>
-          <li class="pricing-feature">Swap crypto basique</li>
-          <li class="pricing-feature">Support email</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.virtual_card">Carte virtuelle Mastercard</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.iban_eur">IBAN personnel (EUR)</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.limit_500">Limite €500/mois</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.kyc0">KYC Tier 0</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.swap_basic">Swap crypto basique</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.support_email">Support email</li>
         </ul>
-        <button class="btn-pricing btn-pricing-outline" onclick="location.href='login.html'">Commencer gratuitement</button>
+        <button class="btn-pricing btn-pricing-outline" onclick="location.href='login.html'" data-i18n="index.pricing.starter.cta">Commencer gratuitement</button>
       </div>
 
       <!-- Standard (recommended) -->
       <div class="pricing-card pricing-standard reveal reveal-delay-2">
-        <div class="pricing-badge">⭐ Populaire</div>
-        <div class="pricing-plan">Standard</div>
+        <div class="pricing-badge" data-i18n="index.pricing.popular">⭐ Populaire</div>
+        <div class="pricing-plan" data-i18n="index.pricing.standard">Standard</div>
         <div class="pricing-price"><span>€</span>9<span style="font-size:28px">.99</span></div>
-        <div class="pricing-period">par mois · sans engagement</div>
+        <div class="pricing-period" data-i18n="index.pricing.standard.period">par mois · sans engagement</div>
         <ul class="pricing-features">
-          <li class="pricing-feature">Carte physique Mastercard Gold</li>
-          <li class="pricing-feature">IBAN EUR + GBP + USD</li>
-          <li class="pricing-feature">Limite €5,000/mois</li>
-          <li class="pricing-feature">KYC Tier 1 & 2</li>
-          <li class="pricing-feature">Swap illimité (0.1% spread)</li>
-          <li class="pricing-feature">Apple Pay & Google Pay</li>
-          <li class="pricing-feature">Support chat prioritaire</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.phys_card">Carte physique Mastercard Gold</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.iban_multi">IBAN EUR + GBP + USD</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.limit_5k">Limite €5,000/mois</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.kyc12">KYC Tier 1 & 2</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.swap_unlimited">Swap illimité (0.1% spread)</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.apple_google">Apple Pay & Google Pay</li>
+          <li class="pricing-feature" data-i18n="index.pricing.f.support_chat">Support chat prioritaire</li>
         </ul>
         <button class="btn-pricing btn-pricing-main" onclick="location.href='login.html'">
-          Ouvrir un compte Standard
+          <span data-i18n="index.pricing.standard.cta">Ouvrir un compte Standard</span>
           <div class="btn-shimmer"></div>
         </button>
       </div>
 
       <!-- Premium -->
       <div class="pricing-card pricing-premium reveal reveal-delay-3">
-        <div class="pricing-plan" style="color:var(--gold)">Premium</div>
+        <div class="pricing-plan" style="color:var(--gold)" data-i18n="index.pricing.premium">Premium</div>
         <div class="pricing-price" style="background:linear-gradient(135deg,#d4a017,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text"><span style="-webkit-text-fill-color:unset;background:none;color:#d4a017">€</span>24<span style="font-size:28px;-webkit-text-fill-color:unset;background:none;color:#d4a017">.99</span></div>
-        <div class="pricing-period">par mois · facturation annuelle</div>
+        <div class="pricing-period" data-i18n="index.pricing.premium.period">par mois · facturation annuelle</div>
         <ul class="pricing-features">
-          <li class="pricing-feature premium">Carte Gold métal gravée</li>
-          <li class="pricing-feature premium">Limites illimitées</li>
-          <li class="pricing-feature premium">KYC Tier 3 (business)</li>
-          <li class="pricing-feature premium">Yield 24% APY inclus</li>
-          <li class="pricing-feature premium">Manager dédié</li>
-          <li class="pricing-feature premium">API accès direct</li>
-          <li class="pricing-feature premium">SLA 99.99% garanti</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.gold_card">Carte Gold métal gravée</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.unlimited">Limites illimitées</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.kyc3">KYC Tier 3 (business)</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.yield">Yield 24% APY inclus</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.manager">Manager dédié</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.api">API accès direct</li>
+          <li class="pricing-feature premium" data-i18n="index.pricing.f.sla">SLA 99.99% garanti</li>
         </ul>
-        <button class="btn-pricing btn-pricing-gold" onclick="location.href='login.html'">Passer Premium</button>
+        <button class="btn-pricing btn-pricing-gold" onclick="location.href='login.html'" data-i18n="index.pricing.premium.cta">Passer Premium</button>
       </div>
     </div>
   </div>
@@ -2052,44 +2056,44 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 <!-- ─── FAQ ─── -->
 <section class="faq-section" id="faq">
   <div class="section-header reveal">
-    <div class="section-tag">FAQ</div>
-    <h2>Questions fréquentes</h2>
+    <div class="section-tag" data-i18n="index.faq.tag">FAQ</div>
+    <h2 data-i18n="index.faq.title">Questions fréquentes</h2>
   </div>
   <div class="faq-list reveal reveal-delay-1">
     <div class="faq-item">
       <button class="faq-question">
-        <span>Comment ouvrir un compte APEXCARD ?</span>
+        <span data-i18n="index.faq.q1">Comment ouvrir un compte APEXCARD ?</span>
         <span class="faq-chevron">▾</span>
       </button>
-      <div class="faq-answer">L'ouverture de compte prend moins de 5 minutes. Il vous suffit d'un email, d'un numéro de téléphone et d'une pièce d'identité valide. Notre KYC est entièrement digital — pas de courrier, pas de rendez-vous.</div>
+      <div class="faq-answer" data-i18n="index.faq.a1">L'ouverture de compte prend moins de 5 minutes. Il vous suffit d'un email, d'un numéro de téléphone et d'une pièce d'identité valide. Notre KYC est entièrement digital — pas de courrier, pas de rendez-vous.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question">
-        <span>Comment fonctionne le programme de yield ?</span>
+        <span data-i18n="index.faq.q2">Comment fonctionne le programme de yield ?</span>
         <span class="faq-chevron">▾</span>
       </button>
-      <div class="faq-answer">Déposez des stablecoins (USDT, USDC) dans votre portefeuille APEXCARD et gagnez jusqu'à 24% APY. Les intérêts sont distribués quotidiennement et peuvent être retirés à tout moment sans frais.</div>
+      <div class="faq-answer" data-i18n="index.faq.a2">Déposez des stablecoins (USDT, USDC) dans votre portefeuille APEXCARD et gagnez jusqu'à 24% APY. Les intérêts sont distribués quotidiennement et peuvent être retirés à tout moment sans frais.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question">
-        <span>Mes fonds sont-ils en sécurité ?</span>
+        <span data-i18n="index.faq.q3">Mes fonds sont-ils en sécurité ?</span>
         <span class="faq-chevron">▾</span>
       </button>
-      <div class="faq-answer">Oui. Vos fonds fiat sont ségrégués et assurés jusqu'à €100,000. Vos crypto sont stockés avec une solution multi-sig cold/hot wallet. Nous sommes régulés et conformes aux exigences européennes EMD2.</div>
+      <div class="faq-answer" data-i18n="index.faq.a3">Oui. Vos fonds fiat sont ségrégués et assurés jusqu'à €100,000. Vos crypto sont stockés avec une solution multi-sig cold/hot wallet. Nous sommes régulés et conformes aux exigences européennes EMD2.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question">
-        <span>Quels sont les frais de conversion crypto ?</span>
+        <span data-i18n="index.faq.q4">Quels sont les frais de conversion crypto ?</span>
         <span class="faq-chevron">▾</span>
       </button>
-      <div class="faq-answer">Le spread est de seulement 0.1% sur les paires majeures (BTC, ETH, SOL, USDT). Aucun frais fixe caché. Les utilisateurs Premium bénéficient d'un spread de 0.05%.</div>
+      <div class="faq-answer" data-i18n="index.faq.a4">Le spread est de seulement 0.1% sur les paires majeures (BTC, ETH, SOL, USDT). Aucun frais fixe caché. Les utilisateurs Premium bénéficient d'un spread de 0.05%.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question">
-        <span>Puis-je utiliser la carte à l'étranger ?</span>
+        <span data-i18n="index.faq.q5">Puis-je utiliser la carte à l'étranger ?</span>
         <span class="faq-chevron">▾</span>
       </button>
-      <div class="faq-answer">Absolument. Votre carte APEXCARD est acceptée dans 180+ pays via le réseau Mastercard. Les retraits ATM sont à 1% (gratuits pour les comptes Premium). Le taux de change appliqué est le taux interbancaire du marché.</div>
+      <div class="faq-answer" data-i18n="index.faq.a5">Absolument. Votre carte APEXCARD est acceptée dans 180+ pays via le réseau Mastercard. Les retraits ATM sont à 1% (gratuits pour les comptes Premium). Le taux de change appliqué est le taux interbancaire du marché.</div>
     </div>
   </div>
 </section>
@@ -2099,11 +2103,11 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
   <div class="cta-card reveal">
     <div class="cta-orb cta-orb-1"></div>
     <div class="cta-orb cta-orb-2"></div>
-    <h2>Prêt à rejoindre<br><span class="gradient-text">la révolution financière ?</span></h2>
-    <p>3,847 personnes ont déjà franchi le pas. Votre tour.</p>
+    <h2 data-i18n="index.cta.title">Prêt à rejoindre<br><span class="gradient-text">la révolution financière ?</span></h2>
+    <p data-i18n="index.cta.sub">3,847 personnes ont déjà franchi le pas. Votre tour.</p>
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
       <a href="onboarding.html" class="btn-primary magnetic" style="font-size:17px;padding:20px 40px">
-        <span>Créer mon compte gratuitement</span>
+        <span data-i18n="index.cta.btn">Créer mon compte gratuitement</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M4 10h12M12 6l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -2798,6 +2802,7 @@ function initParallax() {
 //  INIT ALL
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+  i18n.initLang();
   initCursor();
   initAurora();
   initNoise();
@@ -2815,5 +2820,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initBento();
 });
 </script>
+<script src="js/i18n.js"></script>
 </body>
 </html>

@@ -278,19 +278,25 @@ svg.chart{width:100%;overflow:visible}
     <span class="admin-badge">ADMIN</span>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-item active" data-page="overview"><span class="nav-icon">📊</span>Overview</div>
-    <div class="nav-item" data-page="users"><span class="nav-icon">👥</span>Utilisateurs</div>
-    <div class="nav-item" data-page="cards"><span class="nav-icon">💳</span>Cartes</div>
-    <div class="nav-item" data-page="transactions"><span class="nav-icon">↕️</span>Transactions</div>
-    <div class="nav-item" data-page="kyc"><span class="nav-icon">🪪</span>KYC Pending<span class="nav-badge" id="kyc-badge">12</span></div>
-    <div class="nav-item" data-page="affiliates"><span class="nav-icon">🤝</span>Affiliés</div>
-    <div class="nav-item" data-page="yield"><span class="nav-icon">📈</span>Yield</div>
-    <div class="nav-item" data-page="finances"><span class="nav-icon">💰</span>Finances</div>
-    <div class="nav-item" data-page="audit"><span class="nav-icon">🛡️</span>Audit Log</div>
-    <div class="nav-item" data-page="logins"><span class="nav-icon">🔐</span>Connexions</div>
-    <div class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span>Paramètres</div>
-    <div class="nav-item logout" onclick="adminLogout()"><span class="nav-icon">🚪</span>Déconnexion</div>
+    <div class="nav-item active" data-page="overview"><span class="nav-icon">📊</span><span data-i18n="admin.nav.overview">Vue d'ensemble</span></div>
+    <div class="nav-item" data-page="users"><span class="nav-icon">👥</span><span data-i18n="admin.nav.users">Utilisateurs</span></div>
+    <div class="nav-item" data-page="cards"><span class="nav-icon">💳</span><span data-i18n="admin.nav.cards">Cartes</span></div>
+    <div class="nav-item" data-page="transactions"><span class="nav-icon">↕️</span><span data-i18n="admin.nav.transactions">Transactions</span></div>
+    <div class="nav-item" data-page="kyc"><span class="nav-icon">🪪</span><span data-i18n="admin.nav.kyc">KYC Pending</span><span class="nav-badge" id="kyc-badge">12</span></div>
+    <div class="nav-item" data-page="affiliates"><span class="nav-icon">🤝</span><span data-i18n="admin.nav.affiliates">Affiliés</span></div>
+    <div class="nav-item" data-page="yield"><span class="nav-icon">📈</span><span data-i18n="admin.nav.yield">Yield</span></div>
+    <div class="nav-item" data-page="finances"><span class="nav-icon">💰</span><span data-i18n="admin.nav.finances">Finances P&L</span></div>
+    <div class="nav-item" data-page="audit"><span class="nav-icon">🛡️</span><span data-i18n="admin.nav.audit">Audit Log</span></div>
+    <div class="nav-item" data-page="logins"><span class="nav-icon">🔐</span><span data-i18n="admin.nav.logins">Connexions</span></div>
+    <div class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span data-i18n="admin.nav.settings">Paramètres système</span></div>
+    <div class="nav-item logout" onclick="adminLogout()"><span class="nav-icon">🚪</span><span data-i18n="admin.logout">Se déconnecter</span></div>
   </nav>
+  <div style="padding:10px 20px 4px;display:flex;justify-content:center">
+    <div class="lang-switcher">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
+  </div>
   <div class="sidebar-user">
     <div class="user-avatar">SA</div>
     <div class="user-info">
@@ -315,25 +321,25 @@ svg.chart{width:100%;overflow:visible}
     <div class="page active" id="page-overview">
       <div class="kpi-grid kpi-4">
         <div class="kpi-card">
-          <div class="kpi-label">Utilisateurs</div>
+          <div class="kpi-label" data-i18n="admin.kpi.users">Utilisateurs</div>
           <div class="kpi-value">3,847</div>
           <div class="kpi-sub">+127 ce mois</div>
           <div class="kpi-icon">👥</div>
         </div>
         <div class="kpi-card cyan">
-          <div class="kpi-label">Cartes actives</div>
+          <div class="kpi-label" data-i18n="admin.kpi.cards">Cartes actives</div>
           <div class="kpi-value" style="color:var(--cyan)">2,341</div>
           <div class="kpi-sub">87% taux activation</div>
           <div class="kpi-icon">💳</div>
         </div>
         <div class="kpi-card gold">
-          <div class="kpi-label">Volume 30j</div>
+          <div class="kpi-label" data-i18n="admin.kpi.volume">Volume 30j</div>
           <div class="kpi-value" style="color:var(--gold)">$1.2M</div>
           <div class="kpi-sub">+18% vs mois dernier</div>
           <div class="kpi-icon">📦</div>
         </div>
         <div class="kpi-card green">
-          <div class="kpi-label">Revenue</div>
+          <div class="kpi-label" data-i18n="admin.kpi.revenue">Revenue</div>
           <div class="kpi-value" style="color:var(--green)">$42,800</div>
           <div class="kpi-sub">Marge nette +$4,092</div>
           <div class="kpi-icon">💵</div>
@@ -342,19 +348,19 @@ svg.chart{width:100%;overflow:visible}
 
       <div class="kpi-grid kpi-3">
         <div class="kpi-card">
-          <div class="kpi-label">Yield géré</div>
+          <div class="kpi-label" data-i18n="admin.kpi.yield">Yield géré</div>
           <div class="kpi-value" style="color:var(--violet)">$284k</div>
           <div class="kpi-sub">APY 24% — 6 investisseurs</div>
           <div class="kpi-icon">📈</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Affiliés actifs</div>
+          <div class="kpi-label" data-i18n="admin.affiliate.kpi.active">Affiliés actifs</div>
           <div class="kpi-value">847</div>
           <div class="kpi-sub">$840k volume réseau</div>
           <div class="kpi-icon">🤝</div>
         </div>
         <div class="kpi-card red">
-          <div class="kpi-label">KYC Pending</div>
+          <div class="kpi-label" data-i18n="admin.kpi.kyc_pending">KYC Pending</div>
           <div class="kpi-value" style="color:var(--red)">12</div>
           <div class="kpi-sub">3 urgents — action requise</div>
           <div class="kpi-icon">⚠️</div>
@@ -363,7 +369,7 @@ svg.chart{width:100%;overflow:visible}
 
       <div class="charts-row">
         <div class="chart-container">
-          <div class="chart-title">Revenue 12 mois ($)</div>
+          <div class="chart-title" data-i18n="admin.chart.revenue">Revenue 12 mois ($)</div>
           <svg class="chart" viewBox="0 0 500 160" style="height:160px">
             <defs>
               <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
@@ -402,7 +408,7 @@ svg.chart{width:100%;overflow:visible}
           </svg>
         </div>
         <div class="chart-container">
-          <div class="chart-title">Transactions / jour</div>
+          <div class="chart-title" data-i18n="admin.chart.tx">Transactions / jour</div>
           <svg class="chart" viewBox="0 0 200 160" style="height:160px">
             <!-- Bars -->
             <rect x="8" y="90" width="20" height="40" rx="4" fill="rgba(6,182,212,0.4)"/>
@@ -430,7 +436,7 @@ svg.chart{width:100%;overflow:visible}
       <!-- ALERTS -->
       <div class="section">
         <div class="section-header">
-          <div class="section-title">⚠️ Alertes système</div>
+          <div class="section-title" data-i18n="admin.alerts.title">⚠️ Alertes système</div>
         </div>
         <div class="alert alert-red">
           <div class="alert-icon">🚨</div>
@@ -458,7 +464,7 @@ svg.chart{width:100%;overflow:visible}
       <!-- TOP USERS -->
       <div class="section">
         <div class="section-header">
-          <div class="section-title">🏆 Top 5 utilisateurs par volume</div>
+          <div class="section-title" data-i18n="admin.top_users.title">🏆 Top 5 utilisateurs par volume</div>
         </div>
         <div id="top-users-list"></div>
       </div>
@@ -500,7 +506,7 @@ svg.chart{width:100%;overflow:visible}
     <div class="page" id="page-cards">
       <div class="section">
         <div class="section-header">
-          <div class="section-title">💳 Cartes émises</div>
+          <div class="section-title" data-i18n="admin.cards.title">💳 Cartes émises</div>
           <span class="badge badge-cyan">10 cartes</span>
         </div>
         <div class="table-wrap">
@@ -547,7 +553,7 @@ svg.chart{width:100%;overflow:visible}
     <!-- PAGE: KYC -->
     <div class="page" id="page-kyc">
       <div class="section-header" style="margin-bottom:16px">
-        <div class="section-title">🪪 Dossiers KYC en attente</div>
+        <div class="section-title" data-i18n="admin.kyc.title">🪪 Dossiers KYC en attente</div>
         <span class="badge badge-red" id="kyc-count-badge">12 dossiers</span>
       </div>
       <div class="kyc-grid" id="kyc-grid"></div>
@@ -713,7 +719,7 @@ svg.chart{width:100%;overflow:visible}
       <div class="section">
         <div class="section-header">
           <div>
-            <div class="section-title">🛡️ Audit Log</div>
+            <div class="section-title" data-i18n="admin.audit.title">🛡️ Audit Log</div>
             <div class="section-sub">Actions administratives et événements de sécurité</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
@@ -760,7 +766,7 @@ svg.chart{width:100%;overflow:visible}
       <div class="section">
         <div class="section-header">
           <div>
-            <div class="section-title">🔐 Tentatives de connexion</div>
+            <div class="section-title" data-i18n="admin.logins.title">🔐 Tentatives de connexion</div>
             <div class="section-sub">Historique des authentifications et tentatives suspectes</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
@@ -1041,7 +1047,7 @@ function openCardDetailModal(id, user, type, number, balance, limit) {
 
 async function blockCardReal(cardId) {
   await sb.from('cards').update({ status: 'blocked' }).eq('id', cardId);
-  showToast('Carte bloquée', 'error');
+  showToast(t('admin.toast.card_blocked'), 'error');
   await loadCards();
 }
 
@@ -1114,7 +1120,7 @@ async function approveKYCReal(userId, cardIndex) {
   await sb.from('audit_logs').insert({ user_id: userId, action: 'kyc_approved', metadata: { approved_by: 'admin' } });
   const card = document.getElementById('kyc-card-' + cardIndex);
   if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
-  showToast('✅ KYC approuvé — utilisateur notifié', 'success');
+  showToast(t('admin.kyc.approve'), 'success');
   await loadKPIs();
 }
 
@@ -1122,19 +1128,19 @@ async function rejectKYCReal(userId, cardIndex) {
   await sb.from('profiles').update({ kyc_status: 'rejected' }).eq('id', userId);
   const card = document.getElementById('kyc-card-' + cardIndex);
   if (card) { card.style.opacity = '0'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
-  showToast('❌ KYC rejeté', 'error');
+  showToast(t('admin.kyc.reject'), 'error');
 }
 
 function initRealtime() {
   sb.channel('admin-realtime')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, (payload) => {
-      showToast(`🆕 Nouvel utilisateur : ${payload.new.email}`, 'info');
+      showToast(t('admin.toast.new_user') + payload.new.email, 'info');
       loadKPIs();
       loadUsers();
     })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, (payload) => {
       if (parseFloat(payload.new.amount || 0) > 4000) {
-        showToast(`🚨 Transaction suspecte : $${payload.new.amount}`, 'error');
+        showToast(t('admin.toast.suspicious') + payload.new.amount, 'error');
       }
       loadTransactions();
       loadKPIs();
@@ -1776,5 +1782,7 @@ function resetInactivityTimer() {
 });
 resetInactivityTimer();
 </script>
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 </body>
 </html>

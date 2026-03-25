@@ -386,24 +386,30 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     </div>
 
     <nav class="sb-nav">
-      <div class="sb-section">Main</div>
-      <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="nav-icon">⬡</span> Dashboard</div>
-      <div class="nav-item" onclick="showPage('cards', this)"><span class="nav-icon">💳</span> My Cards</div>
-      <div class="nav-item" onclick="showPage('wallet', this)"><span class="nav-icon">₿</span> Crypto Wallet</div>
-      <div class="nav-item" onclick="showPage('swap', this)"><span class="nav-icon">⇄</span> Swap</div>
+      <div class="sb-section" data-i18n="app.section.main">Main</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="nav-icon">⬡</span> <span data-i18n="app.nav.dashboard">Dashboard</span></div>
+      <div class="nav-item" onclick="showPage('cards', this)"><span class="nav-icon">💳</span> <span data-i18n="app.nav.cards">My Cards</span></div>
+      <div class="nav-item" onclick="showPage('wallet', this)"><span class="nav-icon">₿</span> <span data-i18n="app.nav.wallet">Crypto Wallet</span></div>
+      <div class="nav-item" onclick="showPage('swap', this)"><span class="nav-icon">⇄</span> <span data-i18n="app.nav.swap">Swap</span></div>
 
-      <div class="sb-section">Banking</div>
-      <div class="nav-item" onclick="showPage('iban', this)"><span class="nav-icon">🏦</span> IBAN Accounts</div>
-      <div class="nav-item" onclick="showPage('yield', this)"><span class="nav-icon">📈</span> Yield & Staking</div>
+      <div class="sb-section" data-i18n="app.section.banking">Banking</div>
+      <div class="nav-item" onclick="showPage('iban', this)"><span class="nav-icon">🏦</span> <span data-i18n="app.nav.iban">IBAN Accounts</span></div>
+      <div class="nav-item" onclick="showPage('yield', this)"><span class="nav-icon">📈</span> <span data-i18n="app.nav.yield">Yield & Staking</span></div>
 
-      <div class="sb-section">Account</div>
-      <div class="nav-item" onclick="showPage('affiliate', this)"><span class="nav-icon">👥</span> Affiliate <span class="nav-badge">47</span></div>
-      <div class="nav-item" onclick="showPage('kyc', this)"><span class="nav-icon">✓</span> KYC Verification</div>
-      <div class="nav-item" onclick="showPage('settings', this)"><span class="nav-icon">⚙</span> Settings</div>
+      <div class="sb-section" data-i18n="app.section.account">Account</div>
+      <div class="nav-item" onclick="showPage('affiliate', this)"><span class="nav-icon">👥</span> <span data-i18n="app.nav.affiliate">Parrainage</span> <span class="nav-badge">47</span></div>
+      <div class="nav-item" onclick="showPage('kyc', this)"><span class="nav-icon">✓</span> <span data-i18n="app.nav.kyc">KYC Verification</span></div>
+      <div class="nav-item" onclick="showPage('settings', this)"><span class="nav-icon">⚙</span> <span data-i18n="app.nav.settings">Settings</span></div>
     </nav>
 
     <div class="sb-footer">
-      <button class="logout-btn" onclick="doLogout()">⬡ Sign Out</button>
+      <div style="display:flex;justify-content:center;margin-bottom:0.75rem">
+        <div class="lang-switcher">
+          <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+          <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">⬡ <span data-i18n="app.logout">Se déconnecter</span></button>
     </div>
   </aside>
 
@@ -414,14 +420,14 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <div class="page-section active" id="page-dashboard">
       <div class="section-hdr">
         <div>
-          <div class="section-title"><span>Dashboard</span></div>
-          <div class="section-subtitle" id="welcome-subtitle">Welcome back 👋</div>
+          <div class="section-title"><span data-i18n="app.dashboard.title">Dashboard</span></div>
+          <div class="section-subtitle" id="welcome-subtitle" data-i18n="app.dashboard.welcome">Bon retour 👋</div>
         </div>
         <div style="font-size:0.82rem;color:var(--muted)" id="clock"></div>
       </div>
 
       <div class="balance-hero">
-        <div class="balance-label">Total Portfolio Value</div>
+        <div class="balance-label" data-i18n="app.dashboard.balance_label">Valeur totale du portefeuille</div>
         <div class="balance-amount"><span id="balanceCounter">$0</span></div>
         <div class="balance-change">↑ +12.4% &nbsp; +$3,301.25 this month</div>
       </div>
@@ -431,10 +437,10 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
 
       <div class="action-btns">
-        <button class="action-btn" onclick="openModal('send')">↑ Send</button>
-        <button class="action-btn" onclick="openModal('receive')">↓ Receive</button>
+        <button class="action-btn" onclick="openModal('send')" data-i18n="app.dashboard.send">↑ Envoyer</button>
+        <button class="action-btn" onclick="openModal('receive')" data-i18n="app.dashboard.receive">↓ Recevoir</button>
         <button class="action-btn" onclick="showPage('swap', null)">⇄ Swap</button>
-        <button class="action-btn" onclick="openModal('topup')">+ Recharge</button>
+        <button class="action-btn" onclick="openModal('topup')" data-i18n="app.dashboard.topup">+ Recharger</button>
       </div>
 
       <div class="grid-2">
@@ -527,7 +533,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- CARDS -->
     <div class="page-section" id="page-cards">
       <div class="section-hdr">
-        <div><div class="section-title"><span>My Cards</span></div><div class="section-subtitle">2 active cards</div></div>
+        <div><div class="section-title"><span data-i18n="app.cards.title">My Cards</span></div><div class="section-subtitle" data-i18n="app.cards.sub">2 active cards</div></div>
         <button onclick="openModal('cardOrder')" style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--text);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;">+ New Card</button>
       </div>
 
@@ -581,7 +587,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- CRYPTO WALLET -->
     <div class="page-section" id="page-wallet">
       <div class="section-hdr">
-        <div><div class="section-title"><span>Crypto Wallet</span></div><div class="section-subtitle">Multi-chain holdings</div></div>
+        <div><div class="section-title"><span data-i18n="app.wallet.title">Crypto Wallet</span></div><div class="section-subtitle" data-i18n="app.wallet.sub">Multi-chain holdings</div></div>
       </div>
       <div class="grid-4" style="margin-bottom:1.5rem">
         <div class="card card-glow-gold kpi-mini"><div class="kpi-val" style="color:#F59E0B">$12,842</div><div class="kpi-label">BTC Value</div></div>
@@ -606,7 +612,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- SWAP -->
     <div class="page-section" id="page-swap">
       <div class="section-hdr">
-        <div><div class="section-title"><span>Swap</span></div><div class="section-subtitle">DeFi-powered exchange</div></div>
+        <div><div class="section-title"><span data-i18n="app.swap.title">Swap</span></div><div class="section-subtitle" data-i18n="app.swap.sub">DeFi-powered exchange</div></div>
       </div>
       <div style="max-width:480px">
         <div class="swap-box">
@@ -649,7 +655,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- IBAN -->
     <div class="page-section" id="page-iban">
       <div class="section-hdr">
-        <div><div class="section-title"><span>IBAN Accounts</span></div><div class="section-subtitle">Multi-currency banking</div></div>
+        <div><div class="section-title"><span data-i18n="app.iban.title">IBAN Accounts</span></div><div class="section-subtitle" data-i18n="app.iban.sub">Multi-currency banking</div></div>
       </div>
       <div class="grid-2" style="margin-bottom:1.5rem">
         <div class="iban-card card-glow-cyan">
@@ -659,7 +665,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div style="font-size:0.78rem;color:var(--muted)">BIC: BNPAFRPP • BNP Paribas</div>
           <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
             <button onclick="copyText(this.closest('.iban-card').querySelector('.iban-number').textContent)" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📋 Copy IBAN</button>
-            <button onclick="showToast('📄 RIB downloaded (demo)!')" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download RIB</button>
+            <button onclick="showToast(t('toast.rib_download'))" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download RIB</button>
           </div>
           <!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire -->
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
@@ -674,7 +680,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div style="font-size:0.78rem;color:var(--muted)">Sort Code: 60-16-13 • NatWest</div>
           <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
             <button onclick="copyText(this.closest('.iban-card').querySelector('.iban-number').textContent)" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📋 Copy IBAN</button>
-            <button onclick="showToast('📄 Details downloaded (demo)!')" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download</button>
+            <button onclick="showToast(t('toast.details_download'))" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download</button>
           </div>
           <!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire -->
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
@@ -700,7 +706,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- YIELD -->
     <div class="page-section" id="page-yield">
       <div class="section-hdr">
-        <div><div class="section-title"><span>Yield & Staking</span></div><div class="section-subtitle">Earn passive income on your crypto</div></div>
+        <div><div class="section-title"><span data-i18n="app.yield.title">Yield & Staking</span></div><div class="section-subtitle" data-i18n="app.yield.sub">Earn passive income on your crypto</div></div>
       </div>
       <div class="grid-3" style="margin-bottom:1.5rem">
         <div class="apy-card apy-glow">
@@ -765,7 +771,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- AFFILIATE -->
     <div class="page-section" id="page-affiliate">
       <div class="section-hdr">
-        <div><div class="section-title"><span>Affiliate Program</span></div><div class="section-subtitle">Earn by referring friends</div></div>
+        <div><div class="section-title"><span data-i18n="app.affiliate.title">Affiliate Program</span></div><div class="section-subtitle" data-i18n="app.affiliate.sub">Earn by referring friends</div></div>
       </div>
       <div class="ref-code-box">
         <div>
@@ -835,7 +841,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- KYC -->
     <div class="page-section" id="page-kyc">
       <div class="section-hdr">
-        <div><div class="section-title"><span>KYC Verification</span></div><div class="section-subtitle">Identity verification status</div></div>
+        <div><div class="section-title"><span data-i18n="app.kyc.title">KYC Verification</span></div><div class="section-subtitle" data-i18n="app.kyc.sub">Identity verification status</div></div>
       </div>
 
       <div class="kyc-steps">
@@ -902,7 +908,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <!-- SETTINGS -->
     <div class="page-section" id="page-settings">
       <div class="section-hdr">
-        <div><div class="section-title"><span>Settings</span></div><div class="section-subtitle">Manage your account</div></div>
+        <div><div class="section-title"><span data-i18n="app.settings.title">Settings</span></div><div class="section-subtitle" data-i18n="app.settings.sub">Manage your account</div></div>
       </div>
       <div class="card">
         <div class="settings-section">
@@ -1068,12 +1074,12 @@ function swapDir() {
   document.querySelectorAll('.token-selector span')[0].textContent = swapFromToken;
   document.querySelectorAll('.token-selector span')[1].textContent = swapToToken;
   calcSwap();
-  showToast('Tokens swapped!');
+  showToast(t('toast.swap_tokens'));
 }
 async function doSwap() {
   const v = parseFloat(document.getElementById('swapFrom').value) || 0;
-  if (!v || v <= 0) { showToast('⚠️ Enter a valid amount', 'info'); return; }
-  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  if (!v || v <= 0) { showToast(t('toast.swap_invalid'), 'info'); return; }
+  if (!currentUserId) { showToast(t('toast.not_auth'), 'info'); return; }
   const rate = swapRates[swapFromToken] || 1;
   const toRate = swapRates[swapToToken] || 1;
   const currentRate = rate / toRate;
@@ -1093,11 +1099,11 @@ async function doSwap() {
       metadata: { from: fromToken, to: toToken, rate: currentRate }
     });
     if (error) throw error;
-    showToast('✅ Swap executed successfully!');
+    showToast(t('toast.swap_success'));
     openModal('swapSuccess');
   } catch(e) {
     console.error('Swap error:', e);
-    showToast('✅ Swap executed (demo mode)!');
+    showToast(t('toast.swap_demo'));
     openModal('swapSuccess');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Confirm Swap ⇄'; }
@@ -1144,7 +1150,7 @@ async function toggleCardSetting(el, cardIndex, field) {
   el.classList.toggle('on');
   const isOn = el.classList.contains('on');
   if (!currentUserId || !cardIds[cardIndex]) {
-    showToast(isOn ? '✅ Enabled' : '✅ Disabled');
+    showToast(isOn ? t('toast.setting_on') : t('toast.setting_off'));
     return;
   }
   try {
@@ -1152,9 +1158,9 @@ async function toggleCardSetting(el, cardIndex, field) {
     update[field] = isOn;
     const { error } = await sb.from('cards').update(update).eq('id', cardIds[cardIndex]);
     if (error) throw error;
-    showToast(isOn ? `✅ ${field.replace(/_/g,' ')} enabled` : `✅ ${field.replace(/_/g,' ')} disabled`);
+    showToast(isOn ? t('toast.setting_on') : t('toast.setting_off'));
   } catch(e) {
-    showToast(isOn ? '✅ Setting updated (demo)!' : '✅ Setting updated (demo)!');
+    showToast(t('toast.setting_updated'));
   }
 }
 
@@ -1186,10 +1192,10 @@ async function orderCard() {
   try {
     await sb.from('cards').insert(mockCard);
     closeModal();
-    showToast('✅ Card ordered successfully!');
+    showToast(t('toast.card_ordered'));
   } catch(e) {
     closeModal();
-    showToast('✅ Card order placed (demo)!');
+    showToast(t('toast.card_demo'));
   }
 }
 
@@ -1202,7 +1208,7 @@ async function orderCard() {
 async function submitCryptoWithdraw() {
   const addr = document.getElementById('withdrawAddr')?.value;
   const amt = parseFloat(document.getElementById('withdrawAmt')?.value || 0);
-  if (!addr || !amt) { showToast('⚠️ Fill all fields', 'info'); return; }
+  if (!addr || !amt) { showToast(t('toast.fill_fields'), 'info'); return; }
   if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
   // MOCK — replace with Squarefi withdraw API
   try {
@@ -1216,10 +1222,10 @@ async function submitCryptoWithdraw() {
       metadata: { address: addr }
     });
     closeModal();
-    showToast('✅ Withdrawal submitted!');
+    showToast(t('toast.withdraw_submitted'));
   } catch(e) {
     closeModal();
-    showToast('✅ Withdrawal submitted (demo)!');
+    showToast(t('toast.withdraw_demo'));
   }
 }
 
@@ -1705,5 +1711,7 @@ async function doLogout() {
 // Init app on load
 initApp().catch(e => console.error('initApp error:', e));
 </script>
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 </body>
 </html>

@@ -46,24 +46,30 @@
 <div class="orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 
 <div class="container">
-  <a href="index.html" class="nav-back">← Retour à l'accueil</a>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <a href="index.html" class="nav-back" data-i18n="nav.back_home" style="margin-bottom:0">← Retour à l'accueil</a>
+    <div class="lang-switcher">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn active">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
+  </div>
 
   <div class="logo">
     <div class="logo-icon">⬡</div>
     <div class="logo-name">APEXCARD</div>
   </div>
 
-  <div class="badge">📋 Version 2.0 — Mars 2026</div>
-  <h1>Conditions Générales d'Utilisation</h1>
-  <p class="subtitle">Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation des services APEXCARD. En vous inscrivant, vous acceptez sans réserve ces conditions.</p>
+  <div class="badge" data-i18n="legal.badge">📋 Version 2.0 — Mars 2026</div>
+  <h1 data-i18n="legal.title">Conditions Générales d'Utilisation</h1>
+  <p class="subtitle" data-i18n="legal.sub">Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation des services APEXCARD. En vous inscrivant, vous acceptez sans réserve ces conditions.</p>
 
   <!-- 1. Objet -->
-  <h2 id="objet">1. Objet et champ d'application</h2>
+  <h2 id="objet" data-i18n="legal.h.scope">1. Objet et champ d'application</h2>
   <p>APEXCARD Financial SAS (ci-après "APEXCARD") est une société immatriculée en France, fournissant des services de paiement sous agrément EMD2. Les présentes CGU définissent les droits et obligations des parties dans le cadre de l'utilisation de la plateforme APEXCARD.</p>
   <p>En accédant à la plateforme, vous déclarez avoir au moins 18 ans et avoir pris connaissance des présentes CGU.</p>
 
   <!-- 2. Services -->
-  <h2 id="services">2. Description des services</h2>
+  <h2 id="services" data-i18n="legal.h.services">2. Description des services</h2>
   <p>APEXCARD propose les services suivants :</p>
   <ul>
     <li>Compte de paiement avec IBAN personnel</li>
@@ -75,20 +81,20 @@
   </ul>
 
   <!-- 3. Inscription -->
-  <h2 id="inscription">3. Inscription et vérification d'identité (KYC)</h2>
+  <h2 id="inscription" data-i18n="legal.h.kyc">3. Inscription et vérification d'identité (KYC)</h2>
   <p>L'ouverture d'un compte APEXCARD est soumise à une procédure de vérification d'identité (Know Your Customer — KYC) conforme aux obligations légales en vigueur (AMLD5, LCB-FT).</p>
   <p>Vous vous engagez à fournir des informations exactes, complètes et à jour. Toute information fausse peut entraîner la suspension immédiate du compte et un signalement aux autorités compétentes.</p>
   <p>APEXCARD se réserve le droit de refuser toute inscription sans avoir à en justifier les motifs.</p>
 
   <!-- 4. Utilisation acceptable -->
-  <h2 id="usage">4. Utilisation acceptable des services</h2>
+  <h2 id="usage" data-i18n="legal.h.usage">4. Utilisation acceptable des services</h2>
   <div class="warning-box">
     <p>⛔ <strong>Usages strictement interdits :</strong> blanchiment d'argent, financement du terrorisme, achats de substances illicites, contournement de sanctions internationales, activités frauduleuses de toute nature.</p>
   </div>
   <p>Vous vous engagez à utiliser les services APEXCARD uniquement à des fins légales et conformément aux lois applicables dans votre pays de résidence.</p>
 
   <!-- 5. Limites et frais -->
-  <h2 id="limites">5. Limites de transactions et frais</h2>
+  <h2 id="limites" data-i18n="legal.h.limits">5. Limites de transactions et frais</h2>
   <ul>
     <li><strong>Tier 0 :</strong> 500€/mois</li>
     <li><strong>Tier 1 :</strong> 5 000€/mois</li>
@@ -98,7 +104,7 @@
   <p><strong>Frais de recharge :</strong> 3,5% | <strong>Carte virtuelle :</strong> 50€ | <strong>Carte Gold physique :</strong> 99€ | <strong>Frais de swap :</strong> 0,25%</p>
 
   <!-- 6. Sécurité -->
-  <h2 id="securite-compte">6. Sécurité du compte</h2>
+  <h2 id="securite-compte" data-i18n="legal.h.security">6. Sécurité du compte</h2>
   <p>Vous êtes responsable de la confidentialité de vos identifiants de connexion. Vous vous engagez à :</p>
   <ul>
     <li>Utiliser un mot de passe fort et unique</li>
@@ -108,7 +114,7 @@
   </ul>
 
   <!-- 7. AML -->
-  <h2 id="aml">7. Conformité AML/LCB-FT</h2>
+  <h2 id="aml" data-i18n="legal.h.aml">7. Conformité AML/LCB-FT</h2>
   <p>Conformément aux obligations légales (AMLD5, décret n°2009-1087), APEXCARD est tenu de :</p>
   <ul>
     <li>Vérifier l'identité de tous les clients (KYC)</li>
@@ -119,7 +125,7 @@
   <p>Les transactions supérieures à 10 000€ font l'objet d'un contrôle renforcé automatique.</p>
 
   <!-- 8. Résiliation -->
-  <h2 id="resiliation">8. Suspension et résiliation</h2>
+  <h2 id="resiliation" data-i18n="legal.h.termination">8. Suspension et résiliation</h2>
   <p>APEXCARD peut suspendre ou résilier votre compte en cas de :</p>
   <ul>
     <li>Violation des présentes CGU</li>
@@ -130,16 +136,16 @@
   <p>Vous pouvez clôturer votre compte à tout moment depuis votre espace client (Paramètres → Supprimer mon compte). La clôture sera effective après traitement de toutes les transactions en cours.</p>
 
   <!-- 9. Responsabilité -->
-  <h2 id="responsabilite">9. Limitation de responsabilité</h2>
+  <h2 id="responsabilite" data-i18n="legal.h.liability">9. Limitation de responsabilité</h2>
   <p>APEXCARD s'engage à mettre en œuvre tous les moyens raisonnables pour assurer la disponibilité et la sécurité des services. APEXCARD ne saurait être tenu responsable des pertes indirectes, consécutives ou accessoires.</p>
 
   <!-- 10. Droit applicable -->
-  <h2 id="droit">10. Droit applicable et juridiction</h2>
+  <h2 id="droit" data-i18n="legal.h.law">10. Droit applicable et juridiction</h2>
   <p>Les présentes CGU sont régies par le droit français. En cas de litige, les parties s'engagent à rechercher une solution amiable. À défaut, les tribunaux compétents de Paris seront saisis.</p>
   <p>Pour tout litige, vous pouvez également contacter un médiateur de la consommation agréé.</p>
 
   <!-- 11. Mentions légales -->
-  <h2 id="mentions">11. Mentions légales</h2>
+  <h2 id="mentions" data-i18n="legal.h.mentions">11. Mentions légales</h2>
   <ul>
     <li><strong>Raison sociale :</strong> APEXCARD Financial SAS</li>
     <li><strong>Siège social :</strong> Paris, France</li>
@@ -151,11 +157,13 @@
   <p style="margin-top:3rem;font-size:0.85rem;color:var(--muted)"><strong>Date d'entrée en vigueur :</strong> Mars 2026. APEXCARD se réserve le droit de modifier ces CGU avec un préavis de 30 jours.</p>
 
   <footer>
-    <a href="index.html">Accueil</a>
-    <a href="privacy.html">Confidentialité</a>
-    <a href="legal.html">CGU</a>
-    <p style="color:var(--muted)">© 2026 APEXCARD Financial SAS. Tous droits réservés.</p>
+    <a href="index.html" data-i18n="footer.home">Accueil</a>
+    <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+    <a href="legal.html" data-i18n="footer.legal">CGU</a>
+    <p style="color:var(--muted)" data-i18n="footer.rights">© 2026 APEXCARD Financial SAS. Tous droits réservés.</p>
   </footer>
 </div>
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 </body>
 </html>

@@ -53,33 +53,39 @@
 <div class="orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
 
 <div class="container">
-  <a href="index.html" class="nav-back">← Retour à l'accueil</a>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <a href="index.html" class="nav-back" data-i18n="nav.back_home" style="margin-bottom:0">← Retour à l'accueil</a>
+    <div class="lang-switcher">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn active">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
+  </div>
 
   <div class="logo">
     <div class="logo-icon">⬡</div>
     <div class="logo-name">APEXCARD</div>
   </div>
 
-  <div class="badge">🔒 RGPD Conforme — Dernière mise à jour : Mars 2026</div>
-  <h1>Politique de confidentialité</h1>
-  <p class="subtitle">Nous prenons la protection de vos données personnelles très au sérieux. Ce document vous informe sur la manière dont APEXCARD collecte, utilise et protège vos données.</p>
+  <div class="badge" data-i18n="privacy.badge">🔒 RGPD Conforme — Dernière mise à jour : Mars 2026</div>
+  <h1 data-i18n="privacy.title">Politique de confidentialité</h1>
+  <p class="subtitle" data-i18n="privacy.sub">Nous prenons la protection de vos données personnelles très au sérieux. Ce document vous informe sur la manière dont APEXCARD collecte, utilise et protège vos données.</p>
 
   <div class="toc">
-    <h3>Sommaire</h3>
-    <a href="#responsable">1. Responsable du traitement</a>
-    <a href="#donnees">2. Données collectées</a>
-    <a href="#finalites">3. Finalités et bases légales</a>
-    <a href="#conservation">4. Durée de conservation</a>
-    <a href="#droits">5. Vos droits</a>
-    <a href="#securite">6. Sécurité des données</a>
-    <a href="#transferts">7. Transferts internationaux</a>
-    <a href="#cookies" id="cookies">8. Cookies</a>
-    <a href="#contact">9. Contact DPO</a>
-    <a href="#modifications">10. Modifications</a>
+    <h3 data-i18n="privacy.toc.title">Sommaire</h3>
+    <a href="#responsable" data-i18n="privacy.h.controller">1. Responsable du traitement</a>
+    <a href="#donnees" data-i18n="privacy.h.data">2. Données personnelles collectées</a>
+    <a href="#finalites" data-i18n="privacy.h.purposes">3. Finalités du traitement et bases légales</a>
+    <a href="#conservation" data-i18n="privacy.h.retention">4. Durée de conservation</a>
+    <a href="#droits" data-i18n="privacy.h.rights">5. Vos droits</a>
+    <a href="#securite" data-i18n="privacy.h.security">6. Sécurité des données</a>
+    <a href="#transferts" data-i18n="privacy.h.transfers">7. Transferts internationaux</a>
+    <a href="#cookies" id="cookies" data-i18n="privacy.h.cookies">8. Cookies et traceurs</a>
+    <a href="#contact" data-i18n="privacy.h.contact">9. Contact et DPO</a>
+    <a href="#modifications" data-i18n="privacy.h.changes">10. Modifications de cette politique</a>
   </div>
 
   <!-- 1. Responsable -->
-  <h2 id="responsable">1. Responsable du traitement</h2>
+  <h2 id="responsable" data-i18n="privacy.h.controller">1. Responsable du traitement</h2>
   <p>Le responsable du traitement de vos données personnelles est :</p>
   <ul>
     <li><strong>Raison sociale :</strong> APEXCARD Financial SAS</li>
@@ -208,11 +214,13 @@
   <p><strong>Date d'entrée en vigueur :</strong> Mars 2026</p>
 
   <footer>
-    <a href="index.html">Accueil</a>
-    <a href="legal.html">CGU</a>
-    <a href="privacy.html">Confidentialité</a>
-    <p style="color:var(--muted)">© 2026 APEXCARD Financial SAS. Tous droits réservés.</p>
+    <a href="index.html" data-i18n="footer.home">Accueil</a>
+    <a href="legal.html" data-i18n="footer.legal">CGU</a>
+    <a href="privacy.html" data-i18n="footer.privacy">Confidentialité</a>
+    <p style="color:var(--muted)" data-i18n="footer.rights">© 2026 APEXCARD Financial SAS. Tous droits réservés.</p>
   </footer>
 </div>
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 </body>
 </html>

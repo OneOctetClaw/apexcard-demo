@@ -327,37 +327,45 @@
 <canvas id="particles"></canvas>
 
 <div class="page">
+  <!-- Lang switcher top right -->
+  <div style="position:fixed;top:1.2rem;right:1.5rem;z-index:100">
+    <div class="lang-switcher">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
+  </div>
+
   <div class="logo-wrap">
     <div class="logo-icon">⬡</div>
     <div class="logo-name">APEXCARD</div>
-    <div class="logo-tagline"><span>Banking without borders</span></div>
+    <div class="logo-tagline"><span data-i18n="login.tagline">Banking without borders</span></div>
   </div>
 
   <div class="login-card">
-    <div class="section-label">Choose your role</div>
+    <div class="section-label" data-i18n="login.role.label">Choisissez votre rôle</div>
     <div class="role-grid">
       <div class="role-card active" onclick="selectRole('user', this)">
         <div class="role-icon">👤</div>
-        <div class="role-name">Client</div>
-        <div class="role-desc">Personal account</div>
+        <div class="role-name" data-i18n="login.role.client">Client</div>
+        <div class="role-desc" data-i18n="login.role.client.desc">Compte personnel</div>
       </div>
       <div class="role-card" onclick="selectRole('admin', this)">
         <div class="role-icon">🛡️</div>
-        <div class="role-name">Admin</div>
-        <div class="role-desc">Management panel</div>
+        <div class="role-name" data-i18n="login.role.admin">Admin</div>
+        <div class="role-desc" data-i18n="login.role.admin.desc">Panneau de gestion</div>
       </div>
     </div>
 
     <div class="input-group">
-      <label class="input-label" for="email">Email address</label>
+      <label class="input-label" for="email" data-i18n="login.email.label">Adresse email</label>
       <div class="input-wrap">
         <span class="input-icon">✉</span>
-        <input type="email" id="email" placeholder="you@apexcard.io" autocomplete="email">
+        <input type="email" id="email" data-i18n-placeholder="login.email.placeholder" placeholder="vous@apexcard.io" autocomplete="email">
       </div>
     </div>
 
     <div class="input-group">
-      <label class="input-label" for="password">Password</label>
+      <label class="input-label" for="password" data-i18n="login.pwd.label">Mot de passe</label>
       <div class="input-wrap">
         <span class="input-icon">🔒</span>
         <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
@@ -367,21 +375,23 @@
     <div id="lockout-msg" class="lockout-msg"></div>
     <div id="login-error" class="error-msg" style="display:none"></div>
 
-    <button class="btn-cta" id="login-btn" onclick="doLogin()">Sign in to APEXCARD</button>
+    <button class="btn-cta" id="login-btn" onclick="doLogin()" data-i18n="login.btn">Se connecter à APEXCARD</button>
 
-    <div class="divider">or quick access</div>
+    <div class="divider" data-i18n="login.divider">ou accès rapide</div>
 
     <div class="quick-grid">
-      <button class="quick-btn" onclick="quickLogin('user')">⚡ Demo Client</button>
-      <button class="quick-btn" onclick="quickLogin('admin')">⚡ Demo Admin</button>
+      <button class="quick-btn" onclick="quickLogin('user')" data-i18n="login.demo_client">⚡ Démo Client</button>
+      <button class="quick-btn" onclick="quickLogin('admin')" data-i18n="login.demo_admin">⚡ Démo Admin</button>
     </div>
 
-    <div id="timeout-notice" class="timeout-notice">
-      🔒 Your session expired due to inactivity. Please sign in again.
+    <div id="timeout-notice" class="timeout-notice" data-i18n="login.timeout">
+      🔒 Votre session a expiré en raison d'inactivité. Veuillez vous reconnecter.
     </div>
   </div>
 </div>
 
+<script src="js/i18n.js"></script>
+<script>document.addEventListener('DOMContentLoaded', i18n.initLang)</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <script>
 // =========================================
@@ -460,7 +470,7 @@ function hideError() {
 
 function showLockout(remaining) {
   const lockDiv = document.getElementById('lockout-msg');
-  lockDiv.textContent = `Too many failed attempts. Please wait ${remaining} minute${remaining > 1 ? 's' : ''} before trying again.`;
+  lockDiv.textContent = t('login.lockout').replace('{n}', remaining).replace('{s}', remaining > 1 ? 's' : '');
   lockDiv.style.display = 'block';
   document.getElementById('login-btn').disabled = true;
   setTimeout(() => {
@@ -477,7 +487,7 @@ async function doLogin() {
   hideError();
 
   if (!email || !password) {
-    showError('Please enter your email and password.');
+    showError(t('login.error.empty'));
     return;
   }
 
@@ -488,7 +498,7 @@ async function doLogin() {
     return;
   }
 
-  btn.textContent = 'Authenticating…';
+  btn.textContent = t('login.authenticating');
   btn.disabled = true;
 
   try {
@@ -500,8 +510,8 @@ async function doLogin() {
         await sb.from('login_attempts').insert({ email, success: false });
       } catch(_) {}
       // SECURITY: Generic error message — never reveal if email exists or password is wrong
-      showError('Invalid credentials. Please check your email and password.');
-      btn.textContent = 'Sign in to APEXCARD';
+      showError(t('login.error.credentials'));
+      btn.textContent = t('login.btn');
       btn.disabled = false;
       return;
     }
@@ -527,8 +537,8 @@ async function doLogin() {
     }
   } catch (e) {
     // SECURITY: Never expose technical errors to user
-    showError('An error occurred. Please try again.');
-    btn.textContent = 'Sign in to APEXCARD';
+    showError(t('login.error.generic'));
+    btn.textContent = t('login.btn');
     btn.disabled = false;
   }
 }
