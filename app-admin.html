@@ -286,6 +286,8 @@ svg.chart{width:100%;overflow:visible}
     <div class="nav-item" data-page="affiliates"><span class="nav-icon">🤝</span>Affiliés</div>
     <div class="nav-item" data-page="yield"><span class="nav-icon">📈</span>Yield</div>
     <div class="nav-item" data-page="finances"><span class="nav-icon">💰</span>Finances</div>
+    <div class="nav-item" data-page="audit"><span class="nav-icon">🛡️</span>Audit Log</div>
+    <div class="nav-item" data-page="logins"><span class="nav-icon">🔐</span>Connexions</div>
     <div class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span>Paramètres</div>
     <div class="nav-item logout" onclick="adminLogout()"><span class="nav-icon">🚪</span>Déconnexion</div>
   </nav>
@@ -702,6 +704,89 @@ svg.chart{width:100%;overflow:visible}
               <span style="color:var(--text)">$84,500</span>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: AUDIT LOG -->
+    <div class="page" id="page-audit">
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🛡️ Audit Log</div>
+            <div class="section-sub">Actions administratives et événements de sécurité</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="filter-select" id="audit-action-filter" onchange="filterAudit()" style="font-size:12px;padding:6px 10px">
+              <option value="">Toutes les actions</option>
+              <option value="admin_login">admin_login</option>
+              <option value="kyc_approved">kyc_approved</option>
+              <option value="kyc_rejected">kyc_rejected</option>
+              <option value="card_blocked">card_blocked</option>
+              <option value="card_unblocked">card_unblocked</option>
+              <option value="transaction_flagged">transaction_flagged</option>
+              <option value="aml_alert_created">aml_alert_created</option>
+              <option value="user_suspended">user_suspended</option>
+              <option value="user_reactivated">user_reactivated</option>
+              <option value="withdrawal_approved">withdrawal_approved</option>
+              <option value="withdrawal_rejected">withdrawal_rejected</option>
+              <option value="password_reset_forced">password_reset_forced</option>
+              <option value="limit_increased">limit_increased</option>
+            </select>
+            <span id="audit-count" style="font-size:12px;color:var(--text3)">— entrées</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="audit-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Action</th>
+                <th>Opérateur</th>
+                <th>Détails</th>
+                <th>IP</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE: LOGIN ATTEMPTS -->
+    <div class="page" id="page-logins">
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🔐 Tentatives de connexion</div>
+            <div class="section-sub">Historique des authentifications et tentatives suspectes</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="filter-select" id="login-status-filter" onchange="filterLogins()" style="font-size:12px;padding:6px 10px">
+              <option value="">Toutes</option>
+              <option value="success">✅ Réussies</option>
+              <option value="fail">❌ Échouées</option>
+            </select>
+            <span id="login-count" style="font-size:12px;color:var(--text3)">— entrées</span>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="login-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Email</th>
+                <th>Statut</th>
+                <th>IP</th>
+                <th>Appareil</th>
+              </tr>
+            </thead>
+            <tbody id="login-tbody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Chargement…</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1194,8 +1279,10 @@ function navigateTo(pageId, title) {
   const pageTitles = {
     overview:'Vue d\'ensemble',users:'Utilisateurs',cards:'Cartes',
     transactions:'Transactions',kyc:'KYC Pending',affiliates:'Affiliés',
-    yield:'Yield',finances:'Finances P&L',settings:'Paramètres système'
+    yield:'Yield',finances:'Finances P&L',audit:'Audit Log',logins:'Connexions',settings:'Paramètres système'
   };
+  if (pageId === 'audit') loadAuditLogs();
+  if (pageId === 'logins') loadLoginAttempts();
   document.getElementById('topbar-title').textContent = pageTitles[pageId] || title;
 }
 
@@ -1530,6 +1617,138 @@ function toggleSidebar() {
 }
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
+}
+
+// =========================================
+// AUDIT LOG
+// =========================================
+let AUDIT_DATA = [];
+
+async function loadAuditLogs() {
+  const tbody = document.getElementById('audit-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Chargement…</td></tr>';
+  try {
+    const { data, error } = await sb.from('audit_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    AUDIT_DATA = data || [];
+    renderAuditTable(AUDIT_DATA);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:20px">Erreur: ${e.message}</td></tr>`;
+  }
+}
+
+function filterAudit() {
+  const action = document.getElementById('audit-action-filter').value;
+  const filtered = action ? AUDIT_DATA.filter(r => r.action === action) : AUDIT_DATA;
+  renderAuditTable(filtered);
+}
+
+const ACTION_BADGES = {
+  admin_login:      { color:'#0EA5E9', bg:'rgba(14,165,233,0.15)' },
+  kyc_approved:     { color:'#22C55E', bg:'rgba(34,197,94,0.15)' },
+  kyc_rejected:     { color:'#EF4444', bg:'rgba(239,68,68,0.15)' },
+  card_blocked:     { color:'#F97316', bg:'rgba(249,115,22,0.15)' },
+  card_unblocked:   { color:'#22C55E', bg:'rgba(34,197,94,0.15)' },
+  transaction_flagged: { color:'#EF4444', bg:'rgba(239,68,68,0.15)' },
+  aml_alert_created:   { color:'#EF4444', bg:'rgba(239,68,68,0.18)' },
+  user_suspended:      { color:'#F97316', bg:'rgba(249,115,22,0.15)' },
+  user_reactivated:    { color:'#22C55E', bg:'rgba(34,197,94,0.15)' },
+  withdrawal_approved: { color:'#22C55E', bg:'rgba(34,197,94,0.15)' },
+  withdrawal_rejected: { color:'#EF4444', bg:'rgba(239,68,68,0.15)' },
+  password_reset_forced: { color:'#8B5CF6', bg:'rgba(139,92,246,0.15)' },
+  limit_increased:     { color:'#0EA5E9', bg:'rgba(14,165,233,0.15)' },
+};
+
+function renderAuditTable(rows) {
+  const tbody = document.getElementById('audit-tbody');
+  document.getElementById('audit-count').textContent = `${rows.length} entrée${rows.length!==1?'s':''}`;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Aucune entrée</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const b = ACTION_BADGES[r.action] || { color:'#94a3b8', bg:'rgba(148,163,184,0.15)' };
+    const badge = `<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;color:${b.color};background:${b.bg};border:1px solid ${b.color}33">${r.action}</span>`;
+    const dt = new Date(r.created_at);
+    const dateStr = dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const meta = r.metadata ? Object.entries(r.metadata).map(([k,v])=>`<span style="color:var(--text3)">${k}:</span> ${v}`).join(' · ') : '—';
+    const op = r.user_id === '9499d770-ac86-46cf-83ab-94e2111f4cdc' ? 'jp@apexcard.io' : (r.user_id === 'd0afc2e9-d5e8-45d7-9257-82c118661a8b' ? 'nikita@apexcard.io' : r.user_id?.substring(0,8)+'…');
+    return `<tr>
+      <td style="white-space:nowrap;color:var(--text2);font-size:12px">${dateStr}</td>
+      <td>${badge}</td>
+      <td style="font-size:12px;color:var(--cyan)">${op}</td>
+      <td style="font-size:11px;color:var(--text2);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${meta}</td>
+      <td style="font-size:12px;color:var(--text3);white-space:nowrap">${r.ip_address || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// =========================================
+// LOGIN ATTEMPTS
+// =========================================
+let LOGIN_DATA = [];
+
+async function loadLoginAttempts() {
+  const tbody = document.getElementById('login-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Chargement…</td></tr>';
+  try {
+    const { data, error } = await sb.from('login_attempts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    LOGIN_DATA = data || [];
+    renderLoginTable(LOGIN_DATA);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:20px">Erreur: ${e.message}</td></tr>`;
+  }
+}
+
+function filterLogins() {
+  const status = document.getElementById('login-status-filter').value;
+  const filtered = status === 'success' ? LOGIN_DATA.filter(r => r.success)
+    : status === 'fail' ? LOGIN_DATA.filter(r => !r.success)
+    : LOGIN_DATA;
+  renderLoginTable(filtered);
+}
+
+function detectDevice(ip) {
+  // Heuristic device tags based on IP ranges used in demo data
+  const bruteIPs = ['185.220.101.42','119.249.50.230','45.141.84.22'];
+  if (bruteIPs.includes(ip)) return '⚠️ Bot/Script';
+  const mobileIPs = ['82.195.130.17','46.101.33.45'];
+  if (mobileIPs.includes(ip)) return '📱 Mobile';
+  const tabletIPs = ['178.162.206.18'];
+  if (tabletIPs.includes(ip)) return '📱 iPad';
+  return '💻 Desktop';
+}
+
+function renderLoginTable(rows) {
+  const tbody = document.getElementById('login-tbody');
+  document.getElementById('login-count').textContent = `${rows.length} entrée${rows.length!==1?'s':''}`;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">Aucune entrée</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const dt = new Date(r.created_at);
+    const dateStr = dt.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + dt.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    const statusIcon = r.success
+      ? '<span style="color:#22C55E;font-weight:600">✅ Réussi</span>'
+      : '<span style="color:#EF4444;font-weight:600">❌ Échec</span>';
+    const rowBg = !r.success ? 'background:rgba(239,68,68,0.05)' : '';
+    const device = detectDevice(r.ip_address);
+    return `<tr style="${rowBg}">
+      <td style="white-space:nowrap;color:var(--text2);font-size:12px">${dateStr}</td>
+      <td style="font-size:13px;color:var(--cyan)">${r.email}</td>
+      <td>${statusIcon}</td>
+      <td style="font-size:12px;color:var(--text3);white-space:nowrap">${r.ip_address || '—'}</td>
+      <td style="font-size:12px;color:var(--text2)">${device}</td>
+    </tr>`;
+  }).join('');
 }
 
 // =========================================
