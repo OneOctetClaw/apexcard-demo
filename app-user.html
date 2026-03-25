@@ -379,8 +379,8 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="sb-tier-badge">T2</div>
         </div>
         <div class="sb-user-info">
-          <div class="sb-name">Jean-Philippe N.</div>
-          <div class="sb-email">jp@apexcard.io</div>
+          <div class="sb-name">Loading…</div>
+          <div class="sb-email"></div>
         </div>
       </div>
     </div>
@@ -415,7 +415,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       <div class="section-hdr">
         <div>
           <div class="section-title"><span>Dashboard</span></div>
-          <div class="section-subtitle">Welcome back, Jean-Philippe 👋</div>
+          <div class="section-subtitle" id="welcome-subtitle">Welcome back 👋</div>
         </div>
         <div style="font-size:0.82rem;color:var(--muted)" id="clock"></div>
       </div>
@@ -538,7 +538,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-brand">VIRTUAL</div>
             <div class="card-chip"></div>
             <div class="card-number">4111 •••• •••• 7823</div>
-            <div class="card-holder">Jean-Philippe Nové</div>
+            <div class="card-holder">DEMO USER</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>09/28</div>
           </div>
           <div class="cards-controls" data-card-index="0">
@@ -560,7 +560,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-brand" style="color:#fcd34d">GOLD</div>
             <div class="card-chip"></div>
             <div class="card-number">5412 •••• •••• 3091</div>
-            <div class="card-holder">Jean-Philippe Nové</div>
+            <div class="card-holder">DEMO USER</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>12/27</div>
           </div>
           <div class="cards-controls" data-card-index="1">
@@ -1122,7 +1122,12 @@ const modalDefs = {
   deposit: {title:'Deposit Crypto', body:`<label class="modal-label">Send to address</label><div style="font-family:monospace;font-size:0.82rem;padding:0.9rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);word-break:break-all;color:var(--muted)">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div><button class="btn-primary" onclick="closeModal()">Done</button>`},
   withdraw: {title:'Send Crypto', body:`<label class="modal-label">Destination Address</label><input class="modal-input" placeholder="bc1q..."><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="0.00"><label class="modal-label">Network Fee</label><div style="padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);font-size:0.85rem;color:var(--muted)">~$2.40 (standard)</div><button class="btn-primary" onclick="submitModal('withdraw')">Confirm Send →</button>`},
   wire: {title:'Wire Transfer', body:`<div style="margin-bottom:0.75rem;padding:0.6rem;background:rgba(6,182,212,0.06);border-radius:8px;border:1px solid rgba(6,182,212,0.15);font-size:0.75rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire --></div><label class="modal-label">Beneficiary Name</label><input class="modal-input" id="wireBenef" placeholder="Full name"><label class="modal-label">IBAN</label><input class="modal-input" id="wireIban" placeholder="FR76 ..."><label class="modal-label">BIC / SWIFT</label><input class="modal-input" id="wireBic" placeholder="BNPAFRPP"><label class="modal-label">Amount (EUR)</label><input class="modal-input" id="wireAmt" type="number" placeholder="0.00"><label class="modal-label">Reference</label><input class="modal-input" id="wireRef" placeholder="Payment reference"><button class="btn-primary" onclick="submitWireTransfer()">Send Transfer →</button>`},
-  rib: {title:'Bank Details (RIB)', body:`<div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:1.25rem;font-size:0.88rem"><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Account Holder</span><span style="font-weight:600">Jean-Philippe Nové</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">IBAN</span><span style="font-family:monospace;font-size:0.8rem">FR76 3000 4028 3788 0012 3456 789</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">BIC</span><span style="font-weight:600">BNPAFRPP</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--muted)">Bank</span><span>BNP Paribas</span></div></div><button class="btn-primary" onclick="closeModal()">Close</button>`},
+  rib: {title:'Bank Details (RIB)', body: function() {
+    const holderName = (currentProfile && (currentProfile.first_name || currentProfile.last_name))
+      ? ((currentProfile.first_name||'') + ' ' + (currentProfile.last_name||'')).trim()
+      : 'Account Holder';
+    return `<div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:1.25rem;font-size:0.88rem"><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Account Holder</span><span style="font-weight:600">${holderName}</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">IBAN</span><span style="font-family:monospace;font-size:0.8rem">FR76 3000 4028 3788 0012 3456 789</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">BIC</span><span style="font-weight:600">BNPAFRPP</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--muted)">Bank</span><span>BNP Paribas</span></div></div><button class="btn-primary" onclick="closeModal()">Close</button>`;
+  }},
   stake: {title:'Stake Crypto', body:`<label class="modal-label">Asset</label><select class="modal-input" style="cursor:pointer"><option>BTC</option><option>ETH</option><option>USDT</option></select><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="Min. $5,000"><div style="padding:0.75rem;background:rgba(124,58,237,0.06);border-radius:10px;border:1px solid rgba(124,58,237,0.2);margin-top:1rem;font-size:0.82rem"><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">APY</span><span style="color:#a78bfa;font-weight:700">18%</span></div><div style="display:flex;justify-content:space-between;margin-top:0.4rem"><span style="color:var(--muted)">Lock period</span><span>90 days</span></div></div><button class="btn-primary" onclick="submitModal('stake')">Stake Now →</button>`},
   kycUpload: {title:'Upload KYC Document', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(245,158,11,0.06);border-radius:10px;border:1px solid rgba(245,158,11,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/kyc/upload --></div><label class="modal-label">Document Type</label><select class="modal-input" style="cursor:pointer"><option>Passport</option><option>National ID</option><option>Driver License</option><option>Proof of Address</option><option>Bank Statement</option></select><label class="modal-label">Upload Document</label><input type="file" accept="image/*,application/pdf" style="width:100%;padding:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;margin-bottom:1rem"><div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Accepted formats: JPG, PNG, PDF. Max size: 10MB.</div><button class="btn-primary" onclick="submitModal('kyc')">Submit Document →</button>`},
   swapSuccess: {title:'Swap Confirmed', body:`<div style="text-align:center;padding:1.5rem 0"><div style="font-size:4rem;animation:bounceIn 0.5s ease">✅</div><div style="font-size:1.3rem;font-weight:700;margin-top:1rem;color:#10B981">Swap Successful!</div><div style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">Your transaction has been recorded.</div><button class="btn-primary" style="margin-top:1.5rem" onclick="closeModal()">Done</button></div>`},
@@ -1364,12 +1369,13 @@ async function loadKycData(userId, profile) {
 
 function openModal(type) {
   const def = modalDefs[type] || {title:'Action', body:'<p>Coming soon</p><button class="btn-primary" onclick="closeModal()">Close</button>'};
+  const bodyHtml = typeof def.body === 'function' ? def.body() : def.body;
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-header">
       <div class="modal-title">${def.title}</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    ${def.body}
+    ${bodyHtml}
   `;
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -1540,6 +1546,9 @@ async function initApp() {
     // Tier badge
     const tierBadgeEl = document.querySelector('.sb-tier-badge');
     if (tierBadgeEl) tierBadgeEl.textContent = `TIER ${profile.kyc_tier || 0}`;
+    // Welcome subtitle
+    const welcomeSubtitle = document.getElementById('welcome-subtitle');
+    if (welcomeSubtitle && profile.first_name) welcomeSubtitle.textContent = `Welcome back, ${profile.first_name} 👋`;
 
     // Pre-fill Settings form
     const setFirstName = document.getElementById('setFirstName');
