@@ -1445,7 +1445,7 @@ async function loadYieldData(userId) {
       if (kpiVals[1]) kpiVals[1].textContent = '$' + totalEarned.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
       if (kpiVals[2]) kpiVals[2].textContent = activeInvestments.length;
     }
-  } catch(e) { console.log('Yield data load (demo mode):', e.message); }
+  } catch(e) { /* demo mode - yield data unavailable */ }
 }
 
 function openModal(type) {
