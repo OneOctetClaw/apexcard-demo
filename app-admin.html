@@ -237,6 +237,7 @@ svg.chart{width:100%;overflow:visible}
 .toast-icon{font-size:16px}
 @keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(100%)}}
+@keyframes fadeInRow{from{background:rgba(124,58,237,0.15);opacity:0}to{background:transparent;opacity:1}}
 
 /* FINANCE GRID */
 .finance-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:20px}
@@ -957,7 +958,7 @@ async function loadKPIs() {
 async function loadUsers() {
   try {
     const { data: users } = await sb.from('profiles')
-      .select('id, email, first_name, last_name, plan, kyc_tier, kyc_status, created_at')
+      .select('id, email, first_name, last_name, plan, kyc_tier, kyc_status, account_status, created_at')
       .order('created_at', { ascending: false })
       .limit(50);
 
@@ -967,10 +968,12 @@ async function loadUsers() {
     if (!tbody) return;
 
     tbody.innerHTML = users.map((u, i) => {
-      const sFirst = sanitize(u.first_name || ''), sLast = sanitize(u.last_name || ''), sEmail = sanitize(u.email || ''), sPlan = sanitize(u.plan || '-'), sStatus = sanitize(u.kyc_status || 'pending');
+      const sId = sanitize(u.id), sFirst = sanitize(u.first_name || ''), sLast = sanitize(u.last_name || ''), sEmail = sanitize(u.email || ''), sPlan = sanitize(u.plan || '-'), sKycStatus = sanitize(u.kyc_status || 'pending');
       const tier = u.kyc_tier || 0;
+      const accountStatus = u.account_status || 'active';
+      const isSuspended = accountStatus === 'suspended';
       return `
-      <tr onclick="openUserDetailModal('${sFirst} ${sLast}', '${sEmail}', '${sPlan}', '0', ${tier}, '${sStatus}')">
+      <tr onclick="openUserDetailModal('${sId}','${sFirst} ${sLast}', '${sEmail}', '${sPlan}', '0', ${tier}, '${sKycStatus}', '${accountStatus}')" style="${isSuspended ? 'opacity:0.7' : ''}">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${String(i+1).padStart(4,'0')}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
         <td style="color:var(--text2)">${sEmail}</td>
@@ -979,7 +982,11 @@ async function loadUsers() {
         <td><b>-</b></td>
         <td style="color:var(--cyan)">-</td>
         <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
-        <td><span class="badge ${u.kyc_status === 'approved' ? 'badge-green' : u.kyc_status === 'rejected' ? 'badge-red' : 'badge-gold'}">● ${u.kyc_status === 'approved' ? 'Actif' : u.kyc_status === 'rejected' ? 'Rejeté' : 'Pending'}</span></td>
+        <td>
+          <span class="badge ${isSuspended ? 'badge-red' : u.kyc_status === 'approved' ? 'badge-green' : u.kyc_status === 'rejected' ? 'badge-red' : 'badge-gold'}">
+            ● ${isSuspended ? 'Suspendu' : u.kyc_status === 'approved' ? 'Actif' : u.kyc_status === 'rejected' ? 'Rejeté' : 'Pending'}
+          </span>
+        </td>
       </tr>
     `}).join('');
 
@@ -988,15 +995,23 @@ async function loadUsers() {
   } catch(e) { console.error('loadUsers error:', e); }
 }
 
-function openUserDetailModal(name, email, plan, balance, tier, status) {
-  const sName = sanitize(name), sEmail = sanitize(email), sPlan = sanitize(plan), sStatus = sanitize(status);
+function openUserDetailModal(userId, name, email, plan, balance, tier, kycStatus, accountStatus) {
+  const sId = sanitize(userId), sName = sanitize(name), sEmail = sanitize(email), sPlan = sanitize(plan), sKycStatus = sanitize(kycStatus), sAccStatus = sanitize(accountStatus || 'active');
+  const isSuspended = sAccStatus === 'suspended';
   document.getElementById('modal-user-title').textContent = `👤 ${sName}`;
   document.getElementById('modal-user-body').innerHTML = `
     <div class="detail-row"><span class="detail-label">Nom</span><span class="detail-value">${sName}</span></div>
     <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${sEmail}</span></div>
     <div class="detail-row"><span class="detail-label">Plan</span><span class="detail-value">${sPlan}</span></div>
     <div class="detail-row"><span class="detail-label">KYC Tier</span><span class="detail-value"><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${sanitize(String(tier))}</span></span></div>
-    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${status === 'approved' ? 'badge-green' : status === 'rejected' ? 'badge-red' : 'badge-gold'}">${sStatus}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Statut KYC</span><span class="detail-value"><span class="badge ${sKycStatus === 'approved' ? 'badge-green' : sKycStatus === 'rejected' ? 'badge-red' : 'badge-gold'}">${sKycStatus}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Statut compte</span><span class="detail-value"><span class="badge ${isSuspended ? 'badge-red' : 'badge-green'}">${isSuspended ? '⛔ Suspendu' : '✅ Actif'}</span></span></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      ${isSuspended
+        ? `<button class="btn btn-success btn-sm" onclick="reactivateUser('${sId}');closeModal('modal-user')">✅ Réactiver le compte</button>`
+        : `<button class="btn btn-danger btn-sm" onclick="suspendUser('${sId}');closeModal('modal-user')">⛔ Suspendre le compte</button>`
+      }
+    </div>
   `;
   openModal('modal-user');
 }
@@ -1014,41 +1029,108 @@ async function loadCards() {
     if (!tbody) return;
 
     tbody.innerHTML = cards.map(c => {
-      const sId = sanitize(c.id.slice(0,8)), sFirst = sanitize(c.profiles?.first_name||''), sLast = sanitize(c.profiles?.last_name||''), sType = sanitize(c.type||''), sMasked = sanitize(c.masked_number||'•••• •••• •••• ????'), sStatus = sanitize(c.status||'');
+      const sId = sanitize(c.id.slice(0,8)), sFullId = sanitize(c.id), sFirst = sanitize(c.profiles?.first_name||''), sLast = sanitize(c.profiles?.last_name||''), sType = sanitize(c.type||''), sMasked = sanitize(c.masked_number||'•••• •••• •••• ????'), sStatus = sanitize(c.status||'');
+      const isBlocked = c.status === 'blocked';
       return `
-      <tr onclick="openCardDetailModal('${sId}', '${sFirst} ${sLast}', '${sType}', '${sMasked}', '${parseFloat(c.balance||0).toFixed(2)}', '${parseFloat(c.monthly_limit||0).toFixed(0)}')">
+      <tr onclick="openCardDetailModal('${sFullId}', '${sFirst} ${sLast}', '${sType}', '${sMasked}', '${parseFloat(c.balance||0).toFixed(2)}', '${parseFloat(c.monthly_limit||0).toFixed(0)}')">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sId}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
         <td><span class="badge ${c.type === 'gold' ? 'badge-gold' : c.type === 'physical' ? 'badge-cyan' : 'badge-violet'}">${sType}</span></td>
         <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${sMasked}</td>
-        <td><span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-red'}">● ${sStatus}</span></td>
+        <td><span class="badge ${c.status === 'active' ? 'badge-green' : c.status === 'pending' ? 'badge-gold' : 'badge-red'}">● ${sStatus}</span></td>
         <td style="color:var(--green);font-weight:600">$${parseFloat(c.balance||0).toFixed(2)}</td>
         <td>$${parseFloat(c.monthly_limit||0).toFixed(0)}</td>
         <td style="color:var(--text3)">${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();blockCard('${sanitize(c.id)}')">Bloquer</button></td>
+        <td style="display:flex;gap:6px">
+          ${c.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();activateCard('${sFullId}')">✓ Activer</button>` : ''}
+          ${isBlocked
+            ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}', false)">🔓 Débloquer</button>`
+            : `<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}', true)">🚫 Bloquer</button>`
+          }
+        </td>
       </tr>
     `}).join('');
   } catch(e) { console.error('loadCards error:', e); }
 }
 
+// Store currently viewed card full ID
+let _currentCardId = null;
+
 function openCardDetailModal(id, user, type, number, balance, limit) {
+  _currentCardId = id;
   const sId = sanitize(id), sUser = sanitize(user), sType = sanitize(type), sNumber = sanitize(number);
-  document.getElementById('modal-card-title').textContent = `💳 Carte #${sId}`;
+  document.getElementById('modal-card-title').textContent = `💳 Carte #${sId.slice(0,8)}`;
   document.getElementById('modal-card-body').innerHTML = `
-    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace">#${sId}</span></div>
+    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace;font-size:11px">${sId}</span></div>
     <div class="detail-row"><span class="detail-label">Utilisateur</span><span class="detail-value">${sUser}</span></div>
     <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${sType}</span></div>
     <div class="detail-row"><span class="detail-label">Numéro (masqué)</span><span class="detail-value">${sNumber}</span></div>
     <div class="detail-row"><span class="detail-label">Solde</span><span class="detail-value" style="color:var(--green);font-weight:700">$${parseFloat(balance||0).toFixed(2)}</span></div>
-    <div class="detail-row"><span class="detail-label">Limite mensuelle</span><span class="detail-value">$${parseFloat(limit||0).toFixed(0)}</span></div>
+    <div class="detail-row">
+      <span class="detail-label">Limite mensuelle</span>
+      <span class="detail-value" style="display:flex;align-items:center;gap:8px">
+        <input id="cardLimitInput" type="number" value="${parseFloat(limit||0).toFixed(0)}" style="width:120px;padding:4px 8px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px">
+        <button onclick="saveCardLimit('${sId}')" class="btn btn-success btn-sm">💾 Sauvegarder</button>
+      </span>
+    </div>
   `;
   openModal('modal-card');
 }
 
+async function saveCardLimit(cardId) {
+  const val = parseFloat(document.getElementById('cardLimitInput')?.value || 0);
+  if (!val || val <= 0) { showToast('Montant invalide', 'error'); return; }
+  try {
+    const { error } = await sb.from('cards').update({ monthly_limit: val }).eq('id', cardId);
+    if (error) throw error;
+    showToast(`✅ Limite mise à jour: $${val.toLocaleString()}`, 'success');
+    await sb.from('audit_logs').insert({ action: 'card_limit_updated', metadata: { card_id: cardId, new_limit: val } });
+    await loadCards();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
+async function toggleCardBlock(cardId, block) {
+  const newStatus = block ? 'blocked' : 'active';
+  try {
+    const { error } = await sb.from('cards').update({ status: newStatus }).eq('id', cardId);
+    if (error) throw error;
+    await sb.from('audit_logs').insert({ action: block ? 'card_blocked' : 'card_unblocked', metadata: { card_id: cardId } });
+    // Insert notification for user
+    const { data: card } = await sb.from('cards').select('user_id').eq('id', cardId).single();
+    if (card?.user_id) {
+      await sb.from('notifications').insert({
+        user_id: card.user_id,
+        type: block ? 'card_blocked' : 'card_unblocked',
+        message: block
+          ? '🚫 Votre carte a été temporairement bloquée. Contactez le support.'
+          : '✅ Votre carte a été débloquée et est à nouveau opérationnelle.'
+      });
+    }
+    showToast(block ? '🚫 Carte bloquée' : '✅ Carte débloquée', block ? 'error' : 'success');
+    await loadCards();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
+async function activateCard(cardId) {
+  try {
+    const { error } = await sb.from('cards').update({ status: 'active' }).eq('id', cardId);
+    if (error) throw error;
+    await sb.from('audit_logs').insert({ action: 'card_activated', metadata: { card_id: cardId } });
+    const { data: card } = await sb.from('cards').select('user_id').eq('id', cardId).single();
+    if (card?.user_id) {
+      await sb.from('notifications').insert({
+        user_id: card.user_id,
+        type: 'card_activated',
+        message: '✅ Votre carte a été activée et est prête à l\'emploi.'
+      });
+    }
+    showToast('✅ Carte activée', 'success');
+    await loadCards();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
 async function blockCardReal(cardId) {
-  await sb.from('cards').update({ status: 'blocked' }).eq('id', cardId);
-  showToast(t('admin.toast.card_blocked'), 'error');
-  await loadCards();
+  await toggleCardBlock(cardId, true);
 }
 
 async function loadTransactions() {
@@ -1067,14 +1149,21 @@ async function loadTransactions() {
       // AML: flag transactions > 10,000 (AMLD5 threshold)
       const flagged = parseFloat(t.amount || 0) > 10000;
       const isCredit = t.type === 'deposit' || t.type === 'yield' || t.type === 'commission';
-      const sFirst = sanitize(t.profiles?.first_name||''), sLast = sanitize(t.profiles?.last_name||''), sType = sanitize(t.type||''), sCurrency = sanitize(t.currency||'USD'), sStatus = sanitize(t.status||'');
-      return `<tr style="${flagged ? 'background:rgba(239,68,68,0.04)' : ''}">
+      const isPendingWithdrawal = t.type === 'withdrawal' && t.status === 'pending';
+      const sFirst = sanitize(t.profiles?.first_name||''), sLast = sanitize(t.profiles?.last_name||''), sType = sanitize(t.type||''), sCurrency = sanitize(t.currency||'USD'), sStatus = sanitize(t.status||''), sTxId = sanitize(t.id), sUserId = sanitize(t.user_id||'');
+      return `<tr style="${flagged ? 'background:rgba(239,68,68,0.06)' : ''}">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sanitize(t.id.slice(0,8))}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
         <td><span class="badge badge-violet">${sType}</span></td>
         <td style="${isCredit ? 'color:var(--green)' : ''};font-weight:600">${isCredit ? '+' : '-'}$${parseFloat(t.amount||0).toFixed(2)}${flagged ? ' 🚨' : ''}</td>
         <td><span class="badge badge-gray">${sCurrency}</span></td>
-        <td><span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${sStatus}</span></td>
+        <td>
+          <span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${sStatus}</span>
+          ${isPendingWithdrawal ? `<div style="display:flex;gap:4px;margin-top:4px">
+            <button class="btn btn-success btn-sm" onclick="approveWithdrawal('${sTxId}','${sUserId}')">✓ OK</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectWithdrawal('${sTxId}','${sUserId}')">✗ KO</button>
+          </div>` : ''}
+        </td>
         <td style="color:var(--text3)">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
       </tr>`;
     }).join('');
@@ -1083,69 +1172,196 @@ async function loadTransactions() {
 
 async function loadKYCPending() {
   try {
-    const { data: pending } = await sb.from('profiles')
-      .select('*')
-      .eq('kyc_status', 'pending')
-      .order('created_at', { ascending: false });
+    const [{ data: pending }, { data: kycDocs }] = await Promise.all([
+      sb.from('profiles').select('*').eq('kyc_status', 'pending').order('created_at', { ascending: false }),
+      sb.from('kyc_documents').select('*').eq('status', 'pending').order('created_at', { ascending: false })
+    ]);
 
     const grid = document.getElementById('kyc-grid');
     if (!grid) return;
 
-    if (!pending?.length) {
+    // Merge: users with pending profile status + users who submitted docs
+    const allPending = [...(pending || [])];
+    // Add doc-only submissions not already in pending list
+    if (kycDocs) {
+      const pendingIds = new Set(allPending.map(p => p.id));
+      // Get unique user IDs from kyc_documents not already in pending
+      const extraIds = [...new Set(kycDocs.map(d => d.user_id))].filter(id => !pendingIds.has(id));
+      if (extraIds.length > 0) {
+        const { data: extraProfiles } = await sb.from('profiles').select('*').in('id', extraIds);
+        if (extraProfiles) allPending.push(...extraProfiles);
+      }
+    }
+
+    if (!allPending.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px">✅ Aucun dossier KYC en attente</div>';
+      const badge = document.getElementById('kyc-count-badge');
+      if (badge) badge.textContent = '0 dossiers';
+      const kycBadge = document.getElementById('kyc-badge');
+      if (kycBadge) kycBadge.textContent = '0';
       return;
     }
 
     const badge = document.getElementById('kyc-count-badge');
-    if (badge) badge.textContent = `${pending.length} dossiers`;
+    if (badge) badge.textContent = `${allPending.length} dossiers`;
     const kycBadge = document.getElementById('kyc-badge');
-    if (kycBadge) kycBadge.textContent = pending.length;
+    if (kycBadge) kycBadge.textContent = allPending.length;
 
-    grid.innerHTML = pending.map((p, i) => `
-      <div class="kyc-card" id="kyc-card-${i}">
-        <div class="kyc-name">${p.first_name || p.email} ${p.last_name || ''}</div>
-        <div class="kyc-meta">Tier ${(p.kyc_tier||0)+1} demandé · ${new Date(p.created_at).toLocaleDateString('fr-FR')}</div>
-        <div class="kyc-docs">🪪 🤳</div>
-        <div class="kyc-actions">
-          <button class="btn btn-success btn-sm" onclick="approveKYCReal('${p.id}', ${i})">✓ Approuver</button>
-          <button class="btn btn-danger btn-sm" onclick="rejectKYCReal('${p.id}', ${i})">✗ Rejeter</button>
+    // Build doc map by user_id
+    const docMap = {};
+    if (kycDocs) kycDocs.forEach(d => {
+      if (!docMap[d.user_id]) docMap[d.user_id] = [];
+      docMap[d.user_id].push(d);
+    });
+
+    grid.innerHTML = allPending.map((p, i) => {
+      const docs = docMap[p.id] || [];
+      const docTypes = docs.map(d => sanitize(d.type || 'Document')).join(', ') || 'Non spécifié';
+      const latestDoc = docs[0];
+      const docDate = latestDoc ? new Date(latestDoc.created_at).toLocaleDateString('fr-FR') : new Date(p.created_at).toLocaleDateString('fr-FR');
+      return `
+        <div class="kyc-card" id="kyc-card-${i}">
+          <div class="kyc-name">${sanitize(p.first_name || p.email)} ${sanitize(p.last_name || '')}</div>
+          <div class="kyc-meta">Tier ${(p.kyc_tier||0)+1} demandé · ${docDate}</div>
+          <div class="kyc-docs">🪪 ${docs.length > 0 ? '📄' : '🤳'}</div>
+          ${docs.length > 0 ? `<div style="font-size:11px;color:var(--text3);margin-bottom:10px">Documents: ${docTypes}</div>` : ''}
+          <div class="kyc-actions">
+            <button class="btn btn-success btn-sm" onclick="approveKYCReal('${sanitize(p.id)}', ${i})">✓ Approuver</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectKYCReal('${sanitize(p.id)}', ${i})">✗ Rejeter</button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   } catch(e) { console.error('loadKYCPending error:', e); }
 }
 
 async function approveKYCReal(userId, cardIndex) {
-  await sb.from('profiles').update({ kyc_status: 'approved', kyc_tier: 1 }).eq('id', userId);
-  await sb.from('audit_logs').insert({ user_id: userId, action: 'kyc_approved', metadata: { approved_by: 'admin' } });
-  const card = document.getElementById('kyc-card-' + cardIndex);
-  if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
-  showToast(t('admin.kyc.approve'), 'success');
-  await loadKPIs();
+  try {
+    // Get current tier first to increment it
+    const { data: prof } = await sb.from('profiles').select('kyc_tier').eq('id', userId).single();
+    const newTier = (prof?.kyc_tier || 0) + 1;
+    await sb.from('profiles').update({ kyc_status: 'approved', kyc_tier: newTier }).eq('id', userId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'kyc_approved', metadata: { approved_by: 'admin', new_tier: newTier } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'kyc_approved',
+      message: `✅ Votre KYC a été approuvé ! Vous êtes maintenant Tier ${newTier}.`
+    });
+    const card = document.getElementById('kyc-card-' + cardIndex);
+    if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
+    showToast('✅ KYC approuvé — Tier ' + newTier, 'success');
+    await loadKPIs();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
 
 async function rejectKYCReal(userId, cardIndex) {
-  await sb.from('profiles').update({ kyc_status: 'rejected' }).eq('id', userId);
-  const card = document.getElementById('kyc-card-' + cardIndex);
-  if (card) { card.style.opacity = '0'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
-  showToast(t('admin.kyc.reject'), 'error');
+  try {
+    await sb.from('profiles').update({ kyc_status: 'rejected' }).eq('id', userId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'kyc_rejected', metadata: { rejected_by: 'admin' } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'kyc_rejected',
+      message: '❌ Votre demande KYC a été rejetée. Contactez le support pour plus d\'informations.'
+    });
+    const card = document.getElementById('kyc-card-' + cardIndex);
+    if (card) { card.style.opacity = '0'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
+    showToast('❌ KYC rejeté', 'error');
+    await loadKPIs();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
 
 function initRealtime() {
   sb.channel('admin-realtime')
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, (payload) => {
-      showToast(t('admin.toast.new_user') + payload.new.email, 'info');
+      showToast('👤 Nouvel utilisateur: ' + (payload.new.email || ''), 'info');
       loadKPIs();
       loadUsers();
     })
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, (payload) => {
-      if (parseFloat(payload.new.amount || 0) > 4000) {
-        showToast(t('admin.toast.suspicious') + payload.new.amount, 'error');
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, async (payload) => {
+      const amt = parseFloat(payload.new.amount || 0);
+      if (amt > 10000) {
+        showToast('🚨 Transaction suspecte: $' + amt.toLocaleString(), 'error');
+        await sb.from('audit_logs').insert({
+          user_id: payload.new.user_id,
+          action: 'aml_flag',
+          metadata: { transaction_id: payload.new.id, amount: amt, reason: 'amount_exceeds_10k' }
+        });
       }
-      loadTransactions();
+      // Animate new row
+      loadTransactions().then(() => {
+        const tbody = document.getElementById('tx-tbody');
+        if (tbody && tbody.firstElementChild) {
+          tbody.firstElementChild.style.animation = 'fadeInRow 0.5s ease';
+        }
+      });
       loadKPIs();
     })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'kyc_documents' }, () => {
+      showToast('📄 Nouveau document KYC soumis', 'info');
+      loadKYCPending();
+      loadKPIs();
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'cards' }, () => {
+      showToast('💳 Nouvelle demande de carte', 'info');
+      loadCards();
+    })
     .subscribe();
+}
+
+async function approveWithdrawal(txId, userId) {
+  try {
+    await sb.from('transactions').update({ status: 'completed' }).eq('id', txId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'withdrawal_approved', metadata: { transaction_id: txId } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'withdrawal_approved',
+      message: '✅ Votre demande de retrait a été approuvée et est en cours de traitement.'
+    });
+    showToast('✅ Retrait approuvé', 'success');
+    loadTransactions();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
+async function rejectWithdrawal(txId, userId) {
+  try {
+    await sb.from('transactions').update({ status: 'rejected' }).eq('id', txId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'withdrawal_rejected', metadata: { transaction_id: txId } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'withdrawal_rejected',
+      message: '❌ Votre demande de retrait a été rejetée. Contactez le support.'
+    });
+    showToast('❌ Retrait rejeté', 'error');
+    loadTransactions();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
+async function suspendUser(userId) {
+  try {
+    await sb.from('profiles').update({ account_status: 'suspended' }).eq('id', userId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'account_suspended', metadata: { by: 'admin' } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'account_suspended',
+      message: '⛔ Votre compte a été suspendu. Contactez le support pour plus d\'informations.'
+    });
+    showToast('⛔ Compte suspendu', 'error');
+    loadUsers();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
+}
+
+async function reactivateUser(userId) {
+  try {
+    await sb.from('profiles').update({ account_status: 'active' }).eq('id', userId);
+    await sb.from('audit_logs').insert({ user_id: userId, action: 'account_reactivated', metadata: { by: 'admin' } });
+    await sb.from('notifications').insert({
+      user_id: userId,
+      type: 'account_reactivated',
+      message: '✅ Votre compte a été réactivé. Bienvenue de retour !'
+    });
+    showToast('✅ Compte réactivé', 'success');
+    loadUsers();
+  } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
 
 // =========================================
@@ -1414,11 +1630,13 @@ function renderCards() {
 }
 
 function blockCard(id) {
+  // For legacy mock data IDs, just show confirm
+  // For real UUIDs, this won't be called (buttons directly call toggleCardBlock)
   document.getElementById('modal-confirm-title').textContent = '🚫 Confirmer blocage carte';
-  document.getElementById('modal-confirm-body').textContent = `Êtes-vous sûr de vouloir bloquer la carte ${sanitize(id)} ? Cette action peut être annulée en la réactivant.`;
+  document.getElementById('modal-confirm-body').textContent = `Êtes-vous sûr de vouloir bloquer cette carte ? Cette action peut être annulée.`;
   document.getElementById('modal-confirm-ok').onclick = async () => {
     closeModal('modal-confirm');
-    await blockCardReal(id);
+    await toggleCardBlock(id, true);
   };
   openModal('modal-confirm');
 }

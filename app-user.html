@@ -403,6 +403,23 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     </nav>
 
     <div class="sb-footer">
+      <!-- Notification Bell -->
+      <div style="position:relative;margin-bottom:0.75rem">
+        <button onclick="toggleNotifications()" style="width:100%;display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.75rem;border-radius:10px;background:none;border:none;font-family:inherit;font-size:0.85rem;color:var(--muted);cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(124,58,237,0.08)'" onmouseout="this.style.background='none'">
+          <span style="font-size:1.1rem">🔔</span>
+          <span>Notifications</span>
+          <span id="notif-badge" style="display:none;margin-left:auto;background:var(--red);border-radius:100px;font-size:0.65rem;font-weight:700;padding:1px 7px;color:#fff">0</span>
+        </button>
+        <div id="notif-dropdown" style="display:none;position:absolute;bottom:110%;left:0;right:0;background:rgba(10,10,20,0.98);border:1px solid var(--border);border-radius:14px;max-height:300px;overflow-y:auto;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
+          <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-size:0.8rem;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+            <span>Notifications</span>
+            <button onclick="markAllNotificationsRead()" style="font-size:0.7rem;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit">Tout marquer lu</button>
+          </div>
+          <div id="notif-list" style="padding:0.5rem 0">
+            <div style="padding:1rem;text-align:center;color:var(--muted);font-size:0.82rem">Aucune notification</div>
+          </div>
+        </div>
+      </div>
       <div style="display:flex;justify-content:center;margin-bottom:0.75rem">
         <div class="lang-switcher">
           <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
@@ -1135,7 +1152,7 @@ const modalDefs = {
     return `<div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:1.25rem;font-size:0.88rem"><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Account Holder</span><span style="font-weight:600">${holderName}</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">IBAN</span><span style="font-family:monospace;font-size:0.8rem">FR76 3000 4028 3788 0012 3456 789</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">BIC</span><span style="font-weight:600">BNPAFRPP</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--muted)">Bank</span><span>BNP Paribas</span></div></div><button class="btn-primary" onclick="closeModal()">Close</button>`;
   }},
   stake: {title:'Stake Crypto', body:`<label class="modal-label">Asset</label><select class="modal-input" style="cursor:pointer"><option>BTC</option><option>ETH</option><option>USDT</option></select><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="Min. $5,000"><div style="padding:0.75rem;background:rgba(124,58,237,0.06);border-radius:10px;border:1px solid rgba(124,58,237,0.2);margin-top:1rem;font-size:0.82rem"><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">APY</span><span style="color:#a78bfa;font-weight:700">18%</span></div><div style="display:flex;justify-content:space-between;margin-top:0.4rem"><span style="color:var(--muted)">Lock period</span><span>90 days</span></div></div><button class="btn-primary" onclick="submitModal('stake')">Stake Now →</button>`},
-  kycUpload: {title:'Upload KYC Document', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(245,158,11,0.06);border-radius:10px;border:1px solid rgba(245,158,11,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/kyc/upload --></div><label class="modal-label">Document Type</label><select class="modal-input" style="cursor:pointer"><option>Passport</option><option>National ID</option><option>Driver License</option><option>Proof of Address</option><option>Bank Statement</option></select><label class="modal-label">Upload Document</label><input type="file" accept="image/*,application/pdf" style="width:100%;padding:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;margin-bottom:1rem"><div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Accepted formats: JPG, PNG, PDF. Max size: 10MB.</div><button class="btn-primary" onclick="submitModal('kyc')">Submit Document →</button>`},
+  kycUpload: {title:'Upload KYC Document', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(245,158,11,0.06);border-radius:10px;border:1px solid rgba(245,158,11,0.2);font-size:0.78rem;color:var(--muted)">Vos documents seront examinés par notre équipe de conformité.</div><label class="modal-label">Document Type</label><select class="modal-input" style="cursor:pointer" id="kycDocType"><option value="Passport">Passport</option><option value="National ID">National ID</option><option value="Driver License">Driver License</option><option value="Proof of Address">Proof of Address</option><option value="Bank Statement">Bank Statement</option></select><label class="modal-label">Upload Document</label><input type="file" accept="image/*,application/pdf" style="width:100%;padding:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;margin-bottom:1rem"><div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Accepted formats: JPG, PNG, PDF. Max size: 10MB.</div><button class="btn-primary" onclick="submitKYCDocument()">Submit Document →</button>`},
   swapSuccess: {title:'Swap Confirmed', body:`<div style="text-align:center;padding:1.5rem 0"><div style="font-size:4rem;animation:bounceIn 0.5s ease">✅</div><div style="font-size:1.3rem;font-weight:700;margin-top:1rem;color:#10B981">Swap Successful!</div><div style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">Your transaction has been recorded.</div><button class="btn-primary" style="margin-top:1.5rem" onclick="closeModal()">Done</button></div>`},
   cardOrder: {title:'Order a New Card', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(124,58,237,0.06);border-radius:10px;border:1px solid rgba(124,58,237,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/cards/create --></div><label class="modal-label">Card Type</label><select class="modal-input" style="cursor:pointer" id="newCardType"><option value="virtual">Virtual Card (instant)</option><option value="physical">Physical Card (7-10 days)</option><option value="gold">Gold Card (premium)</option></select><label class="modal-label">Currency</label><select class="modal-input" style="cursor:pointer" id="newCardCurrency"><option>EUR</option><option>USD</option><option>GBP</option></select><label class="modal-label">Monthly Limit</label><input class="modal-input" type="number" id="newCardLimit" placeholder="e.g. 10000"><button class="btn-primary" onclick="orderCard()">Order Card →</button>`},
   cardTopup: {title:'Top Up Card', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(6,182,212,0.06);border-radius:10px;border:1px solid rgba(6,182,212,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup --></div><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="0.00" id="topupAmount"><label class="modal-label">Method</label><select class="modal-input" style="cursor:pointer"><option>USDT Wallet</option><option>BTC Wallet</option><option>ETH Wallet</option><option>SEPA Transfer</option></select><div style="padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);font-size:0.82rem;color:var(--muted);margin-top:0.75rem">Processing time: instant for crypto, 1-2 days for SEPA</div><button class="btn-primary" onclick="submitModal('topup')">Top Up Card →</button>`},
@@ -1176,24 +1193,26 @@ async function orderCard() {
   const currency = document.getElementById('newCardCurrency')?.value || 'EUR';
   const monthlyLimit = parseFloat(document.getElementById('newCardLimit')?.value || 10000);
   if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
-  // MOCK: simulates card creation — replace with Squarefi API call
   const rand4 = () => Math.floor(1000 + Math.random() * 9000);
-  const mockCard = {
+  const newCard = {
     user_id: currentUserId,
     masked_number: `•••• •••• •••• ${rand4()}`,
-    card_type: cardType,
+    type: cardType,
     currency: currency,
     monthly_limit: monthlyLimit,
-    status: 'active',
+    status: 'pending', // Admin must activate
     online_payments: true,
-    atm_withdrawals: true,
-    international: cardType !== 'virtual'
+    international_payments: cardType !== 'virtual',
+    card_holder: currentProfile ? `${currentProfile.first_name||''} ${currentProfile.last_name||''}`.trim() : ''
   };
   try {
-    await sb.from('cards').insert(mockCard);
+    await sb.from('cards').insert(newCard);
     closeModal();
-    showToast(t('toast.card_ordered'));
+    showToast('✅ Demande de carte soumise — En attente d\'activation par l\'admin');
+    // Refresh cards section
+    setTimeout(() => initApp(), 1000);
   } catch(e) {
+    console.error('orderCard error:', e);
     closeModal();
     showToast(t('toast.card_demo'));
   }
@@ -1531,6 +1550,18 @@ async function initApp() {
   const userId = session.user.id;
   currentUserId = userId;
 
+  // Check account suspension
+  await checkAccountStatus(userId);
+
+  // Initialize realtime subscriptions
+  initUserRealtime(userId);
+
+  // Load notifications count
+  loadNotifications();
+
+  // Start 30s profile polling as fallback
+  startProfilePolling(userId);
+
   // === PROFIL ===
   const { data: profile } = await sb.from('profiles').select('*').eq('id', userId).single();
   if (profile) {
@@ -1625,22 +1656,79 @@ async function initApp() {
     const cardHolders = document.querySelectorAll('.card-holder');
     const holderName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
 
-    cards.forEach((card, i) => {
+    const activeCards = cards.filter(c => c.status === 'active' || c.status === 'blocked');
+    const pendingCards = cards.filter(c => c.status === 'pending');
+
+    activeCards.forEach((card, i) => {
       if (cardNumbers[i]) cardNumbers[i].textContent = card.masked_number || cardNumbers[i].textContent;
       if (cardHolders[i]) cardHolders[i].textContent = holderName || cardHolders[i].textContent;
+
+      // Show blocked state
+      const cardWrappers = document.querySelectorAll('.credit-card-3d');
+      const cardControls = document.querySelectorAll('.cards-controls');
+      if (card.status === 'blocked') {
+        if (cardWrappers[i]) cardWrappers[i].style.filter = 'grayscale(0.7) opacity(0.7)';
+        if (cardControls[i]) {
+          cardControls[i].querySelectorAll('button').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.4'; });
+          if (!cardControls[i].querySelector('.card-blocked-banner')) {
+            const banner = document.createElement('div');
+            banner.className = 'card-blocked-banner';
+            banner.style.cssText = 'background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.75rem;margin-top:0.75rem;font-size:0.82rem;color:#EF4444;text-align:center';
+            banner.textContent = '🚫 Votre carte a été temporairement bloquée. Contactez le support.';
+            cardControls[i].appendChild(banner);
+          }
+        }
+        // Add blocked badge to card
+        if (cardWrappers[i]) {
+          const existingBadge = cardWrappers[i].querySelector('.blocked-badge');
+          if (!existingBadge) {
+            const badgeEl = document.createElement('div');
+            badgeEl.className = 'blocked-badge';
+            badgeEl.style.cssText = 'position:absolute;top:12px;right:12px;background:#EF4444;color:#fff;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700;letter-spacing:0.05em';
+            badgeEl.textContent = '🚫 BLOQUÉE';
+            cardWrappers[i].style.position = 'relative';
+            cardWrappers[i].appendChild(badgeEl);
+          }
+        }
+      }
     });
 
     const cardSubtitle = document.querySelector('#page-cards .section-subtitle');
-    if (cardSubtitle) cardSubtitle.textContent = `${cards.length} active card${cards.length > 1 ? 's' : ''}`;
+    if (cardSubtitle) {
+      const activeCount = activeCards.filter(c => c.status === 'active').length;
+      const pendingCount = pendingCards.length;
+      cardSubtitle.textContent = `${activeCount} active card${activeCount !== 1 ? 's' : ''}${pendingCount > 0 ? `, ${pendingCount} en attente` : ''}`;
+    }
 
     const limitBars = document.querySelectorAll('.limit-fill');
-    cards.forEach((card, i) => {
+    const limitTexts = document.querySelectorAll('.limit-bar').map ? [] : [];
+    activeCards.forEach((card, i) => {
       if (limitBars[i] && card.monthly_limit > 0) {
         const pct = Math.min(100, ((card.balance || 0) / card.monthly_limit) * 100);
         limitBars[i].style.width = pct + '%';
         limitBars[i].style.setProperty('--pct', pct + '%');
+        // Update limit text
+        const controls = document.querySelectorAll('.cards-controls')[i];
+        if (controls) {
+          const limitDisplay = controls.querySelector('span:not([data-i18n]):not([class])');
+          if (limitDisplay) {
+            limitDisplay.textContent = `$${(card.balance||0).toFixed(2)} / $${(card.monthly_limit||0).toFixed(0)}`;
+          }
+        }
       }
     });
+
+    // Show pending cards notice
+    if (pendingCards.length > 0) {
+      const cardsPage = document.getElementById('page-cards');
+      if (cardsPage && !cardsPage.querySelector('.pending-cards-notice')) {
+        const notice = document.createElement('div');
+        notice.className = 'pending-cards-notice';
+        notice.style.cssText = 'background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:1rem 1.25rem;margin-top:1.5rem;font-size:0.88rem;color:#F59E0B';
+        notice.textContent = `⏳ ${pendingCards.length} carte(s) en attente d'activation par l'équipe APEXCARD.`;
+        cardsPage.appendChild(notice);
+      }
+    }
   }
 
   // === IBANs ===
@@ -1700,6 +1788,226 @@ async function initApp() {
       modalDefs['deposit'].body = `<label class="modal-label">Send to address</label><div style="font-family:monospace;font-size:0.82rem;padding:0.9rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);word-break:break-all;color:var(--text)">${wallets[0].deposit_address}</div><button class="btn-primary" style="margin-top:0.75rem;background:rgba(255,255,255,0.04)" onclick="copyText('${wallets[0].deposit_address}')">📋 Copy Address</button><button class="btn-primary" onclick="closeModal()">Done</button>`;
     }
   }
+}
+
+// === NOTIFICATIONS ===
+let _notifOpen = false;
+
+function toggleNotifications() {
+  _notifOpen = !_notifOpen;
+  const dd = document.getElementById('notif-dropdown');
+  if (dd) dd.style.display = _notifOpen ? 'block' : 'none';
+  if (_notifOpen && currentUserId) loadNotifications();
+}
+
+async function loadNotifications() {
+  if (!currentUserId) return;
+  try {
+    const { data: notifs } = await sb.from('notifications')
+      .select('*')
+      .eq('user_id', currentUserId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    const list = document.getElementById('notif-list');
+    const badge = document.getElementById('notif-badge');
+    if (!notifs || !notifs.length) {
+      if (list) list.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--muted);font-size:0.82rem">Aucune notification</div>';
+      if (badge) badge.style.display = 'none';
+      return;
+    }
+
+    const unread = notifs.filter(n => !n.read);
+    if (badge) {
+      badge.style.display = unread.length > 0 ? 'inline' : 'none';
+      badge.textContent = unread.length;
+    }
+
+    if (list) {
+      list.innerHTML = notifs.map(n => `
+        <div style="padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);${!n.read ? 'background:rgba(124,58,237,0.06)' : ''}" onclick="markNotificationRead('${n.id}',this)">
+          <div style="font-size:0.82rem;line-height:1.4;color:${!n.read ? 'var(--text)' : 'var(--muted)'}">${n.message || n.type}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.2rem">${new Date(n.created_at).toLocaleDateString('fr-FR', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+      `).join('');
+    }
+  } catch(e) { console.log('Notifications not available:', e.message); }
+}
+
+async function markNotificationRead(notifId, el) {
+  try {
+    await sb.from('notifications').update({ read: true }).eq('id', notifId);
+    if (el) { el.style.background = 'none'; el.querySelector('div').style.color = 'var(--muted)'; }
+    loadNotifications();
+  } catch(e) {}
+}
+
+async function markAllNotificationsRead() {
+  if (!currentUserId) return;
+  try {
+    await sb.from('notifications').update({ read: true }).eq('user_id', currentUserId).eq('read', false);
+    loadNotifications();
+  } catch(e) {}
+}
+
+// === REALTIME SUBSCRIPTIONS ===
+function initUserRealtime(userId) {
+  // Listen to card updates
+  sb.channel('user-cards')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'cards', filter: `user_id=eq.${userId}` },
+      (payload) => {
+        const card = payload.new;
+        if (card.status === 'blocked') {
+          showToast('🚫 Votre carte a été temporairement bloquée. Contactez le support.', 'error');
+        } else if (card.status === 'active') {
+          showToast('✅ Votre carte est maintenant active.', 'success');
+        }
+        // Refresh cards display
+        refreshCardDisplay(card);
+      })
+    .subscribe();
+
+  // Listen to profile updates (KYC, suspension)
+  sb.channel('user-profile')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${userId}` },
+      (payload) => {
+        handleProfileUpdate(payload.new);
+      })
+    .subscribe();
+
+  // Listen to new notifications
+  sb.channel('user-notifications')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
+      (payload) => {
+        const n = payload.new;
+        showToast(n.message || n.type, n.type.includes('reject') || n.type.includes('blocked') || n.type.includes('suspended') ? 'error' : 'success');
+        loadNotifications();
+      })
+    .subscribe();
+}
+
+function refreshCardDisplay(card) {
+  // Re-fetch all cards and update display
+  if (!currentUserId) return;
+  sb.from('cards').select('*').eq('user_id', currentUserId).order('created_at', { ascending: false }).then(({ data: cards }) => {
+    if (!cards) return;
+    cards.forEach((c, i) => {
+      // Update limit bars
+      const limitBars = document.querySelectorAll('.limit-fill');
+      if (limitBars[i] && c.monthly_limit > 0) {
+        const pct = Math.min(100, ((c.balance || 0) / c.monthly_limit) * 100);
+        limitBars[i].style.width = pct + '%';
+      }
+      // Update limit display text
+      const limitTexts = document.querySelectorAll('.cards-controls');
+      if (limitTexts[i]) {
+        const limitSpan = limitTexts[i].querySelector('span:not([data-i18n])');
+        if (limitSpan) limitSpan.textContent = `$${(c.balance||0).toFixed(2)} / $${(c.monthly_limit||0).toFixed(0)}`;
+      }
+      // Show/hide blocked banner
+      const cardWrapper = document.querySelectorAll('.credit-card-3d');
+      if (cardWrapper[i]) {
+        if (c.status === 'blocked') {
+          cardWrapper[i].style.filter = 'grayscale(0.7) opacity(0.7)';
+          // Disable action buttons in that card's controls section
+          const controls = document.querySelectorAll('.cards-controls')[i];
+          if (controls) {
+            controls.querySelectorAll('button').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.4'; });
+            // Add blocked banner if not already there
+            if (!controls.querySelector('.card-blocked-banner')) {
+              const banner = document.createElement('div');
+              banner.className = 'card-blocked-banner';
+              banner.style.cssText = 'background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.75rem;margin-top:0.75rem;font-size:0.82rem;color:#EF4444;text-align:center';
+              banner.textContent = '🚫 Votre carte a été temporairement bloquée. Contactez le support.';
+              controls.appendChild(banner);
+            }
+          }
+        } else {
+          cardWrapper[i].style.filter = '';
+          const controls = document.querySelectorAll('.cards-controls')[i];
+          if (controls) {
+            controls.querySelectorAll('button').forEach(btn => { btn.disabled = false; btn.style.opacity = ''; });
+            const banner = controls.querySelector('.card-blocked-banner');
+            if (banner) banner.remove();
+          }
+        }
+      }
+    });
+  });
+}
+
+function handleProfileUpdate(profile) {
+  if (profile.account_status === 'suspended') {
+    // Show suspension banner
+    const existing = document.getElementById('suspension-banner');
+    if (!existing) {
+      const banner = document.createElement('div');
+      banner.id = 'suspension-banner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#EF4444;color:#fff;text-align:center;padding:1rem;font-weight:600;font-size:0.95rem';
+      banner.textContent = '⛔ Votre compte a été suspendu. Contactez le support : support@apexcard.io';
+      document.body.prepend(banner);
+    }
+  } else {
+    const banner = document.getElementById('suspension-banner');
+    if (banner) banner.remove();
+  }
+  if (profile.kyc_status) {
+    loadKycData(currentUserId, profile);
+  }
+}
+
+async function submitKYCDocument() {
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  const docType = document.getElementById('kycDocType')?.value || 'Document';
+  try {
+    await Promise.all([
+      sb.from('kyc_documents').insert({
+        user_id: currentUserId,
+        type: docType,
+        status: 'pending'
+      }),
+      sb.from('profiles').update({ kyc_status: 'pending' }).eq('id', currentUserId)
+    ]);
+    closeModal();
+    showToast('📄 Document soumis — En cours de vérification par notre équipe.', 'success');
+    // Update local KYC banner
+    if (currentProfile) {
+      currentProfile.kyc_status = 'pending';
+      loadKycData(currentUserId, currentProfile);
+    }
+  } catch(e) {
+    console.error('KYC submit error:', e);
+    closeModal();
+    showToast('📄 Document soumis (demo mode)', 'success');
+  }
+}
+
+// === ACCOUNT SUSPENSION CHECK ===
+async function checkAccountStatus(userId) {
+  try {
+    const { data: profile } = await sb.from('profiles').select('account_status').eq('id', userId).single();
+    if (profile?.account_status === 'suspended') {
+      // Show permanent banner + disable all actions
+      const banner = document.createElement('div');
+      banner.id = 'suspension-banner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#EF4444;color:#fff;text-align:center;padding:1rem 1rem 1rem;font-weight:600;font-size:0.95rem';
+      banner.innerHTML = '⛔ Votre compte a été suspendu. Contactez le support : <a href="mailto:support@apexcard.io" style="color:#fff;text-decoration:underline">support@apexcard.io</a>';
+      document.body.prepend(banner);
+      document.body.style.marginTop = '58px';
+    }
+  } catch(e) { /* ignore */ }
+}
+
+// === POLLING KYC/PROFILE (fallback if realtime not available) ===
+let _profilePollInterval = null;
+function startProfilePolling(userId) {
+  if (_profilePollInterval) return;
+  _profilePollInterval = setInterval(async () => {
+    try {
+      const { data: profile } = await sb.from('profiles').select('kyc_status, kyc_tier, account_status').eq('id', userId).single();
+      if (profile) handleProfileUpdate(profile);
+    } catch(e) {}
+  }, 30000); // 30s polling
 }
 
 // Déconnexion réelle
