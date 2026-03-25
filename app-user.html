@@ -398,7 +398,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     </nav>
 
     <div class="sb-footer">
-      <button class="logout-btn" onclick="window.location.href='index.html'">⬡ Sign Out</button>
+      <button class="logout-btn" onclick="doLogout()">⬡ Sign Out</button>
     </div>
   </aside>
 
@@ -1027,39 +1027,112 @@ async function initApp() {
 
   const userId = session.user.id;
 
-  // Charger le profil
+  // === PROFIL ===
   const { data: profile } = await sb.from('profiles').select('*').eq('id', userId).single();
   if (profile) {
     const nameEl = document.querySelector('.sb-name');
     if (nameEl) nameEl.textContent = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || session.user.email;
-    // Update referral code if shown
+    const emailEl = document.querySelector('.sb-email');
+    if (emailEl) emailEl.textContent = session.user.email;
     const refCodeEl = document.getElementById('refCode');
     if (refCodeEl && profile.referral_code) refCodeEl.textContent = profile.referral_code;
+    // Update avatar initials
+    const avatarEl = document.querySelector('.sb-avatar');
+    if (avatarEl && profile.first_name) {
+      const initials = ((profile.first_name || '')[0] || '') + ((profile.last_name || '')[0] || '');
+      avatarEl.querySelector('span') ? avatarEl.querySelector('span').textContent = initials : null;
+    }
+    // Tier badge
+    const tierBadgeEl = document.querySelector('.sb-tier-badge');
+    if (tierBadgeEl) tierBadgeEl.textContent = `TIER ${profile.kyc_tier || 0}`;
   }
 
-  // Charger les transactions
-  const { data: txs } = await sb.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(10);
+  // === TRANSACTIONS ===
+  const { data: txs } = await sb.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
   if (txs && txs.length > 0) {
     const txFeed = document.querySelector('.tx-feed');
     if (txFeed) {
-      txFeed.innerHTML = txs.map(tx => `
-        <div class="tx-row">
-          <div class="tx-icon">${tx.type === 'deposit' ? '⬇' : tx.type === 'withdrawal' ? '⬆' : tx.type === 'payment' ? '💳' : tx.type === 'yield' ? '📈' : '↔'}</div>
-          <div>
-            <div class="tx-name">${tx.description || tx.type}</div>
-            <div class="tx-date">${new Date(tx.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
+      txFeed.innerHTML = txs.map(tx => {
+        const isCredit = tx.type === 'deposit' || tx.type === 'yield' || tx.type === 'commission';
+        const icons = { deposit: '⬇', withdrawal: '⬆', payment: '💳', yield: '📈', swap: '↔', commission: '💰' };
+        return `
+          <div class="tx-row">
+            <div class="tx-icon">${icons[tx.type] || '↔'}</div>
+            <div>
+              <div class="tx-name">${tx.description || tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</div>
+              <div class="tx-date">${new Date(tx.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
+            </div>
+            <div class="tx-amount ${isCredit ? 'tx-up' : 'tx-dn'}">${isCredit ? '+' : '-'}$${Math.abs(parseFloat(tx.amount)).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} ${tx.currency || 'USD'}</div>
           </div>
-          <div class="tx-amount ${tx.type === 'deposit' || tx.type === 'yield' ? 'tx-up' : 'tx-dn'}">${tx.type === 'deposit' || tx.type === 'yield' ? '+' : '-'}${Math.abs(tx.amount).toLocaleString()} ${tx.currency}</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    // Balance totale = sum des deposits - sum des payments/withdrawals
+    const balance = txs.reduce((sum, tx) => {
+      const isCredit = tx.type === 'deposit' || tx.type === 'yield' || tx.type === 'commission';
+      return sum + (isCredit ? parseFloat(tx.amount||0) : -parseFloat(tx.amount||0));
+    }, 0);
+    if (balance > 0) {
+      animateCounter(document.getElementById('balanceCounter'), balance, '$');
     }
   }
 
-  // Charger les IBANs
+  // === CARTES ===
+  const { data: cards } = await sb.from('cards').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+  if (cards && cards.length > 0) {
+    // Update first card displayed
+    const cardNumbers = document.querySelectorAll('.card-number');
+    const cardHolders = document.querySelectorAll('.card-holder');
+    const holderName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
+
+    cards.forEach((card, i) => {
+      if (cardNumbers[i]) cardNumbers[i].textContent = card.masked_number || cardNumbers[i].textContent;
+      if (cardHolders[i]) cardHolders[i].textContent = holderName || cardHolders[i].textContent;
+    });
+
+    // Update subtitle
+    const cardSubtitle = document.querySelector('#page-cards .section-subtitle');
+    if (cardSubtitle) cardSubtitle.textContent = `${cards.length} active card${cards.length > 1 ? 's' : ''}`;
+
+    // Update limit bars based on real data
+    const limitBars = document.querySelectorAll('.limit-fill');
+    const limitTexts = document.querySelectorAll('.limit-bar + div, .limit-bar');
+    cards.forEach((card, i) => {
+      if (limitBars[i]) {
+        const pct = card.monthly_limit > 0 ? Math.min(100, (card.balance / card.monthly_limit) * 100) : 0;
+        limitBars[i].style.width = pct + '%';
+      }
+    });
+  }
+
+  // === IBANs ===
   const { data: ibans } = await sb.from('ibans').select('*').eq('user_id', userId);
   if (ibans && ibans.length > 0) {
-    const ibanEl = document.querySelector('.iban-number');
-    if (ibanEl) ibanEl.textContent = ibans[0].iban || ibanEl.textContent;
+    const ibanNumbers = document.querySelectorAll('.iban-number');
+    const ibanBalances = document.querySelectorAll('.iban-balance');
+    ibans.forEach((iban, i) => {
+      if (ibanNumbers[i] && iban.iban) ibanNumbers[i].textContent = iban.iban;
+      if (ibanBalances[i] && iban.balance != null) {
+        const symbol = iban.currency === 'EUR' ? '€' : iban.currency === 'GBP' ? '£' : '$';
+        ibanBalances[i].textContent = symbol + parseFloat(iban.balance).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+      }
+    });
+  }
+
+  // === WALLET CRYPTO ===
+  const { data: wallets } = await sb.from('wallets').select('*').eq('user_id', userId);
+  if (wallets && wallets.length > 0) {
+    // Update deposit address in modal if shown
+    const depositAddrEl = document.getElementById('depositAddress');
+    if (depositAddrEl && wallets[0].address) depositAddrEl.textContent = wallets[0].address;
+
+    // Update wallet values display
+    const walletKpis = document.querySelectorAll('#page-wallet .kpi-val');
+    if (wallets[0] && walletKpis[0]) {
+      const totalBalance = wallets.reduce((sum, w) => sum + parseFloat(w.balance_usd || 0), 0);
+      // Update total if element exists
+    }
   }
 }
 
@@ -1070,7 +1143,7 @@ async function doLogout() {
 }
 
 // Init app on load
-initApp();
+initApp().catch(e => console.error('initApp error:', e));
 </script>
 </body>
 </html>

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APEXCARD — Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -779,6 +780,234 @@ svg.chart{width:100%;overflow:visible}
 
 <script>
 // =========================================
+// SUPABASE ADMIN
+// =========================================
+const { createClient } = supabase;
+const sb = createClient(
+  'https://vhdgqtwsxasuggbeujoo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM4NTYzMiwiZXhwIjoyMDg5OTYxNjMyfQ.BU67jz4uBcDeYhWZcLGoTM3AtwOZIuevVMD71Mk60-k'
+);
+
+// Alias toast → showToast (defined later)
+function toast(msg, type='info') { showToast(msg, type); }
+
+async function initAdmin() {
+  await loadKPIs();
+  await loadUsers();
+  await loadCards();
+  await loadTransactions();
+  await loadKYCPending();
+  initRealtime();
+}
+
+async function loadKPIs() {
+  try {
+    const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
+    const { count: cardCount } = await sb.from('cards').select('*', { count: 'exact', head: true }).eq('status', 'active');
+    const thirtyDaysAgo = new Date(Date.now() - 30*24*60*60*1000).toISOString();
+    const { data: txData } = await sb.from('transactions').select('amount').eq('status', 'completed').gte('created_at', thirtyDaysAgo);
+    const volume = txData?.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0) || 0;
+    const { count: kycCount } = await sb.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_status', 'pending');
+
+    const kpiValues = document.querySelectorAll('.kpi-value');
+    if (kpiValues[0]) kpiValues[0].textContent = userCount?.toLocaleString() || '0';
+    if (kpiValues[1]) kpiValues[1].textContent = cardCount?.toLocaleString() || '0';
+    if (kpiValues[2]) kpiValues[2].textContent = '$' + (volume/1000).toFixed(1) + 'k';
+    if (kpiValues[3]) kpiValues[3].textContent = '$' + Math.round(volume * 0.035).toLocaleString();
+    // Update KYC badge in sidebar
+    const kycBadge = document.getElementById('kyc-badge');
+    if (kycBadge && kycCount !== null) kycBadge.textContent = kycCount;
+    const kycCountBadge = document.getElementById('kyc-count-badge');
+    if (kycCountBadge && kycCount !== null) kycCountBadge.textContent = `${kycCount} dossiers`;
+  } catch(e) { console.error('loadKPIs error:', e); }
+}
+
+async function loadUsers() {
+  try {
+    const { data: users } = await sb.from('profiles')
+      .select('id, email, first_name, last_name, plan, kyc_tier, kyc_status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (!users?.length) return;
+
+    const tbody = document.getElementById('users-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = users.map((u, i) => `
+      <tr onclick="openUserDetailModal('${u.first_name || ''} ${u.last_name || ''}', '${u.email}', '${u.plan || '-'}', '0', ${u.kyc_tier || 0}, '${u.kyc_status || 'pending'}')">
+        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${String(i+1).padStart(4,'0')}</span></td>
+        <td><b>${u.first_name || ''} ${u.last_name || ''}</b></td>
+        <td style="color:var(--text2)">${u.email || ''}</td>
+        <td><span class="badge ${(u.kyc_tier||0) >= 2 ? 'badge-violet' : (u.kyc_tier||0) === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${u.kyc_tier || 0}</span></td>
+        <td style="text-align:center">-</td>
+        <td><b>-</b></td>
+        <td style="color:var(--cyan)">-</td>
+        <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
+        <td><span class="badge ${u.kyc_status === 'approved' ? 'badge-green' : u.kyc_status === 'rejected' ? 'badge-red' : 'badge-gold'}">● ${u.kyc_status === 'approved' ? 'Actif' : u.kyc_status === 'rejected' ? 'Rejeté' : 'Pending'}</span></td>
+      </tr>
+    `).join('');
+
+    const h1 = document.querySelector('#page-users h1');
+    if (h1) h1.innerHTML = `Utilisateurs <span style="color:var(--text3);font-size:16px">(${users.length})</span>`;
+  } catch(e) { console.error('loadUsers error:', e); }
+}
+
+function openUserDetailModal(name, email, plan, balance, tier, status) {
+  document.getElementById('modal-user-title').textContent = `👤 ${name}`;
+  document.getElementById('modal-user-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">Nom</span><span class="detail-value">${name}</span></div>
+    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${email}</span></div>
+    <div class="detail-row"><span class="detail-label">Plan</span><span class="detail-value">${plan}</span></div>
+    <div class="detail-row"><span class="detail-label">KYC Tier</span><span class="detail-value"><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${tier}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${status === 'approved' ? 'badge-green' : status === 'rejected' ? 'badge-red' : 'badge-gold'}">${status}</span></span></div>
+  `;
+  openModal('modal-user');
+}
+
+async function loadCards() {
+  try {
+    const { data: cards } = await sb.from('cards')
+      .select('*, profiles(email, first_name, last_name)')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (!cards?.length) return;
+
+    const tbody = document.getElementById('cards-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = cards.map(c => `
+      <tr onclick="openCardDetailModal('${c.id.slice(0,8)}', '${(c.profiles?.first_name||'')} ${(c.profiles?.last_name||'')}', '${c.type}', '${c.masked_number || '•••• •••• •••• ????'}', '${c.balance}', '${c.monthly_limit}')">
+        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${c.id.slice(0,8)}</span></td>
+        <td><b>${c.profiles?.first_name || ''} ${c.profiles?.last_name || ''}</b></td>
+        <td><span class="badge ${c.type === 'gold' ? 'badge-gold' : c.type === 'physical' ? 'badge-cyan' : 'badge-violet'}">${c.type}</span></td>
+        <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${c.masked_number || '•••• •••• •••• ????'}</td>
+        <td><span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-red'}">● ${c.status}</span></td>
+        <td style="color:var(--green);font-weight:600">$${parseFloat(c.balance||0).toFixed(2)}</td>
+        <td>$${parseFloat(c.monthly_limit||0).toFixed(0)}</td>
+        <td style="color:var(--text3)">${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();blockCardReal('${c.id}')">Bloquer</button></td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error('loadCards error:', e); }
+}
+
+function openCardDetailModal(id, user, type, number, balance, limit) {
+  document.getElementById('modal-card-title').textContent = `💳 Carte #${id}`;
+  document.getElementById('modal-card-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace">#${id}</span></div>
+    <div class="detail-row"><span class="detail-label">Utilisateur</span><span class="detail-value">${user}</span></div>
+    <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${type}</span></div>
+    <div class="detail-row"><span class="detail-label">Numéro</span><span class="detail-value">${number}</span></div>
+    <div class="detail-row"><span class="detail-label">Solde</span><span class="detail-value" style="color:var(--green);font-weight:700">$${parseFloat(balance||0).toFixed(2)}</span></div>
+    <div class="detail-row"><span class="detail-label">Limite mensuelle</span><span class="detail-value">$${parseFloat(limit||0).toFixed(0)}</span></div>
+  `;
+  openModal('modal-card');
+}
+
+async function blockCardReal(cardId) {
+  await sb.from('cards').update({ status: 'blocked' }).eq('id', cardId);
+  showToast('Carte bloquée', 'error');
+  await loadCards();
+}
+
+async function loadTransactions() {
+  try {
+    const { data: txs } = await sb.from('transactions')
+      .select('*, profiles(email, first_name, last_name)')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (!txs?.length) return;
+
+    const tbody = document.getElementById('tx-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = txs.map(t => {
+      const flagged = parseFloat(t.amount || 0) > 4000;
+      const isCredit = t.type === 'deposit' || t.type === 'yield' || t.type === 'commission';
+      return `<tr style="${flagged ? 'background:rgba(239,68,68,0.04)' : ''}">
+        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${t.id.slice(0,8)}</span></td>
+        <td><b>${t.profiles?.first_name || ''} ${t.profiles?.last_name || ''}</b></td>
+        <td><span class="badge badge-violet">${t.type}</span></td>
+        <td style="${isCredit ? 'color:var(--green)' : ''};font-weight:600">${isCredit ? '+' : '-'}$${parseFloat(t.amount||0).toFixed(2)}</td>
+        <td><span class="badge badge-gray">${t.currency || 'USD'}</span></td>
+        <td><span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${flagged ? '🚨 ' : ''}${t.status}</span></td>
+        <td style="color:var(--text3)">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error('loadTransactions error:', e); }
+}
+
+async function loadKYCPending() {
+  try {
+    const { data: pending } = await sb.from('profiles')
+      .select('*')
+      .eq('kyc_status', 'pending')
+      .order('created_at', { ascending: false });
+
+    const grid = document.getElementById('kyc-grid');
+    if (!grid) return;
+
+    if (!pending?.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text3);padding:40px">✅ Aucun dossier KYC en attente</div>';
+      return;
+    }
+
+    const badge = document.getElementById('kyc-count-badge');
+    if (badge) badge.textContent = `${pending.length} dossiers`;
+    const kycBadge = document.getElementById('kyc-badge');
+    if (kycBadge) kycBadge.textContent = pending.length;
+
+    grid.innerHTML = pending.map((p, i) => `
+      <div class="kyc-card" id="kyc-card-${i}">
+        <div class="kyc-name">${p.first_name || p.email} ${p.last_name || ''}</div>
+        <div class="kyc-meta">Tier ${(p.kyc_tier||0)+1} demandé · ${new Date(p.created_at).toLocaleDateString('fr-FR')}</div>
+        <div class="kyc-docs">🪪 🤳</div>
+        <div class="kyc-actions">
+          <button class="btn btn-success btn-sm" onclick="approveKYCReal('${p.id}', ${i})">✓ Approuver</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectKYCReal('${p.id}', ${i})">✗ Rejeter</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error('loadKYCPending error:', e); }
+}
+
+async function approveKYCReal(userId, cardIndex) {
+  await sb.from('profiles').update({ kyc_status: 'approved', kyc_tier: 1 }).eq('id', userId);
+  await sb.from('audit_logs').insert({ user_id: userId, action: 'kyc_approved', metadata: { approved_by: 'admin' } });
+  const card = document.getElementById('kyc-card-' + cardIndex);
+  if (card) { card.style.opacity = '0'; card.style.transform = 'scale(0.95)'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
+  showToast('✅ KYC approuvé — utilisateur notifié', 'success');
+  await loadKPIs();
+}
+
+async function rejectKYCReal(userId, cardIndex) {
+  await sb.from('profiles').update({ kyc_status: 'rejected' }).eq('id', userId);
+  const card = document.getElementById('kyc-card-' + cardIndex);
+  if (card) { card.style.opacity = '0'; card.style.transition = 'all 0.3s'; setTimeout(() => card.remove(), 300); }
+  showToast('❌ KYC rejeté', 'error');
+}
+
+function initRealtime() {
+  sb.channel('admin-realtime')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'profiles' }, (payload) => {
+      showToast(`🆕 Nouvel utilisateur : ${payload.new.email}`, 'info');
+      loadKPIs();
+      loadUsers();
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transactions' }, (payload) => {
+      if (parseFloat(payload.new.amount || 0) > 4000) {
+        showToast(`🚨 Transaction suspecte : $${payload.new.amount}`, 'error');
+      }
+      loadTransactions();
+      loadKPIs();
+    })
+    .subscribe();
+}
+
+// =========================================
 // DATA
 // =========================================
 const USERS = [
@@ -885,6 +1114,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   document.getElementById('topbar-date').textContent = now.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
+  // Load real data from Supabase
+  initAdmin().catch(console.error);
+
+  // Also render static fallbacks (will be overwritten by real data if available)
   renderTopUsers();
   renderUsers();
   renderCards();
