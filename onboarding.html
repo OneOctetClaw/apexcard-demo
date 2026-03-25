@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEXCARD — Ouvrir un compte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #030308;
+  --violet: #7C3AED;
+  --cyan: #06B6D4;
+  --gold: #F59E0B;
+  --green: #10B981;
+  --red: #EF4444;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.5);
+}
+html, body { height: 100%; }
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* ── BACKGROUND ─────────────────────────── */
+.bg-orbs {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+}
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15;
+}
+.orb-1 { width: 600px; height: 600px; background: var(--violet); top: -200px; left: -200px; animation: orbFloat 20s ease-in-out infinite; }
+.orb-2 { width: 400px; height: 400px; background: var(--cyan); top: 50%; right: -150px; animation: orbFloat 15s ease-in-out infinite reverse; }
+.orb-3 { width: 300px; height: 300px; background: var(--gold); bottom: -100px; left: 40%; animation: orbFloat 25s ease-in-out infinite 5s; }
+@keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+
+/* ── NAVBAR ─────────────────────────────── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(3,3,8,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-login { font-size: 14px; color: var(--text-muted); }
+.nav-login a { color: var(--cyan); font-weight: 500; }
+.nav-login a:hover { text-decoration: underline; }
+
+/* ── PROGRESS BAR ───────────────────────── */
+.onboarding-progress {
+  position: fixed; top: 65px; left: 0; right: 0; z-index: 99;
+  background: rgba(3,3,8,0.9); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px 0;
+}
+.steps-track {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; max-width: 700px; margin: 0 auto; overflow-x: auto;
+  scrollbar-width: none;
+}
+.steps-track::-webkit-scrollbar { display: none; }
+.step-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; flex: 1; min-width: 60px; position: relative; padding-bottom: 10px;
+}
+.step-item::after {
+  content: ''; position: absolute; top: 14px; left: 50%; width: 100%;
+  height: 1px; background: var(--border); z-index: -1;
+}
+.step-item:last-child::after { display: none; }
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-muted); transition: all 0.3s ease; position: relative; z-index: 1;
+}
+.step-item.active .step-dot {
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  border-color: transparent; color: white;
+  box-shadow: 0 0 20px rgba(124,58,237,0.5);
+}
+.step-item.done .step-dot {
+  background: var(--green); border-color: transparent; color: white;
+}
+.step-label {
+  font-size: 10px; color: var(--text-muted); white-space: nowrap; letter-spacing: 0.3px;
+}
+.step-item.active .step-label { color: var(--cyan); font-weight: 600; }
+.step-item.done .step-label { color: var(--green); }
+.progress-line {
+  height: 2px; background: var(--border); margin: 0 24px 0;
+  position: relative; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--violet), var(--cyan));
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+/* ── MAIN CONTENT ───────────────────────── */
+.main {
+  position: relative; z-index: 1;
+  padding-top: 130px; padding-bottom: 80px;
+  min-height: 100vh;
+}
+.steps-container {
+  max-width: 900px; margin: 0 auto; padding: 0 20px;
+  position: relative; overflow: hidden;
+}
+
+/* ── STEP ───────────────────────────────── */
+.step-content {
+  display: none; animation: stepIn 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.step-content.active { display: block; }
+.step-content.slide-out-left { animation: slideOutLeft 0.3s ease forwards; }
+.step-content.slide-in-right { animation: slideInRight 0.3s ease forwards; }
+.step-content.slide-out-right { animation: slideOutRight 0.3s ease forwards; }
+.step-content.slide-in-left { animation: slideInLeft 0.3s ease forwards; }
+
+@keyframes stepIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideOutLeft { to{opacity:0;transform:translateX(-60px)} }
+@keyframes slideInRight { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideOutRight { to{opacity:0;transform:translateX(60px)} }
+@keyframes slideInLeft { from{opacity:0;transform:translateX(-60px)} to{opacity:1;transform:translateX(0)} }
+
+.step-header {
+  text-align: center; margin-bottom: 40px;
+}
+.step-tag {
+  display: inline-block; padding: 4px 14px; border-radius: 20px;
+  background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+  font-size: 12px; font-weight: 600; color: var(--violet);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.step-title {
+  font-size: clamp(26px, 4vw, 38px); font-weight: 700; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 60%, rgba(255,255,255,0.6));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.step-subtitle { font-size: 15px; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+
+/* ── GLASS CARD ─────────────────────────── */
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+}
+.glass-sm { padding: 20px 24px; border-radius: 16px; }
+
+/* ── FORM ───────────────────────────────── */
+.form-group { margin-bottom: 20px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-label {
+  display: block; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7);
+  margin-bottom: 7px;
+}
+.form-label .optional { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+.input-wrap { position: relative; }
+.form-input {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 12px 44px 12px 14px;
+  color: var(--text); font-size: 15px; outline: none;
+  transition: all 0.2s ease;
+  -webkit-appearance: none;
+}
+.form-input:focus {
+  border-color: var(--violet);
+  background: rgba(124,58,237,0.08);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+}
+.form-input.valid { border-color: var(--green); background: rgba(16,185,129,0.05); }
+.form-input.invalid { border-color: var(--red); background: rgba(239,68,68,0.05); }
+.form-input::placeholder { color: rgba(255,255,255,0.25); }
+.input-icon {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; pointer-events: none;
+}
+.input-icon.clickable { pointer-events: all; cursor: pointer; }
+.error-msg {
+  font-size: 12px; color: var(--red); margin-top: 5px;
+  display: none; align-items: center; gap: 4px;
+}
+.error-msg.show { display: flex; }
+
+/* ── SELECT ─────────────────────────────── */
+.form-select {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 12px 40px 12px 14px;
+  color: var(--text); font-size: 15px; outline: none;
+  transition: all 0.2s ease; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+.form-select:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+}
+.form-select option { background: #1a1a2e; color: white; }
+
+/* ── PHONE INPUT ────────────────────────── */
+.phone-wrap { display: flex; gap: 8px; }
+.phone-prefix {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 12px 10px; color: var(--text);
+  font-size: 14px; outline: none; cursor: pointer; min-width: 90px;
+  appearance: none; font-family: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+}
+.phone-prefix:focus { border-color: var(--violet); outline: none; }
+.phone-input { flex: 1; }
+
+/* ── PASSWORD STRENGTH ──────────────────── */
+.pwd-strength { margin-top: 10px; }
+.pwd-bar {
+  height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-bottom: 6px;
+}
+.pwd-bar-fill {
+  height: 100%; width: 0; border-radius: 2px; transition: width 0.3s ease, background 0.3s ease;
+}
+.pwd-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.pwd-rules { display: flex; flex-wrap: wrap; gap: 6px; }
+.pwd-rule {
+  font-size: 11px; padding: 3px 8px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-muted); transition: all 0.2s;
+}
+.pwd-rule.ok { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: var(--green); }
+
+/* ── CHECKBOX ───────────────────────────── */
+.checkbox-wrap {
+  display: flex; align-items: flex-start; gap: 12px; cursor: pointer;
+  padding: 12px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  transition: background 0.2s;
+}
+.checkbox-wrap:hover { background: rgba(255,255,255,0.04); }
+.checkbox-wrap input[type="checkbox"] { display: none; }
+.checkbox-custom {
+  width: 20px; height: 20px; min-width: 20px; border-radius: 6px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: transparent; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.checkbox-wrap input:checked + .checkbox-custom {
+  background: var(--violet); border-color: var(--violet);
+}
+.checkbox-wrap input:checked + .checkbox-custom::after {
+  content: '✓'; color: white; font-size: 12px; font-weight: 700;
+}
+.checkbox-label { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+.checkbox-label a { color: var(--cyan); }
+
+/* ── BUTTONS ────────────────────────────── */
+.btn-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
+}
+.btn-back {
+  background: transparent; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 12px 24px;
+  color: rgba(255,255,255,0.6); font-size: 15px; font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-back:hover { background: rgba(255,255,255,0.05); color: white; }
+.btn-continue {
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  border: none; border-radius: 12px; padding: 14px 32px;
+  color: white; font-size: 15px; font-weight: 600;
+  transition: all 0.2s; min-width: 160px;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+}
+.btn-continue:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(124,58,237,0.4);
+}
+.btn-continue:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  border: none; border-radius: 12px; padding: 16px 32px;
+  color: white; font-size: 16px; font-weight: 600;
+  transition: all 0.2s; box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+  width: 100%; text-align: center; display: block;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
+.btn-ghost {
+  background: transparent; border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px; padding: 14px 28px; color: white;
+  font-size: 15px; font-weight: 500; transition: all 0.2s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+
+/* ── SECURITY FOOTER ────────────────────── */
+.security-footer {
+  text-align: center; margin-top: 28px;
+  font-size: 11px; color: rgba(255,255,255,0.3);
+  letter-spacing: 0.3px;
+}
+
+/* ── TOAST ──────────────────────────────── */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: rgba(20,20,40,0.95); border-radius: 12px; padding: 14px 20px;
+  border: 1px solid var(--border); backdrop-filter: blur(20px);
+  display: flex; align-items: center; gap: 10px; font-size: 14px;
+  animation: toastIn 0.3s ease; max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.success { border-color: rgba(16,185,129,0.4); }
+.toast.error { border-color: rgba(239,68,68,0.4); }
+@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateX(20px)} }
+
+/* ══════════════════════════════════════════
+   STEP 0 — PRICING
+══════════════════════════════════════════ */
+.plans-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  max-width: 900px; margin: 0 auto;
+}
+.plan-card {
+  background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px; padding: 28px;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative; display: flex; flex-direction: column; gap: 20px;
+  cursor: pointer;
+}
+.plan-card:hover { transform: scale(1.02); }
+.plan-card.starter:hover { box-shadow: 0 20px 60px rgba(6,182,212,0.15); }
+.plan-card.standard {
+  border-color: transparent;
+  background: linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) padding-box,
+              linear-gradient(135deg, var(--violet), var(--cyan), var(--violet)) border-box;
+  animation: borderGlow 3s linear infinite;
+  transform: scale(1.04);
+}
+.plan-card.standard:hover { transform: scale(1.06); }
+.plan-card.premium:hover { box-shadow: 0 20px 60px rgba(245,158,11,0.2); }
+@keyframes borderGlow {
+  0%{background: linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) padding-box, linear-gradient(135deg, var(--violet), var(--cyan)) border-box}
+  50%{background: linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) padding-box, linear-gradient(135deg, var(--cyan), var(--violet)) border-box}
+  100%{background: linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) padding-box, linear-gradient(135deg, var(--violet), var(--cyan)) border-box}
+}
+.plan-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  padding: 4px 16px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  white-space: nowrap;
+}
+.plan-icon { font-size: 36px; }
+.plan-name { font-size: 20px; font-weight: 700; }
+.plan-price { display: flex; align-items: baseline; gap: 4px; }
+.plan-price .amount { font-size: 36px; font-weight: 800; }
+.plan-price .period { font-size: 14px; color: var(--text-muted); }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.plan-features li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.75); }
+.plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 12px; }
+.plan-cta {
+  width: 100%; padding: 13px; border-radius: 12px;
+  font-size: 15px; font-weight: 600; transition: all 0.2s; border: none;
+  cursor: pointer;
+}
+.plan-card.starter .plan-cta {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: white;
+}
+.plan-card.starter .plan-cta:hover { background: rgba(255,255,255,0.12); }
+.plan-card.standard .plan-cta {
+  background: linear-gradient(135deg, var(--violet), var(--cyan)); color: white;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+}
+.plan-card.standard .plan-cta:hover { box-shadow: 0 8px 30px rgba(124,58,237,0.5); }
+.plan-card.premium .plan-cta {
+  background: linear-gradient(135deg, var(--gold), #f97316); color: white;
+  box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+}
+.plan-card.premium .plan-cta:hover { box-shadow: 0 8px 30px rgba(245,158,11,0.5); }
+.plans-note { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+
+/* ══════════════════════════════════════════
+   STEP 2 — EMAIL OTP
+══════════════════════════════════════════ */
+.otp-visual { text-align: center; margin-bottom: 32px; }
+.envelope-wrap { display: inline-block; position: relative; margin-bottom: 16px; }
+.envelope {
+  width: 80px; height: 56px; position: relative;
+  border: 2px solid rgba(124,58,237,0.5); border-radius: 4px;
+  background: rgba(124,58,237,0.1); margin: 0 auto;
+}
+.envelope-flap {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 28px; overflow: hidden;
+}
+.envelope-flap::before {
+  content: ''; position: absolute; left: -1px; right: -1px; top: 0;
+  border-left: 42px solid transparent;
+  border-right: 42px solid transparent;
+  border-top: 28px solid rgba(124,58,237,0.3);
+  animation: openFlap 2s ease infinite 0.5s;
+  transform-origin: top center; transform: scaleY(1);
+}
+@keyframes openFlap { 0%,100%{transform:scaleY(1)} 40%,60%{transform:scaleY(-1)} }
+.envelope-letter {
+  position: absolute; left: 10px; right: 10px; bottom: 4px; top: 16px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(6,182,212,0.3));
+  border-radius: 3px;
+  animation: letterBounce 2s ease infinite 0.5s;
+}
+@keyframes letterBounce { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-12px)} 60%{transform:translateY(-10px)} }
+.otp-email-hint { font-size: 14px; color: var(--text-muted); }
+.otp-email-hint strong { color: white; }
+
+.otp-inputs {
+  display: flex; gap: 10px; justify-content: center; margin: 28px 0;
+}
+.otp-input {
+  width: 52px; height: 60px; border-radius: 14px;
+  background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+  color: white; font-size: 24px; font-weight: 700; text-align: center;
+  outline: none; transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.otp-input:focus {
+  border-color: var(--violet);
+  background: rgba(124,58,237,0.1);
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.2);
+  transform: scale(1.05);
+}
+.otp-input.filled { border-color: rgba(124,58,237,0.4); }
+
+.otp-actions { text-align: center; }
+.resend-timer { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+.btn-resend {
+  background: transparent; border: none; color: var(--cyan);
+  font-size: 14px; font-weight: 500; cursor: pointer; display: none;
+}
+.btn-resend:hover { text-decoration: underline; }
+.btn-resend.visible { display: inline-block; }
+
+.otp-success {
+  display: none; flex-direction: column; align-items: center; gap: 12px;
+  padding: 24px; animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.otp-success.show { display: flex; }
+@keyframes successPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+.success-check {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(16,185,129,0.15); border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+
+/* ══════════════════════════════════════════
+   STEP 4 — KYC
+══════════════════════════════════════════ */
+.kyc-substeps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 32px;
+}
+.kyc-sub {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  flex: 1; max-width: 140px;
+}
+.kyc-sub-dot {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  transition: all 0.3s;
+}
+.kyc-sub.active .kyc-sub-dot {
+  background: rgba(124,58,237,0.2); border-color: var(--violet);
+  box-shadow: 0 0 20px rgba(124,58,237,0.4);
+}
+.kyc-sub.done .kyc-sub-dot {
+  background: rgba(16,185,129,0.15); border-color: var(--green);
+}
+.kyc-sub-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.kyc-sub.active .kyc-sub-label { color: var(--violet); }
+.kyc-sub.done .kyc-sub-label { color: var(--green); }
+.kyc-sub-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+
+.doc-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.doc-type-card {
+  background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 16px 12px; text-align: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.doc-type-card:hover { border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.05); }
+.doc-type-card.selected { border-color: var(--violet); background: rgba(124,58,237,0.1); }
+.doc-type-card .icon { font-size: 28px; margin-bottom: 6px; }
+.doc-type-card .label { font-size: 13px; font-weight: 500; }
+
+.upload-zone {
+  border: 2px dashed rgba(255,255,255,0.15); border-radius: 16px;
+  padding: 32px; text-align: center; cursor: pointer;
+  transition: all 0.2s; position: relative; overflow: hidden;
+  animation: dashAnim 20s linear infinite;
+}
+@keyframes dashAnim {
+  0%{border-color: rgba(255,255,255,0.15)} 50%{border-color: rgba(124,58,237,0.4)} 100%{border-color: rgba(255,255,255,0.15)}
+}
+.upload-zone:hover { background: rgba(124,58,237,0.05); border-color: rgba(124,58,237,0.4); }
+.upload-zone .icon { font-size: 40px; margin-bottom: 12px; }
+.upload-zone p { font-size: 14px; color: var(--text-muted); }
+.upload-zone p strong { color: white; }
+.upload-progress { display: none; margin-top: 16px; }
+.upload-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.upload-bar-fill {
+  height: 100%; width: 0; background: linear-gradient(90deg, var(--violet), var(--cyan));
+  transition: width 0.1s linear; border-radius: 2px;
+}
+.upload-done { display: none; color: var(--green); font-weight: 600; margin-top: 8px; font-size: 14px; }
+
+.camera-zone {
+  border: 2px solid rgba(124,58,237,0.3); border-radius: 20px;
+  aspect-ratio: 4/3; max-width: 400px; margin: 0 auto 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; background: rgba(0,0,0,0.3); position: relative; overflow: hidden;
+  animation: cameraBorder 3s ease infinite;
+}
+@keyframes cameraBorder {
+  0%,100%{border-color: rgba(124,58,237,0.3)} 50%{border-color: rgba(6,182,212,0.5)}
+}
+.camera-zone .camera-icon { font-size: 48px; opacity: 0.6; }
+.camera-zone p { font-size: 14px; color: var(--text-muted); text-align: center; }
+.selfie-instructions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; max-width: 400px; margin: 0 auto 20px;
+}
+.instr-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.03); font-size: 13px;
+}
+.instr-item.ok { color: var(--green); }
+.instr-item.no { color: var(--red); }
+
+.kyc-verify-steps { display: flex; flex-direction: column; gap: 16px; max-width: 400px; margin: 32px auto 0; }
+.verify-step {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 18px; border-radius: 14px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  opacity: 0.4; transition: all 0.5s;
+}
+.verify-step.active { opacity: 1; border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.05); }
+.verify-step.done { opacity: 1; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+.verify-dot {
+  width: 32px; height: 32px; border-radius: 50%; min-width: 32px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+}
+.verify-step.active .verify-dot { animation: spin 1s linear infinite; border-color: var(--violet); }
+.verify-step.done .verify-dot { background: rgba(16,185,129,0.15); border-color: var(--green); }
+@keyframes spin { to{transform:rotate(360deg)} }
+.verify-text { font-size: 14px; font-weight: 500; }
+.kyc-result { display: none; text-align: center; padding: 32px 24px; animation: successPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+.kyc-result.show { display: block; }
+.kyc-result .big-check { font-size: 60px; margin-bottom: 16px; display: block; }
+.kyc-result h3 { font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.kyc-result p { color: var(--text-muted); font-size: 15px; }
+
+/* ══════════════════════════════════════════
+   STEP 5 — CARD CONFIG
+══════════════════════════════════════════ */
+.card-config-layout { display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+.card-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.card-type-option {
+  background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 18px; cursor: pointer; transition: all 0.2s;
+}
+.card-type-option:hover { border-color: rgba(124,58,237,0.3); }
+.card-type-option.selected { border-color: var(--violet); background: rgba(124,58,237,0.08); }
+.card-type-option .icon { font-size: 28px; margin-bottom: 8px; }
+.card-type-option h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.card-type-option p { font-size: 12px; color: var(--text-muted); }
+
+.currency-pills { display: flex; gap: 8px; }
+.currency-pill {
+  padding: 10px 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.currency-pill.active {
+  background: rgba(124,58,237,0.2); border-color: var(--violet); color: white;
+}
+
+.pin-wrap { display: flex; align-items: center; gap: 12px; }
+.pin-input {
+  width: 52px; height: 56px; border-radius: 12px;
+  background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+  color: white; font-size: 24px; font-weight: 700; text-align: center;
+  outline: none; transition: all 0.2s;
+  -webkit-text-security: disc; /* Works in some browsers */
+}
+.pin-input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
+.pin-dots { display: flex; gap: 8px; align-items: center; }
+.pin-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+.pin-dot.filled { background: var(--violet); border-color: var(--violet); box-shadow: 0 0 8px rgba(124,58,237,0.5); }
+
+.limit-slider { width: 100%; -webkit-appearance: none; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; outline: none; }
+.limit-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--cyan)); cursor: pointer;
+  box-shadow: 0 0 8px rgba(124,58,237,0.5);
+}
+.limit-display {
+  display: flex; justify-content: space-between; font-size: 13px;
+  color: var(--text-muted); margin-top: 8px;
+}
+.limit-value { color: var(--cyan); font-weight: 700; font-size: 16px; }
+
+/* CARD PREVIEW */
+.card-preview-wrap { position: sticky; top: 160px; }
+.card-3d {
+  width: 100%; aspect-ratio: 1.586;
+  border-radius: 20px; padding: 24px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+}
+.card-3d:hover { transform: perspective(1000px) rotateY(-5deg) rotateX(3deg); }
+.card-gradient-standard { background: linear-gradient(135deg, #1a0a3e 0%, #2d1b69 50%, #0e4976 100%); }
+.card-gradient-premium { background: linear-gradient(135deg, #2d1a00 0%, #4a2c00 50%, #1a2d00 100%); }
+.card-gradient-starter { background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%); }
+.card-shimmer {
+  position: absolute; inset: 0; border-radius: 20px;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease infinite;
+}
+@keyframes shimmer { 0%{background-position:-100% 0} 100%{background-position:300% 0} }
+.card-chip {
+  width: 36px; height: 28px; border-radius: 5px;
+  background: linear-gradient(135deg, #d4af37, #f5d76e, #c8942a);
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+  gap: 2px; padding: 4px;
+}
+.card-chip div { background: rgba(0,0,0,0.2); border-radius: 2px; }
+.card-number { font-size: 15px; letter-spacing: 3px; color: rgba(255,255,255,0.7); font-weight: 500; }
+.card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.card-holder-name { font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.card-currency-badge {
+  font-size: 11px; background: rgba(255,255,255,0.15); border-radius: 6px;
+  padding: 3px 8px; font-weight: 700; letter-spacing: 1px;
+}
+.mastercard-logo { display: flex; gap: -6px; }
+.mc-circle { width: 28px; height: 28px; border-radius: 50%; opacity: 0.8; }
+.mc-left { background: #eb001b; margin-right: -10px; }
+.mc-right { background: #f79e1b; }
+.card-brand { font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.8); letter-spacing: 2px; margin-top: 4px; text-align: center; }
+.delivery-info {
+  background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 12px; padding: 14px 18px; margin-top: 16px;
+  font-size: 13px; color: rgba(255,255,255,0.7); display: none;
+}
+.delivery-info.show { display: block; }
+
+/* ══════════════════════════════════════════
+   STEP 6 — FUNDING
+══════════════════════════════════════════ */
+.funding-methods { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+.funding-tab {
+  padding: 10px 20px; border-radius: 12px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.funding-tab.active { background: rgba(124,58,237,0.15); border-color: var(--violet); color: white; }
+.funding-panel { display: none; }
+.funding-panel.active { display: block; animation: stepIn 0.3s ease; }
+
+.crypto-tokens { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.token-btn {
+  padding: 8px 16px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.token-btn.active { background: rgba(124,58,237,0.15); border-color: var(--violet); color: white; }
+.deposit-address-wrap {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+}
+.deposit-address {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px;
+  font-size: 12px; font-family: monospace; color: var(--cyan);
+  word-break: break-all; margin-bottom: 12px;
+}
+.copy-btn {
+  background: rgba(124,58,237,0.2); border: none; border-radius: 8px;
+  padding: 6px 10px; color: var(--violet); font-size: 12px; cursor: pointer;
+  white-space: nowrap; font-family: inherit;
+}
+.copy-btn:hover { background: rgba(124,58,237,0.3); }
+.qr-css {
+  width: 100px; height: 100px; margin: 0 auto 12px;
+  background: white; padding: 8px; border-radius: 8px;
+  display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px;
+}
+.qr-cell { border-radius: 1px; }
+.qr-cell.dark { background: #1a1a2e; }
+.qr-cell.light { background: white; }
+
+.amount-pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.amount-pill {
+  padding: 10px 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.amount-pill:hover { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.3); color: white; }
+.amount-pill.active { background: rgba(124,58,237,0.2); border-color: var(--violet); color: white; }
+
+.sepa-details {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+}
+.sepa-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.sepa-row:last-child { border-bottom: none; padding-bottom: 0; }
+.sepa-row .label { font-size: 13px; color: var(--text-muted); }
+.sepa-row .value { font-size: 13px; font-weight: 600; font-family: monospace; color: var(--cyan); }
+
+.skip-funding { text-align: center; margin-top: 16px; }
+.skip-link { background: none; border: none; color: var(--text-muted); font-size: 14px; cursor: pointer; }
+.skip-link:hover { color: white; text-decoration: underline; }
+
+/* ══════════════════════════════════════════
+   STEP 7 — WELCOME
+══════════════════════════════════════════ */
+.confetti-container {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200; overflow: hidden;
+}
+.confetti-piece {
+  position: absolute; width: 8px; height: 8px; border-radius: 2px;
+  animation: confettiFall linear forwards;
+  opacity: 0;
+}
+@keyframes confettiFall {
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+.welcome-content { text-align: center; }
+.welcome-card-appear {
+  animation: cardSurge 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s both;
+}
+@keyframes cardSurge {
+  from{transform:translateY(60px) scale(0.8);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+.welcome-card-wrap {
+  width: 220px; margin: 0 auto 32px; perspective: 1000px;
+}
+.welcome-check {
+  width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 24px;
+  background: rgba(16,185,129,0.15); border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  animation: checkPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s both;
+}
+@keyframes checkPop { from{transform:scale(0)} to{transform:scale(1)} }
+.check-svg { width: 36px; height: 36px; }
+.check-path {
+  stroke: var(--green); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  fill: none; stroke-dasharray: 60; stroke-dashoffset: 60;
+  animation: drawCheck 0.5s ease 1.2s forwards;
+}
+@keyframes drawCheck { to{stroke-dashoffset:0} }
+
+.welcome-title { font-size: clamp(28px, 5vw, 40px); font-weight: 800; margin-bottom: 8px; }
+.welcome-subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; }
+.summary-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; padding: 24px; margin-bottom: 28px; text-align: left;
+  max-width: 480px; margin-left: auto; margin-right: auto;
+}
+.summary-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row .s-label { font-size: 14px; color: var(--text-muted); }
+.summary-row .s-value { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.badge-ok { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: var(--green); font-size: 11px; padding: 2px 8px; border-radius: 6px; }
+
+.next-steps { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.next-step-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 16px 20px; cursor: pointer; transition: all 0.2s;
+  text-align: center; min-width: 130px;
+}
+.next-step-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-2px); border-color: rgba(124,58,237,0.3); }
+.next-step-card .icon { font-size: 24px; margin-bottom: 8px; }
+.next-step-card p { font-size: 13px; font-weight: 500; }
+
+.welcome-ctas { display: flex; flex-direction: column; gap: 12px; align-items: center; max-width: 400px; margin: 0 auto; }
+.btn-dashboard {
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  border: none; border-radius: 14px; padding: 18px 40px;
+  color: white; font-size: 16px; font-weight: 700;
+  box-shadow: 0 8px 30px rgba(124,58,237,0.4);
+  transition: all 0.2s; width: 100%; text-decoration: none;
+  display: block; text-align: center;
+}
+.btn-dashboard:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,58,237,0.5); }
+.app-badges { display: flex; gap: 10px; justify-content: center; }
+.app-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 12px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.app-badge:hover { background: rgba(255,255,255,0.08); }
+.app-badge .store-icon { font-size: 20px; }
+.app-badge .store-text { text-align: left; }
+.app-badge .store-text small { font-size: 10px; color: var(--text-muted); display: block; }
+.app-badge .store-text span { font-size: 14px; font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .plans-grid { grid-template-columns: 1fr; gap: 16px; }
+  .plan-card.standard { transform: scale(1); }
+  .plan-card.standard:hover { transform: scale(1.02); }
+  .form-row { grid-template-columns: 1fr; }
+  .card-config-layout { grid-template-columns: 1fr; }
+  .card-preview-wrap { position: static; margin-bottom: 24px; }
+  .card-3d { max-width: 320px; margin: 0 auto; }
+  .kyc-substeps { gap: 4px; }
+  .kyc-sub-label { display: none; }
+  .doc-type-grid { grid-template-columns: 1fr; }
+  .otp-inputs { gap: 6px; }
+  .otp-input { width: 44px; height: 52px; font-size: 20px; }
+  .next-steps { flex-direction: column; align-items: center; }
+  .navbar { padding: 12px 16px; }
+  .onboarding-progress { padding: 10px 12px 0; }
+  .steps-track { justify-content: flex-start; }
+  .glass { padding: 20px 16px; }
+  .app-badges { flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 480px) {
+  .main { padding-top: 120px; }
+  .otp-input { width: 38px; height: 46px; font-size: 18px; }
+  .card-type-grid { grid-template-columns: 1fr; }
+  .funding-methods { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="index.html" class="logo">APEX<span style="color:white">CARD</span></a>
+  <div class="nav-login">Déjà client ? <a href="login.html">Se connecter</a></div>
+</nav>
+
+<!-- Progress Bar -->
+<div class="onboarding-progress">
+  <div class="steps-track" id="stepsTrack">
+    <div class="step-item active" data-step="0">
+      <div class="step-dot">1</div>
+      <div class="step-label">Plan</div>
+    </div>
+    <div class="step-item" data-step="1">
+      <div class="step-dot">2</div>
+      <div class="step-label">Compte</div>
+    </div>
+    <div class="step-item" data-step="2">
+      <div class="step-dot">3</div>
+      <div class="step-label">Email</div>
+    </div>
+    <div class="step-item" data-step="3">
+      <div class="step-dot">4</div>
+      <div class="step-label">Profil</div>
+    </div>
+    <div class="step-item" data-step="4">
+      <div class="step-dot">5</div>
+      <div class="step-label">KYC</div>
+    </div>
+    <div class="step-item" data-step="5">
+      <div class="step-dot">6</div>
+      <div class="step-label">Carte</div>
+    </div>
+    <div class="step-item" data-step="6">
+      <div class="step-dot">7</div>
+      <div class="step-label">Recharge</div>
+    </div>
+    <div class="step-item" data-step="7">
+      <div class="step-dot">🎉</div>
+      <div class="step-label">Bienvenue</div>
+    </div>
+  </div>
+  <div class="progress-line"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<!-- Main -->
+<main class="main">
+  <div class="steps-container">
+
+    <!-- ══ STEP 0 — PLAN ══ -->
+    <div class="step-content active" id="step-0">
+      <div class="step-header">
+        <div class="step-tag">Étape 1 sur 8</div>
+        <h1 class="step-title">Choisissez votre plan</h1>
+        <p class="step-subtitle">Commencez gratuitement ou débloquez toutes les fonctionnalités dès le départ</p>
+      </div>
+      <div class="plans-grid">
+        <!-- Starter -->
+        <div class="plan-card starter" onclick="selectPlan('starter', this)">
+          <div class="plan-icon">💳</div>
+          <div>
+            <div class="plan-name">Starter</div>
+            <div class="plan-price">
+              <span class="amount">Gratuit</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>Carte virtuelle</li>
+            <li>Limite €500/mois</li>
+            <li>App mobile</li>
+            <li>Support email</li>
+          </ul>
+          <button class="plan-cta">Choisir ce plan</button>
+        </div>
+        <!-- Standard -->
+        <div class="plan-card standard" onclick="selectPlan('standard', this)">
+          <div class="plan-badge">⭐ Populaire</div>
+          <div class="plan-icon">🚀</div>
+          <div>
+            <div class="plan-name">Standard</div>
+            <div class="plan-price">
+              <span class="amount">€9.99</span>
+              <span class="period">/mois</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>Carte physique Mastercard</li>
+            <li>Limite €5,000/mois</li>
+            <li>IBAN personnel</li>
+            <li>Support prioritaire 24/7</li>
+            <li>Cashback 1%</li>
+          </ul>
+          <button class="plan-cta">Choisir ce plan</button>
+        </div>
+        <!-- Premium -->
+        <div class="plan-card premium" onclick="selectPlan('premium', this)">
+          <div class="plan-icon">👑</div>
+          <div>
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">
+              <span class="amount" style="background:linear-gradient(135deg,var(--gold),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent">€24.99</span>
+              <span class="period">/mois</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>Carte Gold Mastercard</li>
+            <li>Limite illimitée</li>
+            <li>Yield 24% sur solde</li>
+            <li>Manager dédié</li>
+            <li>Accès lounges aéroport</li>
+            <li>Assurance voyage premium</li>
+          </ul>
+          <button class="plan-cta">Choisir ce plan</button>
+        </div>
+      </div>
+      <p class="plans-note">🔄 Changez de plan à tout moment · Sans engagement · Annulation en 1 clic</p>
+      <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+    <!-- ══ STEP 1 — ACCOUNT ══ -->
+    <div class="step-content" id="step-1">
+      <div class="step-header">
+        <div class="step-tag">Étape 2 sur 8</div>
+        <h1 class="step-title">Créer votre compte</h1>
+        <p class="step-subtitle">Vos informations de connexion sécurisées</p>
+      </div>
+      <div class="glass">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prénom</label>
+            <div class="input-wrap">
+              <input type="text" class="form-input" id="firstName" placeholder="Jean" oninput="updateCardName()" onblur="validateField('firstName')">
+              <span class="input-icon" id="firstNameIcon"></span>
+            </div>
+            <div class="error-msg" id="firstNameError">⚠ Prénom requis</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom</label>
+            <div class="input-wrap">
+              <input type="text" class="form-input" id="lastName" placeholder="Dupont" oninput="updateCardName()" onblur="validateField('lastName')">
+              <span class="input-icon" id="lastNameIcon"></span>
+            </div>
+            <div class="error-msg" id="lastNameError">⚠ Nom requis</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adresse email</label>
+          <div class="input-wrap">
+            <input type="email" class="form-input" id="email" placeholder="jean@exemple.com" oninput="validateEmailLive(this)" onblur="validateField('email')">
+            <span class="input-icon" id="emailIcon"></span>
+          </div>
+          <div class="error-msg" id="emailError">⚠ Format d'email invalide</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="password" placeholder="Minimum 8 caractères" oninput="checkPasswordStrength(this.value)" onblur="validateField('password')">
+            <span class="input-icon clickable" id="pwdToggle" onclick="togglePassword('password', 'pwdToggle')">👁</span>
+          </div>
+          <div class="pwd-strength">
+            <div class="pwd-bar"><div class="pwd-bar-fill" id="pwdBarFill"></div></div>
+            <div class="pwd-label" id="pwdLabel">Entrez un mot de passe</div>
+            <div class="pwd-rules">
+              <span class="pwd-rule" id="rule-length">8+ caractères</span>
+              <span class="pwd-rule" id="rule-upper">Majuscule</span>
+              <span class="pwd-rule" id="rule-number">Chiffre</span>
+              <span class="pwd-rule" id="rule-special">Caractère spécial</span>
+            </div>
+          </div>
+          <div class="error-msg" id="passwordError">⚠ Le mot de passe ne répond pas aux exigences</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirmer le mot de passe</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input" id="confirmPassword" placeholder="Répétez votre mot de passe" oninput="checkPasswordMatch()" onblur="validateField('confirmPassword')">
+            <span class="input-icon clickable" id="confirmPwdToggle" onclick="togglePassword('confirmPassword', 'confirmPwdToggle')">👁</span>
+          </div>
+          <div class="error-msg" id="confirmPasswordError">⚠ Les mots de passe ne correspondent pas</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Numéro de téléphone</label>
+          <div class="phone-wrap">
+            <select class="phone-prefix" id="phonePrefix">
+              <option value="+33">🇫🇷 +33</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+971">🇦🇪 +971</option>
+              <option value="+7">🇷🇺 +7</option>
+              <option value="+49">🇩🇪 +49</option>
+              <option value="+39">🇮🇹 +39</option>
+              <option value="+34">🇪🇸 +34</option>
+              <option value="+81">🇯🇵 +81</option>
+              <option value="+86">🇨🇳 +86</option>
+            </select>
+            <div class="input-wrap phone-input">
+              <input type="tel" class="form-input" id="phone" placeholder="6 12 34 56 78" onblur="validateField('phone')">
+              <span class="input-icon" id="phoneIcon"></span>
+            </div>
+          </div>
+          <div class="error-msg" id="phoneError">⚠ Numéro de téléphone invalide</div>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-wrap" onclick="toggleCheckbox('cguCheck')">
+            <input type="checkbox" id="cguCheck">
+            <div class="checkbox-custom"></div>
+            <span class="checkbox-label">J'accepte les <a href="#" onclick="event.stopPropagation()">Conditions Générales d'Utilisation</a> et la <a href="#" onclick="event.stopPropagation()">Politique de confidentialité</a></span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-wrap" onclick="toggleCheckbox('ageCheck')">
+            <input type="checkbox" id="ageCheck">
+            <div class="checkbox-custom"></div>
+            <span class="checkbox-label">Je certifie avoir 18 ans ou plus</span>
+          </label>
+        </div>
+        <div class="btn-nav">
+          <button class="btn-back" onclick="goToStep(0)">← Retour</button>
+          <button class="btn-continue" id="step1Btn" onclick="goToStep(2)" disabled>Continuer →</button>
+        </div>
+      </div>
+      <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+    <!-- ══ STEP 2 — EMAIL VERIFY ══ -->
+    <div class="step-content" id="step-2">
+      <div class="step-header">
+        <div class="step-tag">Étape 3 sur 8</div>
+        <h1 class="step-title">Vérification email</h1>
+        <p class="step-subtitle">Confirmez votre adresse pour sécuriser votre compte</p>
+      </div>
+      <div class="glass" style="max-width:480px;margin:0 auto">
+        <div class="otp-visual">
+          <div class="envelope-wrap">
+            <div class="envelope">
+              <div class="envelope-flap"></div>
+              <div class="envelope-letter"></div>
+            </div>
+          </div>
+          <p style="font-size:16px;font-weight:600;margin-bottom:6px">Code de vérification envoyé</p>
+          <p class="otp-email-hint">Nous avons envoyé un code à <strong id="maskedEmail">j***@exemple.com</strong></p>
+        </div>
+        <div id="otpInputArea">
+          <p style="font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:16px">Entrez le code à 6 chiffres</p>
+          <div class="otp-inputs">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp0" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp1" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp2" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp3" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp4" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" id="otp5" oninput="otpNext(this,5)" onkeydown="otpBack(event,5)">
+          </div>
+          <div class="otp-actions">
+            <p class="resend-timer" id="resendTimer">Renvoyer le code dans <span id="countdown">60</span>s</p>
+            <button class="btn-resend" id="resendBtn" onclick="resendCode()">Renvoyer le code</button>
+          </div>
+        </div>
+        <div class="otp-success" id="otpSuccess">
+          <div class="success-check">✅</div>
+          <p style="font-size:16px;font-weight:600;color:var(--green)">Email vérifié avec succès !</p>
+          <p style="font-size:14px;color:var(--text-muted)">Redirection en cours...</p>
+        </div>
+        <div class="btn-nav">
+          <button class="btn-back" onclick="goToStep(1)">← Retour</button>
+          <div></div>
+        </div>
+      </div>
+      <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+    <!-- ══ STEP 3 — PROFILE ══ -->
+    <div class="step-content" id="step-3">
+      <div class="step-header">
+        <div class="step-tag">Étape 4 sur 8</div>
+        <h1 class="step-title">Informations personnelles</h1>
+        <p class="step-subtitle">Pour votre sécurité et conformité réglementaire</p>
+      </div>
+      <div class="glass">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date de naissance</label>
+            <div class="input-wrap">
+              <input type="text" class="form-input" id="birthdate" placeholder="JJ/MM/AAAA" maxlength="10" oninput="formatBirthdate(this)" onblur="validateBirthdate()">
+              <span class="input-icon" id="birthdateIcon"></span>
+            </div>
+            <div class="error-msg" id="birthdateError">⚠ Vous devez avoir 18 ans ou plus</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nationalité</label>
+            <select class="form-select" id="nationality" onblur="validateField('nationality')">
+              <option value="">Sélectionnez votre nationalité</option>
+              <option value="fr">🇫🇷 Française</option>
+              <option value="us">🇺🇸 Américaine</option>
+              <option value="gb">🇬🇧 Britannique</option>
+              <option value="de">🇩🇪 Allemande</option>
+              <option value="es">🇪🇸 Espagnole</option>
+              <option value="it">🇮🇹 Italienne</option>
+              <option value="pt">🇵🇹 Portugaise</option>
+              <option value="be">🇧🇪 Belge</option>
+              <option value="ch">🇨🇭 Suisse</option>
+              <option value="nl">🇳🇱 Néerlandaise</option>
+              <option value="pl">🇵🇱 Polonaise</option>
+              <option value="ru">🇷🇺 Russe</option>
+              <option value="cn">🇨🇳 Chinoise</option>
+              <option value="jp">🇯🇵 Japonaise</option>
+              <option value="ae">🇦🇪 Émiratie</option>
+              <option value="sa">🇸🇦 Saoudienne</option>
+              <option value="br">🇧🇷 Brésilienne</option>
+              <option value="mx">🇲🇽 Mexicaine</option>
+              <option value="ca">🇨🇦 Canadienne</option>
+              <option value="au">🇦🇺 Australienne</option>
+              <option value="in">🇮🇳 Indienne</option>
+              <option value="za">🇿🇦 Sud-Africaine</option>
+              <option value="ng">🇳🇬 Nigériane</option>
+              <option value="ma">🇲🇦 Marocaine</option>
+              <option value="dz">🇩🇿 Algérienne</option>
+              <option value="tn">🇹🇳 Tunisienne</option>
+              <option value="sn">🇸🇳 Sénégalaise</option>
+              <option value="ci">🇨🇮 Ivoirienne</option>
+              <option value="cm">🇨🇲 Camerounaise</option>
+              <option value="gh">🇬🇭 Ghanéenne</option>
+              <option value="ke">🇰🇪 Kenyane</option>
+              <option value="et">🇪🇹 Éthiopienne</option>
+              <option value="eg">🇪🇬 Égyptienne</option>
+              <option value="other">🌍 Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pays de résidence</label>
+            <select class="form-select" id="country" onblur="validateField('country')">
+              <option value="">Sélectionnez un pays</option>
+              <option value="fr">🇫🇷 France</option>
+              <option value="be">🇧🇪 Belgique</option>
+              <option value="ch">🇨🇭 Suisse</option>
+              <option value="lu">🇱🇺 Luxembourg</option>
+              <option value="de">🇩🇪 Allemagne</option>
+              <option value="gb">🇬🇧 Royaume-Uni</option>
+              <option value="es">🇪🇸 Espagne</option>
+              <option value="it">🇮🇹 Italie</option>
+              <option value="pt">🇵🇹 Portugal</option>
+              <option value="nl">🇳🇱 Pays-Bas</option>
+              <option value="ae">🇦🇪 Émirats Arabes Unis</option>
+              <option value="us">🇺🇸 États-Unis</option>
+              <option value="ca">🇨🇦 Canada</option>
+              <option value="other">🌍 Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Profession</label>
+            <select class="form-select" id="profession">
+              <option value="">Sélectionnez votre profession</option>
+              <option value="employee">Salarié(e)</option>
+              <option value="freelance">Indépendant / Freelance</option>
+              <option value="entrepreneur">Entrepreneur(se)</option>
+              <option value="student">Étudiant(e)</option>
+              <option value="retired">Retraité(e)</option>
+              <option value="other">Autre</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adresse ligne 1</label>
+          <div class="input-wrap">
+            <input type="text" class="form-input" id="address1" placeholder="12 rue de la Paix" onblur="validateField('address1')">
+            <span class="input-icon" id="address1Icon"></span>
+          </div>
+          <div class="error-msg" id="address1Error">⚠ Adresse requise</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adresse ligne 2 <span class="optional">(optionnel)</span></label>
+          <input type="text" class="form-input" id="address2" placeholder="Appartement, bâtiment...">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ville</label>
+            <div class="input-wrap">
+              <input type="text" class="form-input" id="city" placeholder="Paris" onblur="validateField('city')">
+              <span class="input-icon" id="cityIcon"></span>
+            </div>
+            <div class="error-msg" id="cityError">⚠ Ville requise</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Code postal</label>
+            <div class="input-wrap">
+              <input type="text" class="form-input" id="postal" placeholder="75001" onblur="validateField('postal')">
+              <span class="input-icon" id="postalIcon"></span>
+            </div>
+            <div class="error-msg" id="postalError">⚠ Code postal requis</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Source de revenus</label>
+          <select class="form-select" id="incomeSource">
+            <option value="">Sélectionnez votre source de revenus</option>
+            <option value="salary">Salaire</option>
+            <option value="business">Business / Commerce</option>
+            <option value="investments">Investissements</option>
+            <option value="crypto">Cryptomonnaies</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div style="background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.15);border-radius:12px;padding:14px 16px;margin-top:8px;font-size:13px;color:var(--text-muted);">
+          🔒 Vos données sont chiffrées AES-256 et ne sont jamais vendues à des tiers
+        </div>
+        <div class="btn-nav">
+          <button class="btn-back" onclick="goToStep(2)">← Retour</button>
+          <button class="btn-continue" onclick="goToStep(4)">Continuer →</button>
+        </div>
+      </div>
+      <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+    <!-- ══ STEP 4 — KYC ══ -->
+    <div class="step-content" id="step-4">
+      <div class="step-header">
+        <div class="step-tag">Étape 5 sur 8</div>
+        <h1 class="step-title">Vérification d'identité</h1>
+        <p class="step-subtitle">KYC réglementaire — sécurisé et confidentiel</p>
+      </div>
+      <!-- KYC Sub-steps -->
+      <div class="kyc-substeps">
+        <div class="kyc-sub active" id="kycSub0">
+          <div class="kyc-sub-dot">📄</div>
+          <div class="kyc-sub-label">Document</div>
+        </div>
+        <div class="kyc-sub-line"></div>
+        <div class="kyc-sub" id="kycSub1">
+          <div class="kyc-sub-dot">🤳</div>
+          <div class="kyc-sub-label">Selfie</div>
+        </div>
+        <div class="kyc-sub-line"></div>
+        <div class="kyc-sub" id="kycSub2">
+          <div class="kyc-sub-dot">✅</div>
+          <div class="kyc-sub-label">Vérification</div>
+        </div>
+      </div>
+
+      <!-- 4a — Document -->
+      <div class="glass" id="kyc4a">
+        <h3 style="font-size:18px;font-weight:600;margin-bottom:20px">Choisissez votre document d'identité</h3>
+        <div class="doc-type-grid">
+          <div class="doc-type-card" onclick="selectDoc('passport', this)">
+            <div class="icon">🛂</div>
+            <div class="label">Passeport</div>
+          </div>
+          <div class="doc-type-card" onclick="selectDoc('cni', this)">
+            <div class="icon">🪪</div>
+            <div class="label">Carte d'identité</div>
+          </div>
+          <div class="doc-type-card" onclick="selectDoc('license', this)">
+            <div class="icon">🚗</div>
+            <div class="label">Permis de conduire</div>
+          </div>
+        </div>
+        <div id="uploadRecto" class="upload-zone" onclick="simulateUpload('uploadRecto')">
+          <div class="icon">📄</div>
+          <p><strong>Glissez votre document ici</strong> ou cliquez pour sélectionner</p>
+          <p style="font-size:12px;margin-top:6px">Formats acceptés : JPG, PNG, PDF · Max 10MB</p>
+          <div class="upload-progress" id="progressRecto">
+            <div class="upload-bar"><div class="upload-bar-fill" id="barRecto"></div></div>
+          </div>
+          <div class="upload-done" id="doneRecto">✅ Document recto reçu</div>
+        </div>
+        <div id="uploadVerso" class="upload-zone" style="display:none;margin-top:12px" onclick="simulateUpload('uploadVerso')">
+          <div class="icon">📄</div>
+          <p><strong>Verso du document</strong> — glissez ou cliquez</p>
+          <div class="upload-progress" id="progressVerso">
+            <div class="upload-bar"><div class="upload-bar-fill" id="barVerso"></div></div>
+          </div>
+          <div class="upload-done" id="doneVerso">✅ Document verso reçu</div>
+        </div>
+        <div class="btn-nav">
+          <button class="btn-back" onclick="goToStep(3)">← Retour</button>
+          <button class="btn-continue" id="docNextBtn" onclick="showKycSelfie()" disabled>Continuer →</button>
+        </div>
+        <div class="security-footer">Vérification d'identité propulsée par Sumsub · Conformité RGPD · AMLD5</div>
+      </div>
+
+      <!-- 4b — Selfie -->
+      <div style="display:none" id="kyc4b">
+        <div class="glass">
+          <h3 style="font-size:18px;font-weight:600;margin-bottom:8px;text-align:center">Selfie de vérification</h3>
+          <p style="font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:20px">Prenez un selfie en tenant votre document d'identité visible</p>
+          <div class="camera-zone">
+            <div class="camera-icon">📷</div>
+            <p>Zone caméra simulée<br><small>Positionnez votre visage dans le cadre</small></p>
+          </div>
+          <div class="selfie-instructions">
+            <div class="instr-item ok">✅ Visage entier visible</div>
+            <div class="instr-item ok">✅ Bonne luminosité</div>
+            <div class="instr-item ok">✅ Document lisible</div>
+            <div class="instr-item no">❌ Pas de lunettes de soleil</div>
+          </div>
+          <div id="selfieBtnWrap" style="text-align:center">
+            <button class="btn-primary" style="max-width:280px;display:inline-block" onclick="takeSelfie()">📸 Prendre le selfie</button>
+          </div>
+          <div id="selfieOkMsg" style="display:none;text-align:center;color:var(--green);font-weight:600;font-size:16px;margin-top:16px">✅ Selfie validé avec succès !</div>
+          <div class="btn-nav">
+            <button class="btn-back" onclick="backToDocUpload()">← Retour</button>
+            <button class="btn-continue" id="selfieNextBtn" onclick="showKycVerify()" disabled>Continuer →</button>
+          </div>
+          <div class="security-footer">Vérification d'identité propulsée par Sumsub · Conformité RGPD · AMLD5</div>
+        </div>
+      </div>
+
+      <!-- 4c — Verification -->
+      <div style="display:none" id="kyc4c">
+        <div class="glass" style="max-width:480px;margin:0 auto">
+          <h3 style="font-size:18px;font-weight:600;text-align:center;margin-bottom:8px">Vérification en cours</h3>
+          <p style="font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:28px">Veuillez patienter quelques instants...</p>
+          <div class="kyc-verify-steps">
+            <div class="verify-step" id="vs0">
+              <div class="verify-dot" id="vd0">⟳</div>
+              <div class="verify-text">Vérification document...</div>
+            </div>
+            <div class="verify-step" id="vs1">
+              <div class="verify-dot" id="vd1">⟳</div>
+              <div class="verify-text">Reconnaissance faciale...</div>
+            </div>
+            <div class="verify-step" id="vs2">
+              <div class="verify-dot" id="vd2">⟳</div>
+              <div class="verify-text">Vérification listes AML/PEP...</div>
+            </div>
+            <div class="verify-step" id="vs3">
+              <div class="verify-dot" id="vd3">⟳</div>
+              <div class="verify-text">Validation finale...</div>
+            </div>
+          </div>
+          <div class="kyc-result" id="kycResult">
+            <span class="big-check">🎯</span>
+            <h3>✅ Identité vérifiée</h3>
+            <p>KYC Tier 1 activé · Compte pleinement opérationnel</p>
+          </div>
+          <div class="btn-nav" id="kycDoneNav" style="display:none">
+            <div></div>
+            <button class="btn-continue" onclick="goToStep(5)">Continuer →</button>
+          </div>
+          <div class="security-footer">Vérification d'identité propulsée par Sumsub · Conformité RGPD · AMLD5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 5 — CARD CONFIG ══ -->
+    <div class="step-content" id="step-5">
+      <div class="step-header">
+        <div class="step-tag">Étape 6 sur 8</div>
+        <h1 class="step-title">Configurez votre carte</h1>
+        <p class="step-subtitle">Personnalisez votre carte APEXCARD</p>
+      </div>
+      <div class="card-config-layout">
+        <div>
+          <div class="glass" style="margin-bottom:16px">
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Type de carte</h3>
+            <div class="card-type-grid">
+              <div class="card-type-option selected" id="cardVirtual" onclick="selectCardType('virtual')">
+                <div class="icon">💻</div>
+                <h4>Carte Virtuelle</h4>
+                <p>Disponible immédiatement</p>
+              </div>
+              <div class="card-type-option" id="cardPhysical" onclick="selectCardType('physical')" style="display:none">
+                <div class="icon">💳</div>
+                <h4>Carte Physique</h4>
+                <p>+2-5 jours ouvrés</p>
+              </div>
+            </div>
+          </div>
+          <div class="glass" style="margin-bottom:16px">
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Personnalisation</h3>
+            <div class="form-group">
+              <label class="form-label">Nom sur la carte</label>
+              <input type="text" class="form-input" id="cardName" placeholder="JEAN DUPONT" oninput="updateCard()" style="text-transform:uppercase">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Devise principale</label>
+              <div class="currency-pills">
+                <div class="currency-pill active" onclick="selectCurrency('EUR', this)">€ EUR</div>
+                <div class="currency-pill" onclick="selectCurrency('USD', this)">$ USD</div>
+                <div class="currency-pill" onclick="selectCurrency('GBP', this)">£ GBP</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Limite par transaction : <span class="limit-value" id="limitValue">€500</span></label>
+              <input type="range" class="limit-slider" id="limitSlider" min="50" max="2000" value="500" step="50" oninput="updateLimit(this.value)">
+              <div class="limit-display"><span>€50</span><span>€2,000</span></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Code PIN (4 chiffres)</label>
+              <div style="margin-bottom:10px">
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Créer votre PIN</div>
+                <div class="pin-wrap">
+                  <input type="password" class="pin-input" id="pin1" maxlength="1" inputmode="numeric" oninput="pinNext(this,0)">
+                  <input type="password" class="pin-input" id="pin2" maxlength="1" inputmode="numeric" oninput="pinNext(this,1)">
+                  <input type="password" class="pin-input" id="pin3" maxlength="1" inputmode="numeric" oninput="pinNext(this,2)">
+                  <input type="password" class="pin-input" id="pin4" maxlength="1" inputmode="numeric" oninput="pinNext(this,3)">
+                  <div class="pin-dots">
+                    <div class="pin-dot" id="pd1"></div>
+                    <div class="pin-dot" id="pd2"></div>
+                    <div class="pin-dot" id="pd3"></div>
+                    <div class="pin-dot" id="pd4"></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Confirmer votre PIN</div>
+                <div class="pin-wrap">
+                  <input type="password" class="pin-input" id="pin5" maxlength="1" inputmode="numeric" oninput="pinConfirmNext(this,0)">
+                  <input type="password" class="pin-input" id="pin6" maxlength="1" inputmode="numeric" oninput="pinConfirmNext(this,1)">
+                  <input type="password" class="pin-input" id="pin7" maxlength="1" inputmode="numeric" oninput="pinConfirmNext(this,2)">
+                  <input type="password" class="pin-input" id="pin8" maxlength="1" inputmode="numeric" oninput="pinConfirmNext(this,3)">
+                </div>
+              </div>
+              <div class="error-msg" id="pinError" style="margin-top:8px">⚠ Les PINs ne correspondent pas</div>
+            </div>
+          </div>
+          <!-- Delivery info for physical card -->
+          <div class="delivery-info" id="deliveryInfo">
+            <div style="font-weight:600;margin-bottom:8px">📦 Adresse de livraison</div>
+            <div id="deliveryAddress" style="font-size:13px;color:var(--text-muted);margin-bottom:8px"></div>
+            <div style="font-size:12px;color:var(--cyan)">⏱ Estimation : 3-5 jours ouvrés</div>
+          </div>
+        </div>
+        <!-- Card Preview -->
+        <div class="card-preview-wrap">
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Aperçu en temps réel</div>
+          <div class="card-3d card-gradient-standard" id="cardPreview">
+            <div class="card-shimmer"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="card-chip">
+                <div></div><div></div><div></div><div></div>
+              </div>
+              <div class="mastercard-logo">
+                <div class="mc-circle mc-left"></div>
+                <div class="mc-circle mc-right"></div>
+              </div>
+            </div>
+            <div class="card-number">**** **** **** 4821</div>
+            <div class="card-bottom">
+              <div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Titulaire</div>
+                <div class="card-holder-name" id="cardPreviewName">VOTRE NOM</div>
+                <div class="card-brand">APEXCARD</div>
+              </div>
+              <div style="text-align:right">
+                <div class="card-currency-badge" id="cardPreviewCurrency">EUR</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px">12/29</div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:12px">Effet holographique simulé</div>
+        </div>
+      </div>
+      <div class="btn-nav" style="max-width:900px;margin:0 auto">
+        <button class="btn-back" onclick="goToStep(4)">← Retour</button>
+        <button class="btn-continue" onclick="goToStep(6)">Continuer →</button>
+      </div>
+      <div class="security-footer">Cartes émises sous licence Mastercard · Fonds ségrégués · Wallester</div>
+    </div>
+
+    <!-- ══ STEP 6 — FUNDING ══ -->
+    <div class="step-content" id="step-6">
+      <div class="step-header">
+        <div class="step-tag">Étape 7 sur 8</div>
+        <h1 class="step-title">Rechargez votre carte</h1>
+        <p class="step-subtitle">Commencez à utiliser votre carte APEXCARD immédiatement</p>
+      </div>
+      <div class="glass" style="max-width:600px;margin:0 auto">
+        <div class="funding-methods">
+          <button class="funding-tab active" onclick="switchFunding('crypto', this)">🪙 Crypto</button>
+          <button class="funding-tab" onclick="switchFunding('sepa', this)">🏦 Virement SEPA</button>
+        </div>
+        <!-- Crypto Panel -->
+        <div class="funding-panel active" id="fundingCrypto">
+          <div class="crypto-tokens">
+            <button class="token-btn active" onclick="selectToken('USDT', this)">₮ USDT</button>
+            <button class="token-btn" onclick="selectToken('BTC', this)">₿ BTC</button>
+            <button class="token-btn" onclick="selectToken('ETH', this)">Ξ ETH</button>
+          </div>
+          <div class="deposit-address-wrap">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Adresse de dépôt USDT (TRC-20)</div>
+            <div class="deposit-address">
+              <span id="cryptoAddress">TFj8zKG7Q1nM9pP2xLvbH3dW6sYtNqRc5e</span>
+              <button class="copy-btn" onclick="copyAddress()">📋 Copier</button>
+            </div>
+            <!-- CSS QR Code -->
+            <div style="text-align:center;margin-bottom:12px">
+              <div class="qr-css" id="qrCode"></div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:6px">Scannez pour envoyer</div>
+            </div>
+            <div style="font-size:12px;color:var(--green);text-align:center">✅ Minimum $10 · Frais 0% · Crédit immédiat</div>
+          </div>
+          <div style="margin-top:16px">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Montants suggérés :</div>
+            <div class="amount-pills">
+              <div class="amount-pill" onclick="selectAmount('50', this)">€50</div>
+              <div class="amount-pill active" onclick="selectAmount('100', this)">€100</div>
+              <div class="amount-pill" onclick="selectAmount('500', this)">€500</div>
+              <div class="amount-pill" onclick="selectAmount('1000', this)">€1,000</div>
+            </div>
+          </div>
+        </div>
+        <!-- SEPA Panel -->
+        <div class="funding-panel" id="fundingSepa">
+          <div class="sepa-details">
+            <div class="sepa-row">
+              <span class="label">Bénéficiaire</span>
+              <span class="value">APEXCARD FINANCIAL</span>
+            </div>
+            <div class="sepa-row">
+              <span class="label">IBAN</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="value">FR76 3000 6000 0112 3456 7890 189</span>
+                <button class="copy-btn" onclick="copyIBAN()">📋</button>
+              </div>
+            </div>
+            <div class="sepa-row">
+              <span class="label">BIC/SWIFT</span>
+              <span class="value">BNPAFRPPXXX</span>
+            </div>
+            <div class="sepa-row">
+              <span class="label">Référence</span>
+              <span class="value" id="sepaRef">APC-</span>
+            </div>
+          </div>
+          <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:12px;padding:14px;margin-top:16px;font-size:13px;color:rgba(255,255,255,0.7)">
+            ⏱ 1-2 jours ouvrés · Frais 0% · Montant minimum €10
+          </div>
+          <div style="margin-top:16px">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Montants suggérés :</div>
+            <div class="amount-pills">
+              <div class="amount-pill" onclick="selectAmount('50', this)">€50</div>
+              <div class="amount-pill active" onclick="selectAmount('100', this)">€100</div>
+              <div class="amount-pill" onclick="selectAmount('500', this)">€500</div>
+              <div class="amount-pill" onclick="selectAmount('1000', this)">€1,000</div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-nav">
+          <button class="btn-back" onclick="goToStep(5)">← Retour</button>
+          <button class="btn-continue" onclick="goToStep(7)">Continuer →</button>
+        </div>
+        <div class="skip-funding">
+          <button class="skip-link" onclick="goToStep(7)">Je rechargerai plus tard →</button>
+        </div>
+      </div>
+      <div class="security-footer">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+    <!-- ══ STEP 7 — WELCOME ══ -->
+    <div class="step-content" id="step-7">
+      <div class="welcome-content">
+        <div class="welcome-card-wrap welcome-card-appear">
+          <div class="card-3d card-gradient-standard" id="welcomeCard" style="max-width:280px;margin:0 auto">
+            <div class="card-shimmer"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div class="card-chip">
+                <div></div><div></div><div></div><div></div>
+              </div>
+              <div class="mastercard-logo">
+                <div class="mc-circle mc-left"></div>
+                <div class="mc-circle mc-right"></div>
+              </div>
+            </div>
+            <div class="card-number">**** **** **** 4821</div>
+            <div class="card-bottom">
+              <div>
+                <div class="card-holder-name" id="welcomeCardName">VOTRE NOM</div>
+                <div class="card-brand">APEXCARD</div>
+              </div>
+              <div class="card-currency-badge" id="welcomeCardCurrency">EUR</div>
+            </div>
+          </div>
+        </div>
+        <div class="welcome-check">
+          <svg class="check-svg" viewBox="0 0 36 36">
+            <path class="check-path" d="M6 18 L14 26 L30 10"/>
+          </svg>
+        </div>
+        <h1 class="welcome-title">🎉 Bienvenue chez APEXCARD !</h1>
+        <p class="welcome-subtitle">Votre compte est actif. Votre carte est en cours d'activation.</p>
+        <div class="summary-card">
+          <div class="summary-row">
+            <span class="s-label">Titulaire</span>
+            <span class="s-value" id="summaryName">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-label">Plan souscrit</span>
+            <span class="s-value" id="summaryPlan">Standard</span>
+          </div>
+          <div class="summary-row">
+            <span class="s-label">Email</span>
+            <span class="s-value"><span id="summaryEmail">—</span> <span class="badge-ok">✅ Vérifié</span></span>
+          </div>
+          <div class="summary-row">
+            <span class="s-label">KYC</span>
+            <span class="s-value"><span class="badge-ok">✅ Tier 1 Activé</span></span>
+          </div>
+          <div class="summary-row">
+            <span class="s-label">Carte</span>
+            <span class="s-value" id="summaryCard">Virtuelle — Activation en cours</span>
+          </div>
+        </div>
+        <div class="next-steps">
+          <div class="next-step-card" onclick="showToast('Ouvrez l\'app pour recharger votre carte !', 'success')">
+            <div class="icon">💰</div>
+            <p>Rechargez votre carte</p>
+          </div>
+          <div class="next-step-card" onclick="copyReferral()">
+            <div class="icon">👥</div>
+            <p>Invitez un ami</p>
+          </div>
+          <div class="next-step-card" onclick="window.location.href='app-user.html'">
+            <div class="icon">📊</div>
+            <p>Découvrez le dashboard</p>
+          </div>
+        </div>
+        <div class="welcome-ctas">
+          <a href="app-user.html" class="btn-dashboard">Accéder à mon dashboard →</a>
+          <div class="app-badges">
+            <a href="#" class="app-badge">
+              <div class="store-icon">🍎</div>
+              <div class="store-text">
+                <small>Télécharger sur l'</small>
+                <span>App Store</span>
+              </div>
+            </a>
+            <a href="#" class="app-badge">
+              <div class="store-icon">▶️</div>
+              <div class="store-text">
+                <small>Disponible sur</small>
+                <span>Google Play</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="security-footer" style="margin-top:40px">🔒 Connexion sécurisée SSL/TLS · AES-256 · ISO 27001 · PCI DSS Level 1</div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const formState = {
+  plan: null,
+  firstName: '', lastName: '', email: '', phone: '',
+  password: '', birthdate: '', nationality: '', country: '',
+  docType: null, selfieOk: false,
+  cardType: 'virtual', cardName: '', pin: '', currency: 'EUR',
+  funded: false
+};
+let currentStep = 0;
+let countdownInterval = null;
+let kycSubStep = 0;
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function goToStep(step) {
+  const prev = document.getElementById('step-' + currentStep);
+  const next = document.getElementById('step-' + step);
+  if (!next) return;
+
+  // Animate
+  prev.classList.add(step > currentStep ? 'slide-out-left' : 'slide-out-right');
+  setTimeout(() => {
+    prev.classList.remove('active', 'slide-out-left', 'slide-out-right');
+    next.classList.add('active', step > currentStep ? 'slide-in-right' : 'slide-in-left');
+    setTimeout(() => {
+      next.classList.remove('slide-in-right', 'slide-in-left');
+    }, 300);
+  }, 200);
+
+  currentStep = step;
+  updateProgressBar();
+
+  // Step-specific on-entry actions
+  if (step === 2) {
+    maskEmail();
+    startOtpCountdown();
+  }
+  if (step === 5) {
+    prefillCardName();
+    updateCardPreview();
+    updateDeliveryAddress();
+    initCardTypeByPlan();
+  }
+  if (step === 6) {
+    generateSepaRef();
+    generateQR();
+  }
+  if (step === 7) {
+    fillSummary();
+    setTimeout(launchConfetti, 300);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgressBar() {
+  const fill = document.getElementById('progressFill');
+  fill.style.width = (currentStep / 7 * 100) + '%';
+  document.querySelectorAll('.step-item').forEach((item, i) => {
+    item.classList.remove('active', 'done');
+    if (i < currentStep) item.classList.add('done');
+    else if (i === currentStep) item.classList.add('active');
+  });
+}
+
+// ═══════════════════════════════════════════
+// STEP 0 — PLAN
+// ═══════════════════════════════════════════
+function selectPlan(plan, el) {
+  formState.plan = plan;
+  goToStep(1);
+  updatePlanInCard();
+}
+
+function updatePlanInCard() {
+  const card = document.getElementById('cardPreview');
+  const welcomeCard = document.getElementById('welcomeCard');
+  if (!card) return;
+  card.classList.remove('card-gradient-standard', 'card-gradient-premium', 'card-gradient-starter');
+  welcomeCard && welcomeCard.classList.remove('card-gradient-standard', 'card-gradient-premium', 'card-gradient-starter');
+  const cls = formState.plan === 'premium' ? 'card-gradient-premium' : formState.plan === 'starter' ? 'card-gradient-starter' : 'card-gradient-standard';
+  card.classList.add(cls);
+  welcomeCard && welcomeCard.classList.add(cls);
+}
+
+function initCardTypeByPlan() {
+  const physicalOpt = document.getElementById('cardPhysical');
+  if (formState.plan === 'standard' || formState.plan === 'premium') {
+    physicalOpt.style.display = 'block';
+  } else {
+    physicalOpt.style.display = 'none';
+    selectCardType('virtual');
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP 1 — FORM VALIDATION
+// ═══════════════════════════════════════════
+function validateField(fieldId) {
+  const el = document.getElementById(fieldId);
+  if (!el) return false;
+  const val = el.value.trim();
+  let valid = false;
+
+  switch(fieldId) {
+    case 'firstName':
+    case 'lastName':
+      valid = val.length >= 2;
+      break;
+    case 'email':
+      valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+      break;
+    case 'password':
+      valid = checkPasswordRules(val).score >= 3;
+      break;
+    case 'confirmPassword':
+      valid = val === document.getElementById('password').value && val.length > 0;
+      break;
+    case 'phone':
+      valid = /^\d{7,15}$/.test(val.replace(/\s/g,''));
+      break;
+    case 'nationality':
+    case 'country':
+      valid = val !== '';
+      break;
+    case 'address1':
+      valid = val.length >= 5;
+      break;
+    case 'city':
+      valid = val.length >= 2;
+      break;
+    case 'postal':
+      valid = val.length >= 2;
+      break;
+    default:
+      valid = val.length > 0;
+  }
+
+  el.classList.toggle('valid', valid);
+  el.classList.toggle('invalid', !valid);
+  const icon = document.getElementById(fieldId + 'Icon');
+  if (icon) icon.textContent = valid ? '✅' : '❌';
+  const err = document.getElementById(fieldId + 'Error');
+  if (err) err.classList.toggle('show', !valid);
+
+  checkStep1Valid();
+  return valid;
+}
+
+function validateEmailLive(el) {
+  const val = el.value.trim();
+  if (val.length > 3) {
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    el.classList.toggle('valid', valid);
+    el.classList.toggle('invalid', !valid);
+    const icon = document.getElementById('emailIcon');
+    if (icon) icon.textContent = valid ? '✅' : '';
+  }
+}
+
+function checkPasswordRules(val) {
+  return {
+    length: val.length >= 8,
+    upper: /[A-Z]/.test(val),
+    number: /\d/.test(val),
+    special: /[!@#$%^&*(),.?":{}|<>_\-+=]/.test(val),
+    score: [val.length >= 8, /[A-Z]/.test(val), /\d/.test(val), /[!@#$%^&*(),.?":{}|<>_\-+=]/.test(val)].filter(Boolean).length
+  };
+}
+
+function checkPasswordStrength(val) {
+  const rules = checkPasswordRules(val);
+  const score = rules.score;
+  const fill = document.getElementById('pwdBarFill');
+  const label = document.getElementById('pwdLabel');
+  const colors = ['', '#ef4444', '#f59e0b', '#10b981', '#06b6d4'];
+  const labels = ['', 'Faible', 'Moyen', 'Fort', 'Très fort'];
+  if (fill) {
+    fill.style.width = (score / 4 * 100) + '%';
+    fill.style.background = colors[score] || '#ef4444';
+  }
+  if (label) label.textContent = val.length ? labels[score] || 'Faible' : 'Entrez un mot de passe';
+  document.getElementById('rule-length').classList.toggle('ok', rules.length);
+  document.getElementById('rule-upper').classList.toggle('ok', rules.upper);
+  document.getElementById('rule-number').classList.toggle('ok', rules.number);
+  document.getElementById('rule-special').classList.toggle('ok', rules.special);
+  checkStep1Valid();
+}
+
+function checkPasswordMatch() {
+  const p1 = document.getElementById('password').value;
+  const p2 = document.getElementById('confirmPassword').value;
+  const el = document.getElementById('confirmPassword');
+  if (p2.length > 0) {
+    const match = p1 === p2;
+    el.classList.toggle('valid', match);
+    el.classList.toggle('invalid', !match);
+    document.getElementById('confirmPasswordError').classList.toggle('show', !match);
+    const icon = document.getElementById('confirmPwdToggle');
+    // keep toggle icon
+  }
+  checkStep1Valid();
+}
+
+function checkStep1Valid() {
+  const fields = ['firstName','lastName','email','password','confirmPassword','phone'];
+  const allValid = fields.every(f => {
+    const el = document.getElementById(f);
+    return el && el.classList.contains('valid');
+  });
+  const cgu = document.getElementById('cguCheck').checked;
+  const age = document.getElementById('ageCheck').checked;
+  const btn = document.getElementById('step1Btn');
+  if (btn) btn.disabled = !(allValid && cgu && age);
+}
+
+function toggleCheckbox(id) {
+  const el = document.getElementById(id);
+  el.checked = !el.checked;
+  checkStep1Valid();
+}
+
+function togglePassword(inputId, iconId) {
+  const el = document.getElementById(inputId);
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+function updateCardName() {
+  const fn = document.getElementById('firstName').value;
+  const ln = document.getElementById('lastName').value;
+  formState.firstName = fn;
+  formState.lastName = ln;
+}
+
+// ═══════════════════════════════════════════
+// STEP 2 — OTP
+// ═══════════════════════════════════════════
+function maskEmail() {
+  const email = document.getElementById('email').value || 'exemple@email.com';
+  const [user, domain] = email.split('@');
+  const masked = user[0] + '***' + (user.length > 1 ? user.slice(-1) : '') + '@' + domain;
+  document.getElementById('maskedEmail').textContent = masked;
+}
+
+function otpNext(el, idx) {
+  el.classList.add('filled');
+  if (el.value && idx < 5) {
+    document.getElementById('otp' + (idx + 1)).focus();
+  }
+  checkOTP();
+}
+
+function otpBack(e, idx) {
+  if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+    document.getElementById('otp' + (idx - 1)).focus();
+  }
+}
+
+// Support paste
+document.addEventListener('paste', function(e) {
+  const active = document.activeElement;
+  if (!active || !active.id.startsWith('otp')) return;
+  const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+  if (text.length === 6) {
+    e.preventDefault();
+    for (let i = 0; i < 6; i++) {
+      const inp = document.getElementById('otp' + i);
+      if (inp) { inp.value = text[i]; inp.classList.add('filled'); }
+    }
+    checkOTP();
+  }
+});
+
+function checkOTP() {
+  const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+  if (code.length === 6 && /^\d{6}$/.test(code)) {
+    setTimeout(() => {
+      document.getElementById('otpInputArea').style.display = 'none';
+      document.getElementById('otpSuccess').classList.add('show');
+      setTimeout(() => goToStep(3), 1500);
+    }, 400);
+  }
+}
+
+function startOtpCountdown() {
+  let t = 60;
+  const timer = document.getElementById('resendTimer');
+  const btn = document.getElementById('resendBtn');
+  const cd = document.getElementById('countdown');
+  timer.style.display = 'block';
+  btn.classList.remove('visible');
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    t--;
+    if (cd) cd.textContent = t;
+    if (t <= 0) {
+      clearInterval(countdownInterval);
+      timer.style.display = 'none';
+      btn.classList.add('visible');
+    }
+  }, 1000);
+}
+
+function resendCode() {
+  showToast('Code renvoyé ! Vérifiez votre boîte mail.', 'success');
+  document.getElementById('resendBtn').classList.remove('visible');
+  document.getElementById('resendTimer').style.display = 'block';
+  // Reset inputs
+  for(let i=0;i<6;i++){
+    const inp = document.getElementById('otp'+i);
+    if(inp){inp.value='';inp.classList.remove('filled');}
+  }
+  document.getElementById('otp0').focus();
+  startOtpCountdown();
+}
+
+// ═══════════════════════════════════════════
+// STEP 3 — BIRTHDATE
+// ═══════════════════════════════════════════
+function formatBirthdate(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+  if (v.length >= 6) v = v.slice(0,5) + '/' + v.slice(5,9);
+  el.value = v;
+}
+
+function validateBirthdate() {
+  const val = document.getElementById('birthdate').value;
+  const parts = val.split('/');
+  const icon = document.getElementById('birthdateIcon');
+  const err = document.getElementById('birthdateError');
+  if (parts.length === 3) {
+    const d = parseInt(parts[0]), m = parseInt(parts[1]), y = parseInt(parts[2]);
+    const date = new Date(y, m-1, d);
+    const now = new Date();
+    const age = (now - date) / (1000*60*60*24*365.25);
+    const valid = !isNaN(date.getTime()) && age >= 18;
+    document.getElementById('birthdate').classList.toggle('valid', valid);
+    document.getElementById('birthdate').classList.toggle('invalid', !valid);
+    if (icon) icon.textContent = valid ? '✅' : '❌';
+    if (err) err.classList.toggle('show', !valid);
+    return valid;
+  }
+  return false;
+}
+
+// ═══════════════════════════════════════════
+// STEP 4 — KYC
+// ═══════════════════════════════════════════
+let docUploaded = false;
+
+function selectDoc(type, el) {
+  formState.docType = type;
+  document.querySelectorAll('.doc-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  // Show verso for CNI/License
+  const verso = document.getElementById('uploadVerso');
+  if (type === 'cni' || type === 'license') {
+    verso.style.display = 'block';
+  } else {
+    verso.style.display = 'none';
+  }
+}
+
+function simulateUpload(zoneId) {
+  const zone = document.getElementById(zoneId);
+  const suffix = zoneId === 'uploadRecto' ? 'Recto' : 'Verso';
+  const progressEl = document.getElementById('progress' + suffix);
+  const barEl = document.getElementById('bar' + suffix);
+  const doneEl = document.getElementById('done' + suffix);
+  if (doneEl.style.display === 'block') return;
+  progressEl.style.display = 'block';
+  let w = 0;
+  const interval = setInterval(() => {
+    w += Math.random() * 15 + 5;
+    if (w >= 100) {
+      w = 100;
+      clearInterval(interval);
+      barEl.style.width = '100%';
+      setTimeout(() => {
+        progressEl.style.display = 'none';
+        doneEl.style.display = 'block';
+        zone.style.borderColor = 'rgba(16,185,129,0.4)';
+        zone.style.background = 'rgba(16,185,129,0.05)';
+        docUploaded = true;
+        document.getElementById('docNextBtn').disabled = false;
+        showToast('Document reçu avec succès !', 'success');
+      }, 300);
+    } else {
+      barEl.style.width = w + '%';
+    }
+  }, 100);
+}
+
+function showKycSelfie() {
+  document.getElementById('kyc4a').style.display = 'none';
+  document.getElementById('kyc4b').style.display = 'block';
+  setKycSub(1);
+}
+
+function backToDocUpload() {
+  document.getElementById('kyc4b').style.display = 'none';
+  document.getElementById('kyc4a').style.display = 'block';
+  setKycSub(0);
+}
+
+function takeSelfie() {
+  const btn = document.getElementById('selfieBtnWrap');
+  btn.innerHTML = '<div style="color:var(--text-muted);font-size:14px">📸 Capture en cours...</div>';
+  setTimeout(() => {
+    btn.innerHTML = '';
+    document.getElementById('selfieOkMsg').style.display = 'block';
+    formState.selfieOk = true;
+    document.getElementById('selfieNextBtn').disabled = false;
+    showToast('Selfie validé !', 'success');
+  }, 1500);
+}
+
+function showKycVerify() {
+  document.getElementById('kyc4b').style.display = 'none';
+  document.getElementById('kyc4c').style.display = 'block';
+  setKycSub(2);
+  startKycVerification();
+}
+
+function setKycSub(idx) {
+  kycSubStep = idx;
+  document.querySelectorAll('.kyc-sub').forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i < idx) s.classList.add('done');
+    else if (i === idx) s.classList.add('active');
+  });
+}
+
+function startKycVerification() {
+  const steps = [
+    { id: 'vs0', dot: 'vd0', delay: 0, duration: 2000 },
+    { id: 'vs1', dot: 'vd1', delay: 2000, duration: 2000 },
+    { id: 'vs2', dot: 'vd2', delay: 4000, duration: 1500 },
+    { id: 'vs3', dot: 'vd3', delay: 5500, duration: 1000 }
+  ];
+  steps.forEach(s => {
+    setTimeout(() => {
+      document.getElementById(s.id).classList.add('active');
+      setTimeout(() => {
+        document.getElementById(s.id).classList.remove('active');
+        document.getElementById(s.id).classList.add('done');
+        document.getElementById(s.dot).textContent = '✅';
+      }, s.duration);
+    }, s.delay);
+  });
+  setTimeout(() => {
+    document.getElementById('kycResult').classList.add('show');
+    document.getElementById('kycDoneNav').style.display = 'flex';
+    showToast('✅ Identité vérifiée — KYC Tier 1 activé !', 'success');
+  }, 7000);
+}
+
+// ═══════════════════════════════════════════
+// STEP 5 — CARD CONFIG
+// ═══════════════════════════════════════════
+function prefillCardName() {
+  const name = (formState.firstName + ' ' + formState.lastName).trim().toUpperCase();
+  const inp = document.getElementById('cardName');
+  if (inp && !inp.value) inp.value = name || 'VOTRE NOM';
+  updateCard();
+}
+
+function updateCard() {
+  const name = document.getElementById('cardName').value.toUpperCase() || 'VOTRE NOM';
+  formState.cardName = name;
+  document.getElementById('cardPreviewName').textContent = name;
+  document.getElementById('welcomeCardName').textContent = name;
+}
+
+function updateCardPreview() {
+  updatePlanInCard();
+}
+
+function selectCardType(type) {
+  formState.cardType = type;
+  document.getElementById('cardVirtual').classList.toggle('selected', type === 'virtual');
+  document.getElementById('cardPhysical').classList.toggle('selected', type === 'physical');
+  const delivery = document.getElementById('deliveryInfo');
+  delivery.classList.toggle('show', type === 'physical');
+}
+
+function selectCurrency(cur, el) {
+  formState.currency = cur;
+  document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('cardPreviewCurrency').textContent = cur;
+  document.getElementById('welcomeCardCurrency').textContent = cur;
+}
+
+function updateLimit(val) {
+  document.getElementById('limitValue').textContent = '€' + parseInt(val).toLocaleString();
+}
+
+function pinNext(el, idx) {
+  const ids = ['pin1','pin2','pin3','pin4'];
+  const dotIds = ['pd1','pd2','pd3','pd4'];
+  if (el.value && idx < 3) {
+    document.getElementById(ids[idx+1]).focus();
+  }
+  dotIds.forEach((d, i) => {
+    document.getElementById(d).classList.toggle('filled', !!document.getElementById(ids[i]).value);
+  });
+  checkPinMatch();
+}
+
+function pinConfirmNext(el, idx) {
+  const ids = ['pin5','pin6','pin7','pin8'];
+  if (el.value && idx < 3) document.getElementById(ids[idx+1]).focus();
+  checkPinMatch();
+}
+
+function checkPinMatch() {
+  const pin1 = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+  const pin2 = ['pin5','pin6','pin7','pin8'].map(id => document.getElementById(id).value).join('');
+  const err = document.getElementById('pinError');
+  if (pin2.length === 4) {
+    const match = pin1 === pin2;
+    err.classList.toggle('show', !match);
+    if (match) { formState.pin = pin1; showToast('PIN configuré avec succès !', 'success'); }
+  }
+}
+
+function updateDeliveryAddress() {
+  const addr = [
+    document.getElementById('address1')?.value,
+    document.getElementById('address2')?.value,
+    document.getElementById('city')?.value,
+    document.getElementById('postal')?.value
+  ].filter(Boolean).join(', ');
+  const el = document.getElementById('deliveryAddress');
+  if (el) el.textContent = addr || 'Adresse de livraison (depuis votre profil)';
+}
+
+// ═══════════════════════════════════════════
+// STEP 6 — FUNDING
+// ═══════════════════════════════════════════
+function switchFunding(type, el) {
+  document.querySelectorAll('.funding-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('fundingCrypto').classList.toggle('active', type === 'crypto');
+  document.getElementById('fundingSepa').classList.toggle('active', type === 'sepa');
+}
+
+function selectToken(token, el) {
+  document.querySelectorAll('.token-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const addresses = {
+    USDT: 'TFj8zKG7Q1nM9pP2xLvbH3dW6sYtNqRc5e',
+    BTC: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+    ETH: '0x742d35Cc6634C0532925a3b8D4C9E2F3a4c7B891'
+  };
+  const labels = {
+    USDT: 'Adresse de dépôt USDT (TRC-20)',
+    BTC: 'Adresse de dépôt Bitcoin (BTC)',
+    ETH: 'Adresse de dépôt Ethereum (ERC-20)'
+  };
+  document.getElementById('cryptoAddress').textContent = addresses[token];
+  document.querySelector('.deposit-address-wrap > div:first-child').textContent = labels[token];
+}
+
+function copyAddress() {
+  const addr = document.getElementById('cryptoAddress').textContent;
+  navigator.clipboard.writeText(addr).catch(() => {});
+  showToast('Adresse copiée !', 'success');
+}
+
+function copyIBAN() {
+  navigator.clipboard.writeText('FR76 3000 6000 0112 3456 7890 189').catch(() => {});
+  showToast('IBAN copié !', 'success');
+}
+
+function selectAmount(val, el) {
+  document.querySelectorAll('.amount-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function generateSepaRef() {
+  const ref = 'APC-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  const el = document.getElementById('sepaRef');
+  if (el) el.textContent = ref;
+}
+
+function generateQR() {
+  const qr = document.getElementById('qrCode');
+  if (!qr) return;
+  // Generate a simple visual QR-like pattern
+  const cells = [];
+  const pattern = [
+    1,1,1,1,1,1,1,0,1,0,
+    1,0,0,0,0,0,1,0,0,1,
+    1,0,1,1,1,0,1,0,1,0,
+    1,0,1,1,1,0,1,0,0,1,
+    1,0,1,1,1,0,1,0,1,1,
+    1,0,0,0,0,0,1,0,0,0,
+    1,1,1,1,1,1,1,1,1,0,
+    0,0,0,0,0,0,0,0,1,1,
+    1,0,1,1,0,1,0,1,0,1,
+    0,1,0,0,1,0,1,0,1,0
+  ];
+  qr.innerHTML = '';
+  pattern.forEach(v => {
+    const cell = document.createElement('div');
+    cell.className = 'qr-cell ' + (v ? 'dark' : 'light');
+    qr.appendChild(cell);
+  });
+}
+
+// ═══════════════════════════════════════════
+// STEP 7 — WELCOME
+// ═══════════════════════════════════════════
+function fillSummary() {
+  const name = (formState.firstName + ' ' + formState.lastName).trim() || 'Utilisateur';
+  document.getElementById('summaryName').textContent = name;
+  document.getElementById('summaryEmail').textContent = document.getElementById('email')?.value || '—';
+  const planLabels = { starter: 'Starter (Gratuit)', standard: 'Standard — €9.99/mois', premium: 'Premium — €24.99/mois' };
+  document.getElementById('summaryPlan').textContent = planLabels[formState.plan] || 'Standard';
+  document.getElementById('summaryCard').textContent = formState.cardType === 'physical' ? 'Carte Physique — Activation en cours' : 'Carte Virtuelle — Activation en cours';
+  // Update welcome card
+  document.getElementById('welcomeCardName').textContent = formState.cardName || name.toUpperCase();
+  document.getElementById('welcomeCardCurrency').textContent = formState.currency || 'EUR';
+  updatePlanInCard();
+}
+
+function copyReferral() {
+  const link = window.location.origin + '/onboarding.html?ref=' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  navigator.clipboard.writeText(link).catch(() => {});
+  showToast('Lien de parrainage copié ! 🎁', 'success');
+}
+
+// ═══════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════
+function launchConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#7C3AED', '#06B6D4', '#F59E0B', '#10B981', '#EF4444', '#ffffff'];
+  for (let i = 0; i < 120; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (Math.random() * 8 + 4) + 'px';
+    piece.style.height = (Math.random() * 8 + 4) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    piece.style.animationDelay = (Math.random() * 2) + 's';
+    container.appendChild(piece);
+    piece.addEventListener('animationend', () => piece.remove());
+  }
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = (type === 'success' ? '✅' : '❌') + ' <span>' + msg + '</span>';
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+updateProgressBar();
+generateQR();
+</script>
+</body>
+</html>
