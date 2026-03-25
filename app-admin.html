@@ -1835,6 +1835,91 @@ function _doKycAction(idx, action) {
 // =========================================
 // AFFILIATES
 // =========================================
+// =========================================
+// AFFILIATES — Real DB load
+// =========================================
+async function loadAffiliates() {
+  try {
+    const { data: referrals } = await sb.from('referrals')
+      .select('*, referrer:profiles!referrer_id(email, first_name, last_name), referred:profiles!referred_id(email)')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (!referrals || !referrals.length) return;
+    const tbody = document.getElementById('affiliates-tbody');
+    if (!tbody) return;
+    // Aggregate by referrer
+    const aggMap = {};
+    referrals.forEach(r => {
+      const key = r.referrer_id;
+      if (!aggMap[key]) {
+        aggMap[key] = { name: `${r.referrer?.first_name||''} ${r.referrer?.last_name||''}`.trim() || r.referrer?.email || key.slice(0,8), referrals: 0, volume: 0, commissions: 0, level: `L${r.level||1}` };
+      }
+      aggMap[key].referrals++;
+      aggMap[key].commissions += parseFloat(r.total_commission || 0);
+    });
+    tbody.innerHTML = Object.values(aggMap).map(a => `
+      <tr>
+        <td><b>${sanitize(a.name)}</b></td>
+        <td>${a.referrals}</td>
+        <td style="color:var(--cyan)">—</td>
+        <td style="color:var(--gold);font-weight:600">$${a.commissions.toFixed(2)}</td>
+        <td><span class="badge badge-violet">${sanitize(a.level)}</span></td>
+        <td><span class="badge badge-green">Actif</span></td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error('loadAffiliates error:', e); }
+}
+
+// =========================================
+// YIELD — Real DB load
+// =========================================
+async function loadYield() {
+  try {
+    const { data: investments } = await sb.from('yield_investments')
+      .select('*, profiles(email, first_name, last_name)')
+      .order('started_at', { ascending: false })
+      .limit(100);
+    if (!investments || !investments.length) return;
+    const tbody = document.getElementById('yield-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = investments.map(y => {
+      const name = `${y.profiles?.first_name||''} ${y.profiles?.last_name||''}`.trim() || y.profiles?.email || '—';
+      return `<tr>
+        <td><b>${sanitize(name)}</b></td>
+        <td style="color:var(--cyan)">$${parseFloat(y.amount||0).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+        <td><span class="badge badge-violet">${sanitize(y.round||'—')}</span></td>
+        <td style="color:var(--green);font-weight:600">${parseFloat(y.apy||0).toFixed(1)}%</td>
+        <td style="color:var(--gold)">$${parseFloat(y.total_earned||0).toLocaleString('en-US',{minimumFractionDigits:2})}</td>
+        <td style="color:var(--text3)">${y.next_payment_at ? new Date(y.next_payment_at).toLocaleDateString('fr-FR') : '—'}</td>
+        <td><span class="badge ${y.status==='active'?'badge-green':'badge-gray'}">${sanitize(y.status||'—')}</span></td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error('loadYield error:', e); }
+}
+
+// =========================================
+// FINANCES — Real DB KPIs
+// =========================================
+async function loadFinances() {
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30*24*60*60*1000).toISOString();
+    const [{ data: txData }, { count: userCount }] = await Promise.all([
+      sb.from('transactions').select('type, amount, status').eq('status', 'completed').gte('created_at', thirtyDaysAgo),
+      sb.from('profiles').select('*', { count: 'exact', head: true }),
+    ]);
+    if (!txData) return;
+    const swapVol = txData.filter(t=>t.type==='swap').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+    const depositVol = txData.filter(t=>t.type==='deposit').reduce((s,t)=>s+parseFloat(t.amount||0),0);
+    const swapFees = swapVol * 0.0025;
+    const topupFees = depositVol * 0.035;
+    // Update finance KPI cells if they exist
+    const finKpis = document.querySelectorAll('#page-finances .kpi-value');
+    if (finKpis[0]) finKpis[0].textContent = '$' + swapFees.toLocaleString('en-US', {minimumFractionDigits:0});
+    if (finKpis[1]) finKpis[1].textContent = '$' + topupFees.toLocaleString('en-US', {minimumFractionDigits:0});
+    if (finKpis[2]) finKpis[2].textContent = userCount?.toLocaleString() || '0';
+  } catch(e) { console.error('loadFinances error:', e); }
+}
+
 function renderAffiliates() {
   const tbody = document.getElementById('affiliates-tbody');
   tbody.innerHTML = AFFILIATES.map(a => `
