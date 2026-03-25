@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APEXCARD — Admin Panel</title>
+<title data-i18n="page.title.admin">APEXCARD — Admin Panel</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -492,7 +492,7 @@ svg.chart{width:100%;overflow:visible}
           <table id="users-table">
             <thead>
               <tr>
-                <th>ID</th><th>Nom</th><th>Email</th><th>KYC Tier</th><th>Cartes</th><th>Solde</th><th>Volume 30j</th><th>Date</th><th>Statut</th>
+                <th data-i18n="admin.users.th.id">ID</th><th data-i18n="admin.users.th.name">Nom</th><th data-i18n="admin.users.th.email">Email</th><th data-i18n="admin.users.th.tier">KYC Tier</th><th data-i18n="admin.users.th.cards">Cartes</th><th data-i18n="admin.users.th.balance">Solde</th><th data-i18n="admin.users.th.volume">Volume 30j</th><th data-i18n="admin.users.th.date">Date</th><th data-i18n="admin.users.th.status">Statut</th>
               </tr>
             </thead>
             <tbody id="users-tbody"></tbody>
@@ -512,7 +512,7 @@ svg.chart{width:100%;overflow:visible}
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>ID</th><th>Utilisateur</th><th>Type</th><th>Numéro</th><th>Statut</th><th>Solde</th><th>Limite</th><th>Dernière tx</th><th>Action</th></tr>
+              <tr><th data-i18n="admin.cards.th.id">ID</th><th data-i18n="admin.cards.th.user">Utilisateur</th><th data-i18n="admin.cards.th.type">Type</th><th data-i18n="admin.cards.th.number">Numéro</th><th data-i18n="admin.cards.th.status">Statut</th><th data-i18n="admin.cards.th.balance">Solde</th><th data-i18n="admin.cards.th.limit">Limite</th><th data-i18n="admin.cards.th.last_tx">Dernière tx</th><th data-i18n="admin.cards.th.action">Action</th></tr>
             </thead>
             <tbody id="cards-tbody"></tbody>
           </table>
@@ -542,7 +542,7 @@ svg.chart{width:100%;overflow:visible}
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>ID</th><th>Utilisateur</th><th>Type</th><th>Montant</th><th>Devise</th><th>Statut</th><th>Date</th></tr>
+              <tr><th data-i18n="admin.tx.th.id">ID</th><th data-i18n="admin.tx.th.user">Utilisateur</th><th data-i18n="admin.tx.th.type">Type</th><th data-i18n="admin.tx.th.amount">Montant</th><th data-i18n="admin.tx.th.currency">Devise</th><th data-i18n="admin.tx.th.status">Statut</th><th data-i18n="admin.tx.th.date">Date</th></tr>
             </thead>
             <tbody id="tx-tbody"></tbody>
           </table>
@@ -563,30 +563,30 @@ svg.chart{width:100%;overflow:visible}
     <div class="page" id="page-affiliates">
       <div class="kpi-grid kpi-3" style="margin-bottom:20px">
         <div class="kpi-card">
-          <div class="kpi-label">Affiliés actifs</div>
+          <div class="kpi-label" data-i18n="admin.affiliate.kpi.active">Affiliés actifs</div>
           <div class="kpi-value">847</div>
-          <div class="kpi-sub">+23 ce mois</div>
+          <div class="kpi-sub" data-i18n="admin.affiliate.kpi.active_sub">+23 ce mois</div>
         </div>
         <div class="kpi-card gold">
-          <div class="kpi-label">Commissions pending</div>
+          <div class="kpi-label" data-i18n="admin.affiliate.kpi.pending">Commissions pending</div>
           <div class="kpi-value" style="color:var(--gold)">$12,400</div>
-          <div class="kpi-sub">Mars 2026</div>
+          <div class="kpi-sub" data-i18n="admin.affiliate.kpi.pending_sub">Mars 2026</div>
         </div>
         <div class="kpi-card cyan">
-          <div class="kpi-label">Volume réseau</div>
+          <div class="kpi-label" data-i18n="admin.affiliate.kpi.volume">Volume réseau</div>
           <div class="kpi-value" style="color:var(--cyan)">$840k</div>
-          <div class="kpi-sub">Réseau total actif</div>
+          <div class="kpi-sub" data-i18n="admin.affiliate.kpi.volume_sub">Réseau total actif</div>
         </div>
       </div>
       <div class="section">
         <div class="section-header">
-          <div class="section-title">Top affiliés</div>
+          <div class="section-title" data-i18n="admin.affiliate.top.title">Top affiliés</div>
           <button class="btn btn-primary" onclick="showConfirmBatch()">💸 Paiement batch $12,400</button>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>Affilié</th><th>Filleuls</th><th>Volume réseau</th><th>Commissions</th><th>Niveau</th><th>Statut</th></tr>
+              <tr><th data-i18n="admin.affiliate.th.affiliate">Affilié</th><th data-i18n="admin.affiliate.th.referrals">Filleuls</th><th data-i18n="admin.affiliate.th.volume">Volume réseau</th><th data-i18n="admin.affiliate.th.commissions">Commissions</th><th data-i18n="admin.affiliate.th.level">Niveau</th><th data-i18n="admin.affiliate.th.status">Statut</th></tr>
             </thead>
             <tbody id="affiliates-tbody"></tbody>
           </table>
@@ -598,30 +598,30 @@ svg.chart{width:100%;overflow:visible}
     <div class="page" id="page-yield">
       <div class="kpi-grid kpi-3" style="margin-bottom:20px">
         <div class="kpi-card">
-          <div class="kpi-label">Capital géré</div>
+          <div class="kpi-label" data-i18n="admin.yield.kpi.managed">Capital géré</div>
           <div class="kpi-value" style="color:var(--violet)">$284k</div>
-          <div class="kpi-sub">6 investisseurs</div>
+          <div class="kpi-sub" data-i18n="admin.yield.kpi.managed_sub">6 investisseurs</div>
         </div>
         <div class="kpi-card gold">
-          <div class="kpi-label">À verser ce mois</div>
+          <div class="kpi-label" data-i18n="admin.yield.kpi.monthly">À verser ce mois</div>
           <div class="kpi-value" style="color:var(--gold)">$5,688</div>
-          <div class="kpi-sub">APY 24% — Mars 2026</div>
+          <div class="kpi-sub" data-i18n="admin.yield.kpi.monthly_sub">APY 24% — Mars 2026</div>
         </div>
         <div class="kpi-card green">
-          <div class="kpi-label">Total versé</div>
+          <div class="kpi-label" data-i18n="admin.yield.kpi.total">Total versé</div>
           <div class="kpi-value" style="color:var(--green)">$34,120</div>
-          <div class="kpi-sub">Depuis ouverture</div>
+          <div class="kpi-sub" data-i18n="admin.yield.kpi.total_sub">Depuis ouverture</div>
         </div>
       </div>
       <div class="section">
         <div class="section-header">
-          <div class="section-title">Investisseurs</div>
+          <div class="section-title" data-i18n="admin.yield.investors.title">Investisseurs</div>
           <button class="btn btn-primary" onclick="showConfirmYield()">📤 Versement mensuel $5,688</button>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>Investisseur</th><th>Montant</th><th>Round</th><th>APY</th><th>Gain cumulé</th><th>Prochain versement</th><th>Statut</th></tr>
+              <tr><th data-i18n="admin.yield.th.investor">Investisseur</th><th data-i18n="admin.yield.th.amount">Montant</th><th data-i18n="admin.yield.th.round">Round</th><th data-i18n="admin.yield.th.apy">APY</th><th data-i18n="admin.yield.th.earned">Gain cumulé</th><th data-i18n="admin.yield.th.next">Prochain versement</th><th data-i18n="admin.yield.th.status">Statut</th></tr>
             </thead>
             <tbody id="yield-tbody"></tbody>
           </table>
@@ -634,50 +634,50 @@ svg.chart{width:100%;overflow:visible}
       <div class="finance-grid">
         <div class="section">
           <div class="section-header">
-            <div class="section-title">📊 P&L — Mars 2026</div>
+            <div class="section-title" data-i18n="admin.finances.pnl">📊 P&L — Mars 2026</div>
           </div>
           <div style="margin-bottom:16px">
             <div style="font-size:12px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Revenus</div>
             <div class="pl-row income">
-              <span>Ventes cartes</span>
+              <span data-i18n="admin.finances.f_card_sales">Ventes cartes</span>
               <span class="pl-plus">+$2,500</span>
             </div>
             <div class="pl-row income">
-              <span>Frais recharge (3.5%)</span>
+              <span data-i18n="admin.finances.f_topup_fees">Frais recharge (3.5%)</span>
               <span class="pl-plus">+$39,900</span>
             </div>
             <div class="pl-row income">
-              <span>Frais swap (0.25%)</span>
+              <span data-i18n="admin.finances.f_swap_fees">Frais swap (0.25%)</span>
               <span class="pl-plus">+$400</span>
             </div>
           </div>
           <div style="margin-bottom:16px">
             <div style="font-size:12px;color:var(--red);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Coûts</div>
             <div class="pl-row cost">
-              <span>Frais BIN Wallester</span>
+              <span data-i18n="admin.finances.c_bin">Frais BIN Wallester</span>
               <span class="pl-minus">-$20,520</span>
             </div>
             <div class="pl-row cost">
-              <span>Coût cartes physiques</span>
+              <span data-i18n="admin.finances.c_physical">Coût cartes physiques</span>
               <span class="pl-minus">-$100</span>
             </div>
             <div class="pl-row cost">
-              <span>Yield investisseurs</span>
+              <span data-i18n="admin.finances.c_yield">Yield investisseurs</span>
               <span class="pl-minus">-$5,688</span>
             </div>
             <div class="pl-row cost">
-              <span>Commissions affiliés</span>
+              <span data-i18n="admin.finances.c_affiliate">Commissions affiliés</span>
               <span class="pl-minus">-$12,400</span>
             </div>
           </div>
           <div class="pl-row total">
-            <span>Marge nette Mars 2026</span>
+            <span data-i18n="admin.finances.net_margin">Marge nette Mars 2026</span>
             <span style="color:var(--green)">+$4,092</span>
           </div>
         </div>
         <div>
           <div class="section" style="margin-bottom:16px">
-            <div class="section-title" style="margin-bottom:16px">Répartition revenus</div>
+            <div class="section-title" style="margin-bottom:16px" data-i18n="admin.finances.revenue_split">Répartition revenus</div>
             <svg viewBox="0 0 200 200" style="width:100%;max-width:200px;margin:0 auto;display:block">
               <!-- Pie chart: Recharge 93%, Cartes 6%, Swap 1% -->
               <circle cx="100" cy="100" r="80" fill="none" stroke="#06B6D4" stroke-width="40" stroke-dasharray="472 0"/>
@@ -696,7 +696,7 @@ svg.chart{width:100%;overflow:visible}
             </div>
           </div>
           <div class="section">
-            <div class="section-title" style="margin-bottom:12px">Float providers</div>
+            <div class="section-title" style="margin-bottom:12px" data-i18n="admin.finances.float">Float providers</div>
             <div class="float-row">
               <span>Wallester</span>
               <span style="color:var(--gold)">$8,200 ⚠️</span>
@@ -720,7 +720,7 @@ svg.chart{width:100%;overflow:visible}
         <div class="section-header">
           <div>
             <div class="section-title" data-i18n="admin.audit.title">🛡️ Audit Log</div>
-            <div class="section-sub">Actions administratives et événements de sécurité</div>
+            <div class="section-sub" data-i18n="admin.audit.sub">Actions administratives et événements de sécurité</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <select class="filter-select" id="audit-action-filter" onchange="filterAudit()" style="font-size:12px;padding:6px 10px">
@@ -746,11 +746,11 @@ svg.chart{width:100%;overflow:visible}
           <table id="audit-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Action</th>
-                <th>Opérateur</th>
-                <th>Détails</th>
-                <th>IP</th>
+                <th data-i18n="admin.audit.th.date">Date</th>
+                <th data-i18n="admin.audit.th.action">Action</th>
+                <th data-i18n="admin.audit.th.operator">Opérateur</th>
+                <th data-i18n="admin.audit.th.details">Détails</th>
+                <th data-i18n="admin.audit.th.ip">IP</th>
               </tr>
             </thead>
             <tbody id="audit-tbody">
@@ -767,7 +767,7 @@ svg.chart{width:100%;overflow:visible}
         <div class="section-header">
           <div>
             <div class="section-title" data-i18n="admin.logins.title">🔐 Tentatives de connexion</div>
-            <div class="section-sub">Historique des authentifications et tentatives suspectes</div>
+            <div class="section-sub" data-i18n="admin.logins.sub">Historique des authentifications et tentatives suspectes</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <select class="filter-select" id="login-status-filter" onchange="filterLogins()" style="font-size:12px;padding:6px 10px">
@@ -782,11 +782,11 @@ svg.chart{width:100%;overflow:visible}
           <table id="login-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Email</th>
-                <th>Statut</th>
-                <th>IP</th>
-                <th>Appareil</th>
+                <th data-i18n="admin.logins.th.date">Date</th>
+                <th data-i18n="admin.logins.th.email">Email</th>
+                <th data-i18n="admin.logins.th.status">Statut</th>
+                <th data-i18n="admin.logins.th.ip">IP</th>
+                <th data-i18n="admin.logins.th.device">Appareil</th>
               </tr>
             </thead>
             <tbody id="login-tbody">
@@ -801,27 +801,27 @@ svg.chart{width:100%;overflow:visible}
     <div class="page" id="page-settings">
       <div class="settings-grid">
         <div class="settings-section">
-          <div class="settings-title">💲 Frais & Prix</div>
+          <div class="settings-title" data-i18n="admin.settings.fees_title">💲 Frais & Prix</div>
           <div class="settings-row"><span class="settings-label">Frais recharge</span><span class="settings-value">3.5%</span></div>
           <div class="settings-row"><span class="settings-label">Carte virtuelle</span><span class="settings-value">$50</span></div>
           <div class="settings-row"><span class="settings-label">Carte physique Gold</span><span class="settings-value">$99</span></div>
           <div class="settings-row"><span class="settings-label">Frais swap</span><span class="settings-value">0.25%</span></div>
         </div>
         <div class="settings-section">
-          <div class="settings-title">🤝 Commissions affiliés</div>
+          <div class="settings-title" data-i18n="admin.settings.affiliate_title">🤝 Commissions affiliés</div>
           <div class="settings-row"><span class="settings-label">Niveau 1</span><span class="settings-value" style="color:var(--cyan)">8%</span></div>
           <div class="settings-row"><span class="settings-label">Niveau 2</span><span class="settings-value" style="color:var(--cyan)">3%</span></div>
           <div class="settings-row"><span class="settings-label">Niveau 3</span><span class="settings-value" style="color:var(--cyan)">1%</span></div>
           <div class="settings-row"><span class="settings-label">Bonus vente carte</span><span class="settings-value" style="color:var(--gold)">$5</span></div>
         </div>
         <div class="settings-section">
-          <div class="settings-title">🎚️ Limites par tier</div>
+          <div class="settings-title" data-i18n="admin.settings.limits_title">🎚️ Limites par tier</div>
           <div class="settings-row"><span class="settings-label">Tier 0</span><span class="settings-value">$500 / mois</span></div>
           <div class="settings-row"><span class="settings-label">Tier 1</span><span class="settings-value">$5,000 / mois</span></div>
           <div class="settings-row"><span class="settings-label">Tier 2</span><span class="settings-value">$50,000 / mois</span></div>
         </div>
         <div class="settings-section">
-          <div class="settings-title">🔌 API Status</div>
+          <div class="settings-title" data-i18n="admin.settings.api_title">🔌 API Status</div>
           <div class="settings-row"><span class="settings-label"><span class="api-dot online"></span>Wallester</span><span class="settings-value" style="color:var(--green)">Online</span></div>
           <div class="settings-row"><span class="settings-label"><span class="api-dot online"></span>Tatum</span><span class="settings-value" style="color:var(--green)">Online</span></div>
           <div class="settings-row"><span class="settings-label"><span class="api-dot online"></span>Clearjunction</span><span class="settings-value" style="color:var(--green)">Online</span></div>
@@ -829,11 +829,11 @@ svg.chart{width:100%;overflow:visible}
           <div class="settings-row"><span class="settings-label"><span class="api-dot deg"></span>Sumsub</span><span class="settings-value" style="color:var(--red)">Dégradé</span></div>
         </div>
         <div class="settings-section" style="grid-column:1/-1">
-          <div class="settings-title">🛡️ Système</div>
+          <div class="settings-title" data-i18n="admin.settings.system_title">🛡️ Système</div>
           <div class="settings-row">
             <div>
-              <div class="settings-label" style="font-weight:600;color:var(--text);margin-bottom:2px">Mode maintenance</div>
-              <div class="settings-label" style="font-size:11px">Bloquer l'accès utilisateurs et afficher une page de maintenance</div>
+              <div class="settings-label" style="font-weight:600;color:var(--text);margin-bottom:2px" data-i18n="admin.settings.maintenance">Mode maintenance</div>
+              <div class="settings-label" style="font-size:11px" data-i18n="admin.settings.maintenance.desc">Bloquer l'accès utilisateurs et afficher une page de maintenance</div>
             </div>
             <div class="toggle" id="maintenance-toggle" onclick="toggleMaintenance()" title="Activer/Désactiver la maintenance"></div>
           </div>

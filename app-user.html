@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APEXCARD — Dashboard</title>
+<title data-i18n="page.title.app">APEXCARD — Dashboard</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -429,7 +429,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       <div class="balance-hero">
         <div class="balance-label" data-i18n="app.dashboard.balance_label">Valeur totale du portefeuille</div>
         <div class="balance-amount"><span id="balanceCounter">$0</span></div>
-        <div class="balance-change">↑ +12.4% &nbsp; +$3,301.25 this month</div>
+        <div class="balance-change" data-i18n="app.dashboard.change">↑ +12.4% &nbsp; +$3,301.25 this month</div>
       </div>
 
       <div class="ticker-wrap">
@@ -446,7 +446,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       <div class="grid-2">
         <div class="card card-glow-violet">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
-            <div style="font-size:0.88rem;font-weight:700">Crypto Holdings</div>
+            <div style="font-size:0.88rem;font-weight:700" data-i18n="app.dashboard.crypto_holdings">Crypto Holdings</div>
             <div style="font-size:0.78rem;color:var(--muted)">4 assets</div>
           </div>
           <div class="holding-row">
@@ -476,7 +476,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
 
         <div class="card card-glow-cyan">
-          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Portfolio Allocation</div>
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.dashboard.portfolio_alloc">Portfolio Allocation</div>
           <div class="donut-wrap">
             <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
               <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20"/>
@@ -499,8 +499,8 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
 
       <div class="card" style="margin-top:1.25rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
-          <div style="font-size:0.88rem;font-weight:700">Recent Transactions</div>
-          <div style="font-size:0.78rem;color:#7C3AED;cursor:pointer">View all →</div>
+          <div style="font-size:0.88rem;font-weight:700" data-i18n="app.dashboard.recent_tx">Recent Transactions</div>
+          <div style="font-size:0.78rem;color:#7C3AED;cursor:pointer" data-i18n="app.dashboard.view_all">View all →</div>
         </div>
         <div class="tx-row">
           <div class="tx-icon" style="background:rgba(16,185,129,0.1)">↓</div>
@@ -534,7 +534,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <div class="page-section" id="page-cards">
       <div class="section-hdr">
         <div><div class="section-title"><span data-i18n="app.cards.title">My Cards</span></div><div class="section-subtitle" data-i18n="app.cards.sub">2 active cards</div></div>
-        <button onclick="openModal('cardOrder')" style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--text);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;">+ New Card</button>
+        <button onclick="openModal('cardOrder')" style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--text);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;" data-i18n="app.settings.new_card">+ New Card</button>
       </div>
 
       <div class="grid-2">
@@ -548,15 +548,15 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>09/28</div>
           </div>
           <div class="cards-controls" data-card-index="0">
-            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 0, 'online_payments')"></div></div>
-            <div class="control-row"><div><div class="control-label">Contactless</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle" onclick="toggleCardSetting(this, 0, 'international')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.online">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 0, 'online_payments')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.contactless">Contactless</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle" onclick="toggleCardSetting(this, 0, 'international')"></div></div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)">Monthly limit</span><span>$4,200 / $10,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)" data-i18n="app.cards.monthly_limit">Monthly limit</span><span>$4,200 / $10,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:42%;--pct:42%"></div></div>
             </div>
             <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
-            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">💳 Top Up Card</button>
+            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer" data-i18n="app.cards.topup">💳 Top Up Card</button>
           </div>
         </div>
 
@@ -570,15 +570,15 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>12/27</div>
           </div>
           <div class="cards-controls" data-card-index="1">
-            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'online_payments')"></div></div>
-            <div class="control-row"><div><div class="control-label">ATM Withdrawals</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'atm_withdrawals')"></div></div>
-            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'international')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.online">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'online_payments')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.atm">ATM Withdrawals</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'atm_withdrawals')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'international')"></div></div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)">Monthly limit</span><span>$12,800 / $25,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)" data-i18n="app.cards.monthly_limit">Monthly limit</span><span>$12,800 / $25,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:51%;--pct:51%"></div></div>
             </div>
             <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
-            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">💳 Top Up Card</button>
+            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer" data-i18n="app.cards.topup">💳 Top Up Card</button>
           </div>
         </div>
       </div>
@@ -596,9 +596,9 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         <div class="card card-glow-cyan kpi-mini"><div class="kpi-val" style="color:#06B6D4">$4,506</div><div class="kpi-label">USDT Value</div></div>
       </div>
       <div class="card">
-        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">All Assets</div>
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.wallet.all_assets">All Assets</div>
         <table class="data-table">
-          <thead><tr><th>Asset</th><th>Balance</th><th>Price</th><th>24h</th><th>Value</th><th>Actions</th></tr></thead>
+          <thead><tr><th data-i18n="app.wallet.th.asset">Asset</th><th data-i18n="app.wallet.th.balance">Balance</th><th data-i18n="app.wallet.th.price">Price</th><th data-i18n="app.wallet.th.change">24h</th><th data-i18n="app.wallet.th.value">Value</th><th data-i18n="app.wallet.th.actions">Actions</th></tr></thead>
           <tbody>
             <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₿</span><span style="font-weight:600">Bitcoin</span></div></td><td class="wallet-bal" data-asset="BTC">0.2012 BTC</td><td>$63,820</td><td style="color:#10B981">+3.2%</td><td style="font-weight:600" class="wallet-val" data-asset="BTC">$12,842</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
             <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>Ξ</span><span style="font-weight:600">Ethereum</span></div></td><td class="wallet-bal" data-asset="ETH">2.847 ETH</td><td>$3,226</td><td style="color:#10B981">+1.8%</td><td style="font-weight:600" class="wallet-val" data-asset="ETH">$9,183</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
@@ -616,7 +616,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div style="max-width:480px">
         <div class="swap-box">
-          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You pay</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem" data-i18n="app.swap.you_pay">You pay</div>
           <div class="swap-token">
             <div class="token-selector" onclick="openTokenSelect('from')">
               <div class="token-icon" style="background:rgba(245,158,11,0.15)">₿</div>
@@ -632,7 +632,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
 
         <div class="swap-box">
-          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You receive</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem" data-i18n="app.swap.you_receive">You receive</div>
           <div class="swap-token">
             <div class="token-selector" onclick="openTokenSelect('to')">
               <div class="token-icon" style="background:rgba(16,185,129,0.15)">₮</div>
@@ -643,12 +643,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
 
         <div class="card" style="margin-top:1rem;padding:1.25rem">
-          <div class="swap-info-row"><div class="swap-info-label">Rate</div><div>1 BTC = 63,820 USDT</div></div>
+          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.rate">Rate</div><div>1 BTC = 63,820 USDT</div></div>
           <div class="swap-info-row"><div class="swap-info-label">Price Impact</div><div style="color:#10B981">0.04%</div></div>
-          <div class="swap-info-row"><div class="swap-info-label">Network Fee</div><div>~$2.40</div></div>
-          <div class="swap-info-row"><div class="swap-info-label">Minimum received</div><div>318.73 USDT</div></div>
+          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.fee">Network Fee</div><div>~$2.40</div></div>
+          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.min">Minimum received</div><div>318.73 USDT</div></div>
         </div>
-        <button class="btn-swap" onclick="doSwap()">Confirm Swap ⇄</button>
+        <button class="btn-swap" onclick="doSwap()" data-i18n="app.swap.confirm">Confirm Swap ⇄</button>
       </div>
     </div>
 
@@ -690,9 +690,9 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
       </div>
       <div class="card">
-        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Recent Bank Transactions</div>
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.iban.recent_tx">Recent Bank Transactions</div>
         <table class="data-table">
-          <thead><tr><th>Description</th><th>IBAN</th><th>Date</th><th>Amount</th></tr></thead>
+          <thead><tr><th data-i18n="app.iban.th.desc">Description</th><th data-i18n="app.iban.th.iban">IBAN</th><th data-i18n="app.iban.th.date">Date</th><th data-i18n="app.iban.th.amount">Amount</th></tr></thead>
           <tbody>
             <tr><td>SEPA Transfer — Freelance</td><td>EUR</td><td>Mar 22, 2026</td><td style="color:#10B981;font-weight:600">+€5,000.00</td></tr>
             <tr><td>Card Funding</td><td>EUR</td><td>Mar 20, 2026</td><td style="color:#EF4444;font-weight:600">-€500.00</td></tr>
@@ -710,9 +710,9 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div class="grid-3" style="margin-bottom:1.5rem">
         <div class="apy-card apy-glow">
-          <div style="font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase">Current APY</div>
+          <div style="font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase" data-i18n="app.yield.current_apy">Current APY</div>
           <div class="apy-num">24%</div>
-          <div style="font-size:0.82rem;color:var(--muted);margin-top:0.25rem">Annual Percentage Yield</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-top:0.25rem" data-i18n="app.yield.apy_full">Annual Percentage Yield</div>
         </div>
         <div class="card card-glow-violet">
           <div class="kpi-mini" style="padding:0.25rem">
@@ -730,7 +730,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
 
       <div class="grid-2">
         <div class="card">
-          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Active Pools</div>
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.yield.active_pools">Active Pools</div>
           <div style="border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:1.1rem;background:rgba(16,185,129,0.05);margin-bottom:0.75rem">
             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
               <div style="font-weight:600">USDT Flexible Pool</div>
@@ -751,14 +751,14 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
 
         <div class="card">
-          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Earnings Simulator</div>
-          <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem">Investment amount</div>
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.yield.simulator">Earnings Simulator</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem" data-i18n="app.yield.invest_amount">Investment amount</div>
           <div class="slider-wrap">
             <input type="range" min="1000" max="100000" value="12000" id="simSlider" oninput="updateSim(this.value)" style="--val:11%">
           </div>
           <div style="text-align:center;margin:1rem 0">
             <div style="font-size:2rem;font-weight:800;color:#10B981" id="simAmount">$12,000</div>
-            <div style="font-size:0.82rem;color:var(--muted)">at 24% APY</div>
+            <div style="font-size:0.82rem;color:var(--muted)" data-i18n="app.yield.at_apy">at 24% APY</div>
           </div>
           <div class="card" style="padding:0.9rem;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.2)">
             <div style="display:flex;justify-content:space-between;padding:0.3rem 0"><span style="color:var(--muted);font-size:0.82rem">Monthly</span><span style="color:#10B981;font-weight:600" id="simMonthly">+$240.00</span></div>
@@ -775,23 +775,23 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div class="ref-code-box">
         <div>
-          <div style="font-size:0.73rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.25rem">Your Referral Code</div>
+          <div style="font-size:0.73rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.25rem" data-i18n="app.affiliate.your_code">Your Referral Code</div>
           <div class="ref-code" id="refCode">—</div>
           <div class="ref-link-display" style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">https://apexcard.io/ref/...</div>
         </div>
-        <button class="copy-btn" onclick="copyCode()">📋 Copy Link</button>
+        <button class="copy-btn" onclick="copyCode()" data-i18n="app.affiliate.copy">📋 Copier le lien</button>
       </div>
 
       <div class="grid-4" style="margin-bottom:1.5rem">
-        <div class="card kpi-mini card-glow-violet"><div class="kpi-val" style="color:#a78bfa" id="affReferralCount">—</div><div class="kpi-label">Total Referrals</div></div>
-        <div class="card kpi-mini card-glow-green"><div class="kpi-val" style="color:#10B981" id="affTotalEarned">—</div><div class="kpi-label">Total Earned</div></div>
-        <div class="card kpi-mini card-glow-gold"><div class="kpi-val" style="color:#F59E0B" id="affActiveCount">—</div><div class="kpi-label">Active Referrals</div></div>
-        <div class="card kpi-mini card-glow-cyan"><div class="kpi-val" style="color:#06B6D4">L1 10%</div><div class="kpi-label">Commission Rate</div></div>
+        <div class="card kpi-mini card-glow-violet"><div class="kpi-val" style="color:#a78bfa" id="affReferralCount">—</div><div class="kpi-label" data-i18n="app.affiliate.total_referrals">Total Referrals</div></div>
+        <div class="card kpi-mini card-glow-green"><div class="kpi-val" style="color:#10B981" id="affTotalEarned">—</div><div class="kpi-label" data-i18n="app.affiliate.total_earned">Total Earned</div></div>
+        <div class="card kpi-mini card-glow-gold"><div class="kpi-val" style="color:#F59E0B" id="affActiveCount">—</div><div class="kpi-label" data-i18n="app.affiliate.active_count">Active Referrals</div></div>
+        <div class="card kpi-mini card-glow-cyan"><div class="kpi-val" style="color:#06B6D4">L1 10%</div><div class="kpi-label" data-i18n="app.affiliate.commission_rate">Commission Rate</div></div>
       </div>
 
       <!-- Commission structure -->
       <div class="card" style="margin-bottom:1.5rem">
-        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Commission Structure</div>
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.affiliate.commission_struct">Commission Structure</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
           <div style="text-align:center;padding:1rem;border-radius:12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2)">
             <div style="font-size:1.5rem;font-weight:800;color:#10B981">10%</div>
@@ -845,11 +845,11 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
 
       <div class="kyc-steps">
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label">Email</div></div>
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label">Phone</div></div>
-        <div class="kyc-step"><div class="step-circle active">✓</div><div class="step-label">Identity</div></div>
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label">Address</div></div>
-        <div class="kyc-step"><div class="step-circle" style="opacity:0.5">5</div><div class="step-label">Enhanced</div></div>
+        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.email">Email</div></div>
+        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.phone">Phone</div></div>
+        <div class="kyc-step"><div class="step-circle active">✓</div><div class="step-label" data-i18n="app.kyc.identity">Identity</div></div>
+        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.address">Address</div></div>
+        <div class="kyc-step"><div class="step-circle" style="opacity:0.5">5</div><div class="step-label" data-i18n="app.kyc.tier.enhanced">Enhanced</div></div>
       </div>
 
       <div id="kycStatusBanner" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
@@ -883,13 +883,13 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
                Payload: { userId, docType, file, tier }
                Replace mock with real Squarefi KYC API call
                ═══════════════════════════════════════════════════════════ -->
-          <button onclick="openModal('kycUpload')" style="margin-top:0.75rem;padding:0.5rem 1rem;border-radius:8px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);color:#F59E0B;font-family:inherit;font-size:0.78rem;cursor:pointer">Upgrade →</button>
+          <button onclick="openModal('kycUpload')" style="margin-top:0.75rem;padding:0.5rem 1rem;border-radius:8px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);color:#F59E0B;font-family:inherit;font-size:0.78rem;cursor:pointer" data-i18n="app.kyc.upgrade">Upgrade →</button>
         </div>
       </div>
 
       <!-- Submitted documents -->
       <div class="card" style="margin-top:1.5rem">
-        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Submitted Documents</div>
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.kyc.submitted_docs">Submitted Documents</div>
         <div id="kycDocsContainer">
           <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:12px;background:var(--surface);border:1px solid var(--border)">
             <div style="font-size:1.5rem">🛂</div>
@@ -912,72 +912,72 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div class="card">
         <div class="settings-section">
-          <div class="settings-title">Profile Information</div>
+          <div class="settings-title" data-i18n="app.settings.profile">Profile Information</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
             <div>
-              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">First Name</label>
+              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem" data-i18n="app.settings.firstname.placeholder">First Name</label>
               <input class="input-field" id="setFirstName" type="text" placeholder="First Name">
             </div>
             <div>
-              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Last Name</label>
+              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem" data-i18n="app.settings.lastname.placeholder">Last Name</label>
               <input class="input-field" id="setLastName" type="text" placeholder="Last Name">
             </div>
           </div>
           <div style="margin-top:1rem">
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Email <span style="opacity:0.5">(read-only)</span></label>
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem"><span data-i18n="app.settings.email.label">Email</span> <span style="opacity:0.5" data-i18n="app.settings.email.readonly">(read-only)</span></label>
             <input class="input-field" id="setEmail" type="email" readonly style="opacity:0.6;cursor:not-allowed">
           </div>
           <div style="margin-top:1rem">
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Phone</label>
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem" data-i18n="app.settings.phone.placeholder">Phone</label>
             <input class="input-field" id="setPhone" type="text" placeholder="+33 6 ...">
           </div>
-          <button class="btn-save" style="margin-top:1.25rem" onclick="saveProfileSettings()">Save Changes</button>
+          <button class="btn-save" style="margin-top:1.25rem" onclick="saveProfileSettings()" data-i18n="app.settings.save">Save Changes</button>
         </div>
 
         <div class="settings-section">
-          <div class="settings-title">Security</div>
+          <div class="settings-title" data-i18n="app.settings.security">Security</div>
           <div class="settings-row">
-            <div><div class="settings-label">Two-Factor Authentication</div><div class="settings-desc">Protect your account with 2FA</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.2fa">Two-Factor Authentication</div><div class="settings-desc" data-i18n="app.settings.2fa.desc">Protect your account with 2FA</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
           <div class="settings-row">
-            <div><div class="settings-label">Login Notifications</div><div class="settings-desc">Email alert on new logins</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.login_notif">Login Notifications</div><div class="settings-desc" data-i18n="app.settings.login_notif.desc">Email alert on new logins</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
           <div class="settings-row">
-            <div><div class="settings-label">Biometric Login</div><div class="settings-desc">Use Face ID / fingerprint</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.biometric">Biometric Login</div><div class="settings-desc" data-i18n="app.settings.biometric.desc">Use Face ID / fingerprint</div></div>
             <div class="toggle" onclick="this.classList.toggle('on')"></div>
           </div>
           <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">New Password</label>
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem" data-i18n="app.settings.newpwd.placeholder">New Password</label>
             <input class="input-field" id="newPasswordInput" type="password" placeholder="New password (min. 6 chars)" style="margin-bottom:0.75rem">
-            <button class="btn-save" onclick="changePassword()" style="background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.4);color:#a78bfa">Change Password</button>
+            <button class="btn-save" onclick="changePassword()" style="background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.4);color:#a78bfa" data-i18n="app.settings.change_pwd">Change Password</button>
           </div>
         </div>
 
         <div class="settings-section">
-          <div class="settings-title">Notifications</div>
+          <div class="settings-title" data-i18n="app.settings.notifications">Notifications</div>
           <div class="settings-row">
-            <div><div class="settings-label">Transaction Alerts</div><div class="settings-desc">Notify on every transaction</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.tx_alerts">Transaction Alerts</div><div class="settings-desc" data-i18n="app.settings.tx_alerts.desc">Notify on every transaction</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
           <div class="settings-row">
-            <div><div class="settings-label">Price Alerts</div><div class="settings-desc">Crypto price movement alerts</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.price_alerts">Price Alerts</div><div class="settings-desc" data-i18n="app.settings.price_alerts.desc">Crypto price movement alerts</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
           <div class="settings-row">
-            <div><div class="settings-label">Yield Reports</div><div class="settings-desc">Monthly earnings summary</div></div>
+            <div><div class="settings-label" data-i18n="app.settings.yield_reports">Yield Reports</div><div class="settings-desc" data-i18n="app.settings.yield_reports.desc">Monthly earnings summary</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
         </div>
 
         <div class="settings-section">
-          <div class="settings-title">Referral</div>
+          <div class="settings-title" data-i18n="app.settings.referral">Referral</div>
           <div style="margin-bottom:0.75rem">
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Your Referral Code</label>
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem" data-i18n="app.settings.referral_code">Your Referral Code</label>
             <div style="display:flex;gap:0.5rem">
               <input class="input-field" id="setRefCode" type="text" readonly style="opacity:0.8;font-family:monospace;font-weight:700;letter-spacing:0.1em;flex:1">
-              <button class="btn-save" style="flex-shrink:0;padding:0.6rem 1rem" onclick="copyCode()">📋 Copy Link</button>
+              <button class="btn-save" style="flex-shrink:0;padding:0.6rem 1rem" onclick="copyCode()" data-i18n="app.affiliate.copy">📋 Copy Link</button>
             </div>
           </div>
           <div style="font-size:0.78rem;color:var(--muted)">Referral link: <span id="setRefLink" class="ref-link-display" style="color:#a78bfa;cursor:pointer" onclick="copyCode()">https://apexcard.io/ref/...</span></div>
