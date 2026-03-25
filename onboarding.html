@@ -881,7 +881,32 @@ input, select, textarea { font-family: inherit; }
   .card-type-grid { grid-template-columns: 1fr; }
   .funding-methods { gap: 8px; }
 }
+
+/* ── PAGE FADE-IN ── */
+body { animation: onboardFadeIn 0.5s cubic-bezier(.22,1,.36,1) both; }
+@keyframes onboardFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── FOCUS STATES ── */
+.btn-next:focus-visible,
+.btn-back:focus-visible {
+  outline: 2px solid rgba(124,58,237,0.6);
+  outline-offset: 3px;
+}
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* ── ERROR FEEDBACK ── */
+.field-error {
+  font-size: 0.78rem;
+  color: #EF4444;
+  margin-top: 4px;
+  display: none;
+}
+.field-error.show { display: block; }
 </style>
+<link rel="stylesheet" href="css/responsive.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 <body>

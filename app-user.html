@@ -309,8 +309,8 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
 .btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,0.4)}
 
 /* Modal */
-.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}
-.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease}
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:opacity 0.25s ease,visibility 0.25s ease}
+.modal-overlay.open{opacity:1;visibility:visible}
 .modal{background:#0d0d14;border:1px solid var(--border);border-radius:24px;padding:2rem;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:scaleIn 0.3s cubic-bezier(.22,1,.36,1)}
 @keyframes scaleIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -335,9 +335,9 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
 /* Responsive */
 @media(max-width:768px){
   :root{--sidebar:260px}
-  .sidebar{position:fixed;left:0;top:0;height:100%;transform:translateX(-100%);z-index:30}
+  .sidebar{position:fixed;left:0;top:0;height:100%;transform:translateX(-100%);z-index:30;transition:transform 0.3s cubic-bezier(0.22,1,0.36,1)}
   .sidebar.open{transform:translateX(0)}
-  .sidebar-overlay{display:block;display:none}
+  .sidebar-overlay{display:none}
   .sidebar-overlay.open{display:block}
   .hamburger{display:flex}
   .content{padding:1rem;padding-top:4rem}
@@ -352,7 +352,59 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
   .action-btns{gap:0.5rem}
   .action-btn{min-width:80px;font-size:0.78rem}
 }
+
+/* ── PAGE FADE-IN ── */
+body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
+@keyframes appFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── LOADING SKELETON ── */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmerSkel 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmerSkel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-line { height: 14px; margin-bottom: 8px; }
+.skeleton-line.lg { height: 36px; width: 60%; margin-bottom: 16px; }
+.skeleton-line.sm { width: 40%; }
+.skeleton-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.skeleton-icon { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; }
+.skeleton-body { flex: 1; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--muted);
+}
+.empty-state-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+.empty-state-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+.empty-state-desc { font-size: 0.85rem; line-height: 1.6; }
+.empty-state svg { opacity: 0.35; margin-bottom: 1rem; }
+
+/* ── ERROR STATE ── */
+.error-state {
+  display: flex; align-items: center; gap: 12px;
+  padding: 1rem 1.25rem;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 14px;
+  font-size: 0.88rem;
+  color: #EF4444;
+}
+.error-state-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+/* ── BUTTON STATES ── */
+.action-btn:focus-visible { outline: 2px solid rgba(124,58,237,0.6); outline-offset: 2px; }
+.action-btn:active { transform: scale(0.97); }
+.btn-swap:active { transform: scale(0.98); }
+.nav-item:focus-visible { outline: 2px solid rgba(124,58,237,0.5); outline-offset: 2px; }
+
+/* ── MODAL ANIMATION: handled in base style above ── */
+.modal{animation:scaleIn 0.3s cubic-bezier(.22,1,.36,1)}
 </style>
+<link rel="stylesheet" href="css/responsive.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -519,30 +571,11 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div style="font-size:0.88rem;font-weight:700" data-i18n="app.dashboard.recent_tx">Recent Transactions</div>
           <div style="font-size:0.78rem;color:#7C3AED;cursor:pointer" data-i18n="app.dashboard.view_all">View all →</div>
         </div>
-        <div class="tx-row">
-          <div class="tx-icon" style="background:rgba(16,185,129,0.1)">↓</div>
-          <div><div class="tx-name">Crypto Purchase — BTC</div><div class="tx-date">Mar 23, 2026 · 14:32</div></div>
-          <div class="tx-amount tx-minus">-$2,400.00</div>
-        </div>
-        <div class="tx-row">
-          <div class="tx-icon" style="background:rgba(16,185,129,0.1)">↑</div>
-          <div><div class="tx-name">SEPA Incoming — EUR</div><div class="tx-date">Mar 22, 2026 · 09:15</div></div>
-          <div class="tx-amount tx-plus">+$5,280.00</div>
-        </div>
-        <div class="tx-row">
-          <div class="tx-icon" style="background:rgba(245,158,11,0.1)">⇄</div>
-          <div><div class="tx-name">Swap ETH → USDT</div><div class="tx-date">Mar 21, 2026 · 18:44</div></div>
-          <div class="tx-amount tx-minus">-$1,200.00</div>
-        </div>
-        <div class="tx-row">
-          <div class="tx-icon" style="background:rgba(124,58,237,0.1)">📈</div>
-          <div><div class="tx-name">Yield Payout</div><div class="tx-date">Mar 20, 2026 · 00:01</div></div>
-          <div class="tx-amount tx-plus">+$240.00</div>
-        </div>
-        <div class="tx-row">
-          <div class="tx-icon" style="background:rgba(6,182,212,0.1)">💳</div>
-          <div><div class="tx-name">Card Payment — Amazon</div><div class="tx-date">Mar 19, 2026 · 11:23</div></div>
-          <div class="tx-amount tx-minus">-$89.99</div>
+        <!-- Loading skeleton -->
+        <div class="tx-feed" id="tx-dashboard-loading">
+          <div class="skeleton-row"><div class="skeleton skeleton-icon"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div><div class="skeleton" style="width:80px;height:20px;border-radius:6px"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-icon"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div><div class="skeleton" style="width:80px;height:20px;border-radius:6px"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-icon"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div><div class="skeleton" style="width:80px;height:20px;border-radius:6px"></div></div>
         </div>
       </div>
     </div>
@@ -567,7 +600,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="cards-controls" data-card-index="0">
             <div class="control-row"><div><div class="control-label" data-i18n="app.cards.online">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 0, 'online_payments')"></div></div>
             <div class="control-row"><div><div class="control-label" data-i18n="app.cards.contactless">Contactless</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle" onclick="toggleCardSetting(this, 0, 'international')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle" onclick="toggleCardSetting(this, 0, 'international_payments')"></div></div>
             <div>
               <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)" data-i18n="app.cards.monthly_limit">Monthly limit</span><span>$4,200 / $10,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:42%;--pct:42%"></div></div>
@@ -589,7 +622,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="cards-controls" data-card-index="1">
             <div class="control-row"><div><div class="control-label" data-i18n="app.cards.online">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'online_payments')"></div></div>
             <div class="control-row"><div><div class="control-label" data-i18n="app.cards.atm">ATM Withdrawals</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'atm_withdrawals')"></div></div>
-            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'international')"></div></div>
+            <div class="control-row"><div><div class="control-label" data-i18n="app.cards.international">International</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'international_payments')"></div></div>
             <div>
               <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)" data-i18n="app.cards.monthly_limit">Monthly limit</span><span>$12,800 / $25,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:51%;--pct:51%"></div></div>
@@ -614,6 +647,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div class="card">
         <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.wallet.all_assets">All Assets</div>
+        <div class="table-wrap">
         <table class="data-table">
           <thead><tr><th data-i18n="app.wallet.th.asset">Asset</th><th data-i18n="app.wallet.th.balance">Balance</th><th data-i18n="app.wallet.th.price">Price</th><th data-i18n="app.wallet.th.change">24h</th><th data-i18n="app.wallet.th.value">Value</th><th data-i18n="app.wallet.th.actions">Actions</th></tr></thead>
           <tbody>
@@ -623,6 +657,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₮</span><span style="font-weight:600">Tether</span></div></td><td class="wallet-bal" data-asset="USDT">4,506 USDT</td><td>$1.00</td><td style="color:var(--muted)">+0.01%</td><td style="font-weight:600" class="wallet-val" data-asset="USDT">$4,506</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -660,7 +695,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         </div>
 
         <div class="card" style="margin-top:1rem;padding:1.25rem">
-          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.rate">Rate</div><div>1 BTC = 63,820 USDT</div></div>
+          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.rate">Rate</div><div id="swapRateRow">1 BTC = 63,820 USDT</div></div>
           <div class="swap-info-row"><div class="swap-info-label">Price Impact</div><div style="color:#10B981">0.04%</div></div>
           <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.fee">Network Fee</div><div>~$2.40</div></div>
           <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.min">Minimum received</div><div>318.73 USDT</div></div>
@@ -708,6 +743,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       </div>
       <div class="card">
         <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.iban.recent_tx">Recent Bank Transactions</div>
+        <div class="table-wrap">
         <table class="data-table">
           <thead><tr><th data-i18n="app.iban.th.desc">Description</th><th data-i18n="app.iban.th.iban">IBAN</th><th data-i18n="app.iban.th.date">Date</th><th data-i18n="app.iban.th.amount">Amount</th></tr></thead>
           <tbody>
@@ -717,6 +753,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <tr><td>FX Exchange EUR→GBP</td><td>EUR/GBP</td><td>Mar 15, 2026</td><td style="color:var(--muted)">FX</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -1068,11 +1105,6 @@ const t = document.getElementById('ticker');
 const html = tickers.map(x=>`<div class="ticker-item"><span class="ticker-coin">${x.s}</span><span class="ticker-price">${x.p}</span><span class="${x.up?'ticker-up':'ticker-dn'}">${x.c}</span></div>`).join('');
 t.innerHTML = html + html;
 
-// Swap
-function calcSwap() {
-  const v = parseFloat(document.getElementById('swapFrom').value) || 0;
-  document.getElementById('swapTo').textContent = '≈ $' + (v * 63820).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-}
 // Swap state
 let swapFromToken = 'BTC';
 let swapToToken = 'USDT';
@@ -1317,7 +1349,8 @@ async function changePassword() {
 async function loadAffiliateData(userId, profile) {
   try {
     const { data: referrals, error } = await sb.from('referrals').select('*').eq('referrer_id', userId);
-    const activeReferrals = referrals ? referrals.filter(r => r.status === 'active' || !r.status) : [];
+    // Note: referrals table has no status column; all referrals are considered active
+    const activeReferrals = referrals || [];
     const totalReferrals = referrals ? referrals.length : 0;
     // Update stat elements if they exist
     const affCount = document.getElementById('affReferralCount');
@@ -1340,7 +1373,7 @@ async function loadAffiliateData(userId, profile) {
       if (noRefMsg) noRefMsg.style.display = 'block';
     }
   } catch(e) {
-    console.log('Affiliate data load (demo mode):', e.message);
+    /* demo mode - affiliate data unavailable */
   }
 }
 
@@ -1362,7 +1395,7 @@ async function loadKycData(userId, profile) {
     // Update KYC status banner
     const kycBanner = document.getElementById('kycStatusBanner');
     if (kycBanner) {
-      if (kycStatus === 'verified' || kycTier >= 2) {
+      if (kycStatus === 'approved' || kycStatus === 'verified' || kycTier >= 2) {
         kycBanner.innerHTML = '<div style="font-size:2rem">✅</div><div><div style="font-weight:600;color:#10B981">KYC Tier ' + kycTier + ' — Verified</div><div style="font-size:0.82rem;color:var(--muted)">Your identity has been verified.</div></div>';
         kycBanner.style.borderColor = 'rgba(16,185,129,0.2)';
         kycBanner.style.background = 'rgba(16,185,129,0.08)';
@@ -1388,8 +1421,31 @@ async function loadKycData(userId, profile) {
       `).join('');
     }
   } catch(e) {
-    console.log('KYC data load (demo mode):', e.message);
+    /* demo mode - KYC data unavailable */
   }
+}
+
+// Load Yield & Staking data from DB
+async function loadYieldData(userId) {
+  if (!userId) return;
+  try {
+    const { data: investments } = await sb.from('yield_investments')
+      .select('*')
+      .eq('user_id', userId)
+      .order('started_at', { ascending: false });
+    if (!investments || !investments.length) return;
+    const yieldContainer = document.querySelector('#page-yield .card');
+    if (yieldContainer) {
+      const totalInvested = investments.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
+      const totalEarned = investments.reduce((sum, i) => sum + parseFloat(i.total_earned || 0), 0);
+      const activeInvestments = investments.filter(i => i.status === 'active');
+      // Update KPIs if present
+      const kpiVals = document.querySelectorAll('#page-yield .kpi-val');
+      if (kpiVals[0]) kpiVals[0].textContent = '$' + totalInvested.toLocaleString('en-US', {minimumFractionDigits:0});
+      if (kpiVals[1]) kpiVals[1].textContent = '$' + totalEarned.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+      if (kpiVals[2]) kpiVals[2].textContent = activeInvestments.length;
+    }
+  } catch(e) { console.log('Yield data load (demo mode):', e.message); }
 }
 
 function openModal(type) {
@@ -1407,6 +1463,8 @@ function openModal(type) {
 function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 function submitModal(type) { closeModal(); showToast('✅ ' + type.charAt(0).toUpperCase() + type.slice(1) + ' submitted!'); }
 document.getElementById('modal-overlay').addEventListener('click', function(e) { if(e.target === this) closeModal(); });
+// Escape key to close modal
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
 // Toast
 function showToast(msg, type='success') {
@@ -1608,6 +1666,9 @@ async function initApp() {
     // KYC page
     loadKycData(userId, profile);
 
+    // Yield page
+    loadYieldData(userId);
+
     // Affiliate stat: total earned
     const affEarned = document.getElementById('affTotalEarned');
     if (affEarned && profile.affiliate_earnings != null) {
@@ -1616,21 +1677,24 @@ async function initApp() {
   }
 
   // === TRANSACTIONS ===
-  const { data: txs } = await sb.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
-  if (txs && txs.length > 0) {
-    const txFeed = document.querySelector('.tx-feed');
+  const { data: txs, error: txError } = await sb.from('transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
+  const txFeed = document.getElementById('tx-dashboard-loading');
+  if (txError) {
+    if (txFeed) txFeed.innerHTML = `<div class="error-state"><span class="error-state-icon">⚠️</span><span>Impossible de charger les transactions. Réessayez plus tard.</span></div>`;
+  } else if (txs && txs.length > 0) {
     if (txFeed) {
       txFeed.innerHTML = txs.map(tx => {
         const isCredit = tx.type === 'deposit' || tx.type === 'yield' || tx.type === 'commission';
         const icons = { deposit: '⬇', withdrawal: '⬆', payment: '💳', yield: '📈', swap: '↔', commission: '💰' };
+        const iconBg = { deposit: 'rgba(16,185,129,0.1)', withdrawal: 'rgba(239,68,68,0.1)', payment: 'rgba(6,182,212,0.1)', yield: 'rgba(124,58,237,0.1)', swap: 'rgba(245,158,11,0.1)', commission: 'rgba(16,185,129,0.1)' };
         return `
           <div class="tx-row">
-            <div class="tx-icon">${icons[tx.type] || '↔'}</div>
+            <div class="tx-icon" style="background:${iconBg[tx.type]||'rgba(255,255,255,0.06)'}">${icons[tx.type] || '↔'}</div>
             <div>
-              <div class="tx-name">${tx.description || tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</div>
-              <div class="tx-date">${new Date(tx.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
+              <div class="tx-name">${sanitize(tx.description || tx.type.charAt(0).toUpperCase() + tx.type.slice(1))}</div>
+              <div class="tx-date">${new Date(tx.created_at).toLocaleDateString('fr-FR', {month:'short', day:'numeric', year:'numeric'})}</div>
             </div>
-            <div class="tx-amount ${isCredit ? 'tx-up' : 'tx-dn'}">${isCredit ? '+' : '-'}$${Math.abs(parseFloat(tx.amount)).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} ${tx.currency || 'USD'}</div>
+            <div class="tx-amount ${isCredit ? 'tx-plus' : 'tx-minus'}">${isCredit ? '+' : '-'}${(tx.currency||'USD') === 'EUR' ? '€' : '$'}${Math.abs(parseFloat(tx.amount)).toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
           </div>
         `;
       }).join('');
@@ -1644,6 +1708,20 @@ async function initApp() {
     if (balance > 0) {
       animateCounter(document.getElementById('balanceCounter'), balance, '$');
     }
+  } else {
+    // Empty state
+    if (txFeed) txFeed.innerHTML = `
+      <div class="empty-state">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="16" width="48" height="32" rx="6" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+          <line x1="8" y1="26" x2="56" y2="26" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <rect x="14" y="32" width="16" height="4" rx="2" fill="rgba(255,255,255,0.15)"/>
+          <rect x="14" y="40" width="10" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>
+        </svg>
+        <div class="empty-state-title">Aucune transaction</div>
+        <div class="empty-state-desc">Vos transactions apparaîtront ici après votre premier dépôt ou paiement.</div>
+      </div>
+    `;
   }
 
   // === CARTES ===
@@ -1831,7 +1909,7 @@ async function loadNotifications() {
         </div>
       `).join('');
     }
-  } catch(e) { console.log('Notifications not available:', e.message); }
+  } catch(e) { /* notifications unavailable in demo mode */ }
 }
 
 async function markNotificationRead(notifId, el) {
@@ -1884,6 +1962,20 @@ function initUserRealtime(userId) {
         loadNotifications();
       })
     .subscribe();
+
+  // Cleanup subscriptions on page hide to prevent memory leaks
+  let _realtimeCleanupRegistered = false;
+  if (!_realtimeCleanupRegistered) {
+    _realtimeCleanupRegistered = true;
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        try { sb.removeAllChannels(); } catch(_) {}
+      } else if (document.visibilityState === 'visible' && currentUserId) {
+        // Re-init realtime on return
+        try { initUserRealtime(currentUserId); } catch(_) {}
+      }
+    });
+  }
 }
 
 function refreshCardDisplay(card) {
@@ -1933,7 +2025,7 @@ function refreshCardDisplay(card) {
         }
       }
     });
-  });
+  }).catch(e => { /* card display refresh failed silently */ });
 }
 
 function handleProfileUpdate(profile) {

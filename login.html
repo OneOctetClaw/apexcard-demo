@@ -216,7 +216,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 0.85rem 1rem 0.85rem 2.8rem;
-    font-family: inherit; font-size: 0.95rem; color: var(--text);
+    font-family: inherit; font-size: 1rem; color: var(--text);
     outline: none; transition: all 0.3s;
   }
   input:focus {
@@ -279,6 +279,47 @@
     background: rgba(6,182,212,0.06);
   }
 
+  /* Demo credentials box */
+  .demo-creds {
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(6,182,212,0.04);
+  }
+  .demo-creds-header {
+    padding: 10px 14px;
+    background: rgba(6,182,212,0.08);
+    border-bottom: 1px solid rgba(6,182,212,0.15);
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #06B6D4;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .demo-cred-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.8rem;
+  }
+  .demo-cred-item:last-child { border-bottom: none; }
+  .demo-cred-label { flex: 1; color: var(--muted); }
+  .demo-cred-label strong { color: var(--text); }
+  .demo-cred-label code { font-family: monospace; font-size: 0.75rem; color: #a78bfa; }
+  .demo-fill-btn {
+    padding: 5px 12px; border-radius: 8px;
+    border: 1px solid rgba(124,58,237,0.3);
+    background: rgba(124,58,237,0.08);
+    color: #a78bfa; font-size: 0.72rem; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .demo-fill-btn:hover {
+    background: rgba(124,58,237,0.18);
+    border-color: rgba(124,58,237,0.5);
+    color: #fff;
+  }
+
   /* Timeout notice */
   .timeout-notice {
     margin-top: 1rem;
@@ -310,7 +351,68 @@
     .login-card { padding: 1.75rem 1.25rem; }
     .logo-name { font-size: 1.6rem; }
   }
+
+  /* Page fade-in */
+  body { animation: pageFadeIn 0.5s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Forgot password link */
+  .forgot-link {
+    text-align: right;
+    margin-top: -0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .forgot-link a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .forgot-link a:hover { color: #a78bfa; }
+
+  /* Loading spinner inside button */
+  .btn-spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Error state enhancement */
+  #login-error {
+    display: none;
+    padding: 0.6rem 1rem;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #EF4444;
+    margin-top: 0.75rem;
+    text-align: left;
+  }
+
+  /* Input focus glow improvement */
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="text"]:focus {
+    outline: none;
+  }
+
+  /* Role card focus */
+  .role-card:focus-visible {
+    outline: 2px solid rgba(124,58,237,0.6);
+    outline-offset: 2px;
+  }
+
+  /* Quick btn active */
+  .quick-btn:active { transform: scale(0.97); }
 </style>
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
@@ -342,6 +444,25 @@
   </div>
 
   <div class="login-card">
+    <!-- Demo credentials -->
+    <div class="demo-creds">
+      <div class="demo-creds-header">⚡ Comptes démo — accès rapide</div>
+      <div class="demo-cred-item">
+        <div class="demo-cred-label">
+          👤 <strong>Client</strong> &nbsp;
+          <code>user@apexcard.io</code> / <code>ApexUser2026!</code>
+        </div>
+        <button class="demo-fill-btn" onclick="autofill('user@apexcard.io','ApexUser2026!','user')">Remplir</button>
+      </div>
+      <div class="demo-cred-item">
+        <div class="demo-cred-label">
+          🔑 <strong>Admin</strong> &nbsp;
+          <code>admin@apexcard.io</code> / <code>ApexAdmin2026!</code>
+        </div>
+        <button class="demo-fill-btn" onclick="autofill('admin@apexcard.io','ApexAdmin2026!','admin')">Remplir</button>
+      </div>
+    </div>
+
     <div class="section-label" data-i18n="login.role.label">Choisissez votre rôle</div>
     <div class="role-grid">
       <div class="role-card active" onclick="selectRole('user', this)">
@@ -370,6 +491,10 @@
         <span class="input-icon">🔒</span>
         <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
       </div>
+    </div>
+
+    <div class="forgot-link">
+      <a href="#" onclick="handleForgotPassword(event)" data-i18n="login.forgot">Mot de passe oublié ?</a>
     </div>
 
     <div id="lockout-msg" class="lockout-msg"></div>
@@ -479,6 +604,33 @@ function showLockout(remaining) {
   }, remaining * 60 * 1000);
 }
 
+async function handleForgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showError('Veuillez d\'abord saisir votre adresse email.');
+    return;
+  }
+  const btn = document.getElementById('login-btn');
+  btn.innerHTML = '<span class="btn-spinner"></span>Envoi en cours…';
+  btn.disabled = true;
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+    if (error) throw error;
+    hideError();
+    const errDiv = document.getElementById('login-error');
+    errDiv.style.cssText = 'display:block;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);color:#10B981';
+    errDiv.textContent = '✅ Email de réinitialisation envoyé. Vérifiez votre boîte mail.';
+  } catch(e) {
+    showError('Impossible d\'envoyer le lien de réinitialisation. Vérifiez l\'adresse email.');
+  } finally {
+    btn.innerHTML = t('login.btn') || 'Se connecter à APEXCARD';
+    btn.disabled = false;
+  }
+}
+
 async function doLogin() {
   const btn = document.getElementById('login-btn');
   const email = document.getElementById('email').value.trim();
@@ -498,7 +650,7 @@ async function doLogin() {
     return;
   }
 
-  btn.textContent = t('login.authenticating');
+  btn.innerHTML = '<span class="btn-spinner"></span>' + (t('login.authenticating') || 'Connexion…');
   btn.disabled = true;
 
   try {
@@ -511,7 +663,7 @@ async function doLogin() {
       } catch(_) {}
       // SECURITY: Generic error message — never reveal if email exists or password is wrong
       showError(t('login.error.credentials'));
-      btn.textContent = t('login.btn');
+      btn.innerHTML = t('login.btn') || 'Se connecter à APEXCARD';
       btn.disabled = false;
       return;
     }
@@ -538,7 +690,7 @@ async function doLogin() {
   } catch (e) {
     // SECURITY: Never expose technical errors to user
     showError(t('login.error.generic'));
-    btn.textContent = t('login.btn');
+    btn.innerHTML = t('login.btn') || 'Se connecter à APEXCARD';
     btn.disabled = false;
   }
 }
@@ -548,14 +700,35 @@ async function quickLogin(role) {
   currentRole = role;
   document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.role-card')[role === 'admin' ? 1 : 0]?.classList.add('active');
-  document.getElementById('email').value = 'jp@apexcard.io';
+  document.getElementById('email').value = role === 'admin' ? 'admin@apexcard.io' : 'user@apexcard.io';
   document.getElementById('password').focus();
-  // Note: password must be entered manually — never hardcoded
 }
 
-// Allow Enter key to submit
+// Autofill for demo credentials
+function autofill(email, password, role) {
+  document.getElementById('email').value = email;
+  document.getElementById('password').value = password;
+  currentRole = role;
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.role-card')[role === 'admin' ? 1 : 0]?.classList.add('active');
+  // Animate the button momentarily
+  const btn = document.getElementById('login-btn');
+  btn.textContent = '✓ Formulaire rempli — cliquez pour vous connecter';
+  setTimeout(() => { btn.innerHTML = (typeof t === 'function' ? t('login.btn') : 'Se connecter à APEXCARD'); }, 2000);
+}
+
+// Allow Enter key to submit, Escape to clear errors
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') doLogin();
+  if (e.key === 'Escape') hideError();
+});
+
+// Auto-focus email on load
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const emailInput = document.getElementById('email');
+    if (emailInput) emailInput.focus();
+  }, 600);
 });
 
 // Particles

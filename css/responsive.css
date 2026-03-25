@@ -1,0 +1,429 @@
+/*
+ * responsive.css — APEXCARD Responsive Audit Fixes
+ * Covers: mobile nav, table overflow, touch targets, modals, typography, cards, lang-switcher
+ * Breakpoints: 480px, 560px, 768px, 900px, 1024px
+ */
+
+/* ═══════════════════════════════════════════
+   0. BASE — PREVENT HORIZONTAL OVERFLOW
+═══════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ═══════════════════════════════════════════
+   1. TOUCH TARGETS (Apple HIG: 44px min)
+═══════════════════════════════════════════ */
+button,
+a,
+[role="button"],
+.nav-item,
+.lang-btn,
+.hamburger {
+  min-height: 44px;
+  /* ensures the tap region is always comfortable */
+}
+
+/* Icon-only buttons that are visually square */
+.hamburger {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ═══════════════════════════════════════════
+   2. INPUTS — prevent iOS zoom (font-size ≥ 16px)
+═══════════════════════════════════════════ */
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* ═══════════════════════════════════════════
+   3. LANG SWITCHER — mobile safe positioning
+═══════════════════════════════════════════ */
+.lang-switcher {
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.lang-btn {
+  white-space: nowrap;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  /* lang-switcher in fixed position (login.html) should not overflow */
+  [style*="position:fixed"][style*="top:1.2rem"][style*="right:1.5rem"],
+  [style*="position: fixed"][style*="top: 1.2rem"][style*="right: 1.5rem"] {
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   4. TABLE OVERFLOW — scroll on mobile
+═══════════════════════════════════════════ */
+.table-wrap,
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* prevent content from squishing on tiny screens */
+  min-width: 0;
+}
+
+/* data-table minimum column widths to keep tables readable */
+.data-table {
+  min-width: 600px;
+}
+
+/* Allow table cell text to wrap on larger screens */
+.data-table td,
+.data-table th {
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════
+   5. INDEX.HTML — NAVBAR & HAMBURGER
+═══════════════════════════════════════════ */
+
+/* Ensure lang-switcher inside nav-cta doesn't overflow */
+@media (max-width: 768px) {
+  .nav-inner {
+    padding: 0 16px;
+  }
+
+  /* Mobile menu lang-switcher (inside mobile-menu) */
+  .mobile-menu .lang-switcher {
+    margin-top: 16px;
+    justify-content: flex-start;
+  }
+
+  /* Hamburger should have proper cursor on mobile */
+  .hamburger {
+    cursor: pointer !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   6. INDEX.HTML — HERO & TYPOGRAPHY
+═══════════════════════════════════════════ */
+
+/* Hero title already uses clamp(), but let's guard the sub-text */
+@media (max-width: 480px) {
+  .hero {
+    padding: 100px 16px 60px;
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 4vw, 18px);
+  }
+
+  /* Stats grid gap on mobile */
+  .stats-grid {
+    gap: 2px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   7. INDEX.HTML — BENTO GRID MOBILE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* security-items is a 1fr 1fr grid inside a bento card */
+  .security-items {
+    grid-template-columns: 1fr;
+  }
+
+  /* swap feature row on mobile */
+  .swap-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* footer nav links */
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   8. INDEX.HTML — BANK CARD (hero/3D card)
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .card-3d-wrapper {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1.586; /* standard credit card ratio */
+  }
+
+  .card-face {
+    padding: 16px;
+  }
+
+  .card-number {
+    font-size: clamp(12px, 3.5vw, 16px);
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   9. APP-USER.HTML — SIDEBAR MOBILE
+═══════════════════════════════════════════ */
+
+/* Already handled inline in app-user.html; add transition for smoothness */
+@media (max-width: 768px) {
+  .sidebar {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Ensure sidebar-overlay has a smooth fade */
+  .sidebar-overlay {
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+
+  .sidebar-overlay.open {
+    opacity: 1;
+  }
+
+  /* Content padding-top makes room for the hamburger button */
+  .content {
+    padding-top: 4rem;
+  }
+
+  /* Credit cards in app-user: 100% wide on mobile */
+  .credit-card-3d {
+    width: 100% !important;
+    max-width: 340px;
+  }
+
+  /* Wallet data-table wrapper — make sure it scrolls */
+  .data-table-wrap,
+  .wallet-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Donut chart layout — stack on mobile */
+  .donut-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Wallet table wrapper (app-user section containing .data-table) */
+@media (max-width: 768px) {
+  /* wrap the wallet table that has no explicit wrapper */
+  section .data-table {
+    min-width: 540px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   10. APP-USER.HTML — MODALS (bottom-sheet on mobile)
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 24px 24px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem 1.25rem;
+    /* slide up animation handled by existing scaleIn or default */
+  }
+}
+
+/* ═══════════════════════════════════════════
+   11. APP-ADMIN.HTML — SIDEBAR MOBILE
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* Sidebar overlay (missing in app-admin) */
+  #sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+  }
+
+  #sidebar-overlay.open {
+    display: block;
+  }
+
+  /* Smooth sidebar transition */
+  .sidebar {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 30;
+  }
+
+  /* Admin topbar — padding for hamburger */
+  .topbar {
+    padding-left: 60px;
+  }
+
+  /* Content area on admin */
+  .content {
+    padding: 20px 16px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   12. APP-ADMIN.HTML — MODALS (bottom-sheet on mobile)
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px 20px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   13. APP-ADMIN.HTML — KPI GRIDS
+═══════════════════════════════════════════ */
+@media (max-width: 560px) {
+  .kpi-grid {
+    gap: 10px;
+  }
+
+  /* Topbar title font size */
+  .topbar-title {
+    font-size: 16px;
+  }
+
+  /* Admin content padding */
+  .content {
+    padding: 12px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   14. LOGIN.HTML — CARD & LANG SWITCHER
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Login card should be full width on tiny screens */
+  .login-card {
+    padding: 1.5rem 1rem;
+  }
+
+  /* lang-switcher position: avoid overflow on 375px */
+  .page > div[style*="position:fixed"],
+  .page > div[style*="position: fixed"] {
+    right: 0.5rem !important;
+    top: 0.5rem !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   15. ONBOARDING.HTML — LAYOUT
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .onboarding-card,
+  .step-card {
+    padding: 1.5rem 1rem;
+    margin: 0 0.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   16. GENERAL — FIXED WIDTH ELEMENTS
+═══════════════════════════════════════════ */
+
+/* Prevent elements with fixed widths from breaking layout */
+@media (max-width: 480px) {
+  /* Common pattern: fixed-px containers */
+  [style*="width: 340px"],
+  [style*="width:340px"],
+  [style*="width: 360px"],
+  [style*="width:360px"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   17. TICKER / MARQUEE — no overflow
+═══════════════════════════════════════════ */
+.ticker-wrap {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════
+   18. FOOTER — RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .footer-legal {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   19. PRICING GRID — mobile full width
+═══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .pricing-grid {
+    max-width: 100%;
+    padding: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   20. SWAP FEATURE — mobile stack
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .swap-exchange {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .swap-arrow {
+    transform: rotate(90deg);
+  }
+}

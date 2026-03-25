@@ -215,8 +215,8 @@ svg.chart{width:100%;overflow:visible}
 .top-vol{font-size:14px;font-weight:700;color:var(--cyan)}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.open{display:flex}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity 0.25s ease,visibility 0.25s ease}
+.modal-overlay.open{opacity:1;visibility:visible}
 .modal{background:#0d0d1a;border:1px solid var(--border2);border-radius:20px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative}
 .modal-title{font-size:18px;font-weight:700;margin-bottom:20px}
 .modal-close{position:absolute;right:20px;top:20px;background:var(--glass2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;color:var(--text2);font-size:16px;display:flex;align-items:center;justify-content:center}
@@ -260,7 +260,50 @@ svg.chart{width:100%;overflow:visible}
   .kyc-grid{grid-template-columns:1fr}
   .content{padding:16px}
 }
+
+/* ── PAGE FADE-IN ── */
+body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
+@keyframes adminFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── LOADING SKELETON ── */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: skimmerAdmin 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes skimmerAdmin { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-row-admin { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.skeleton-cell { height: 14px; border-radius: 6px; }
+.skeleton-avatar-sm { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── EMPTY STATE ── */
+.empty-state-admin {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text2);
+}
+.empty-state-admin svg { margin-bottom: 1rem; opacity: 0.3; }
+.empty-state-admin .es-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+.empty-state-admin .es-desc { font-size: 13px; line-height: 1.6; color: var(--text3); }
+
+/* ── BUTTON IMPROVEMENTS ── */
+.btn:focus-visible { outline: 2px solid rgba(124,58,237,0.6); outline-offset: 2px; }
+.btn:active { transform: scale(0.97); }
+.nav-item:focus-visible { outline: 2px solid rgba(124,58,237,0.5); outline-offset: 2px; }
+.search-box:focus { border-color: rgba(124,58,237,0.5); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+
+/* ── DESTRUCTIVE ACTION HIGHLIGHT ── */
+.btn-danger { position: relative; }
+.btn-danger::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit;
+  background: rgba(239,68,68,0.0);
+  transition: background 0.2s;
+}
+.btn-danger:hover::before { background: rgba(239,68,68,0.1); }
 </style>
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 <div class="orbs">
@@ -270,6 +313,9 @@ svg.chart{width:100%;overflow:visible}
 </div>
 
 <div id="toast-container"></div>
+
+<!-- SIDEBAR OVERLAY (mobile backdrop) -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
@@ -496,7 +542,11 @@ svg.chart{width:100%;overflow:visible}
                 <th data-i18n="admin.users.th.id">ID</th><th data-i18n="admin.users.th.name">Nom</th><th data-i18n="admin.users.th.email">Email</th><th data-i18n="admin.users.th.tier">KYC Tier</th><th data-i18n="admin.users.th.cards">Cartes</th><th data-i18n="admin.users.th.balance">Solde</th><th data-i18n="admin.users.th.volume">Volume 30j</th><th data-i18n="admin.users.th.date">Date</th><th data-i18n="admin.users.th.status">Statut</th>
               </tr>
             </thead>
-            <tbody id="users-tbody"></tbody>
+            <tbody id="users-tbody">
+              <tr><td colspan="9"><div class="skeleton-row-admin"><div class="skeleton skeleton-avatar-sm"></div><div style="flex:1"><div class="skeleton skeleton-cell" style="width:60%;margin-bottom:6px"></div><div class="skeleton skeleton-cell" style="width:40%"></div></div></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row-admin"><div class="skeleton skeleton-avatar-sm"></div><div style="flex:1"><div class="skeleton skeleton-cell" style="width:55%;margin-bottom:6px"></div><div class="skeleton skeleton-cell" style="width:35%"></div></div></div></td></tr>
+              <tr><td colspan="9"><div class="skeleton-row-admin"><div class="skeleton skeleton-avatar-sm"></div><div style="flex:1"><div class="skeleton skeleton-cell" style="width:70%;margin-bottom:6px"></div><div class="skeleton skeleton-cell" style="width:45%"></div></div></div></td></tr>
+            </tbody>
           </table>
         </div>
         <div class="pagination" id="user-pagination"></div>
@@ -962,10 +1012,13 @@ async function loadUsers() {
       .order('created_at', { ascending: false })
       .limit(50);
 
-    if (!users?.length) return;
-
     const tbody = document.getElementById('users-tbody');
     if (!tbody) return;
+
+    if (!users?.length) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state-admin"><svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="24" r="12" stroke="rgba(255,255,255,0.4)" stroke-width="2"/><path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="rgba(255,255,255,0.4)" stroke-width="2"/></svg><div class="es-title">Aucun utilisateur trouvé</div><div class="es-desc">Aucun utilisateur ne correspond aux critères actuels.</div></div></td></tr>`;
+      return;
+    }
 
     tbody.innerHTML = users.map((u, i) => {
       const sId = sanitize(u.id), sFirst = sanitize(u.first_name || ''), sLast = sanitize(u.last_name || ''), sEmail = sanitize(u.email || ''), sPlan = sanitize(u.plan || '-'), sKycStatus = sanitize(u.kyc_status || 'pending');
@@ -1293,7 +1346,7 @@ function initRealtime() {
         if (tbody && tbody.firstElementChild) {
           tbody.firstElementChild.style.animation = 'fadeInRow 0.5s ease';
         }
-      });
+      }).catch(() => { /* tx list refresh failed */ });
       loadKPIs();
     })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'kyc_documents' }, () => {
@@ -1306,6 +1359,15 @@ function initRealtime() {
       loadCards();
     })
     .subscribe();
+
+  // Cleanup on page hide (prevent memory leaks)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      try { sb.removeAllChannels(); } catch(_) {}
+    } else if (document.visibilityState === 'visible') {
+      try { initRealtime(); } catch(_) {}
+    }
+  }, { once: false });
 }
 
 async function approveWithdrawal(txId, userId) {
@@ -1336,7 +1398,18 @@ async function rejectWithdrawal(txId, userId) {
   } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
 
-async function suspendUser(userId) {
+function suspendUser(userId) {
+  document.getElementById('modal-confirm-title').textContent = '⛔ Confirmer la suspension';
+  document.getElementById('modal-confirm-body').textContent = 'Êtes-vous sûr de vouloir suspendre ce compte ? L\'utilisateur ne pourra plus se connecter jusqu\'à réactivation.';
+  document.getElementById('modal-confirm-ok').className = 'btn btn-danger';
+  document.getElementById('modal-confirm-ok').onclick = () => {
+    closeModal('modal-confirm');
+    suspendUserReal(userId);
+  };
+  openModal('modal-confirm');
+}
+
+async function suspendUserReal(userId) {
   try {
     await sb.from('profiles').update({ account_status: 'suspended' }).eq('id', userId);
     await sb.from('audit_logs').insert({ user_id: userId, action: 'account_suspended', metadata: { by: 'admin' } });
@@ -1350,7 +1423,18 @@ async function suspendUser(userId) {
   } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
 
-async function reactivateUser(userId) {
+function reactivateUser(userId) {
+  document.getElementById('modal-confirm-title').textContent = '✅ Réactiver ce compte';
+  document.getElementById('modal-confirm-body').textContent = 'Êtes-vous sûr de vouloir réactiver ce compte ?';
+  document.getElementById('modal-confirm-ok').className = 'btn btn-success';
+  document.getElementById('modal-confirm-ok').onclick = () => {
+    closeModal('modal-confirm');
+    reactivateUserReal(userId);
+  };
+  openModal('modal-confirm');
+}
+
+async function reactivateUserReal(userId) {
   try {
     await sb.from('profiles').update({ account_status: 'active' }).eq('id', userId);
     await sb.from('audit_logs').insert({ user_id: userId, action: 'account_reactivated', metadata: { by: 'admin' } });
@@ -1363,6 +1447,8 @@ async function reactivateUser(userId) {
     loadUsers();
   } catch(e) { showToast('Erreur: ' + e.message, 'error'); }
 }
+
+
 
 // =========================================
 // DATA
@@ -1505,6 +1591,9 @@ function navigateTo(pageId, title) {
   };
   if (pageId === 'audit') loadAuditLogs();
   if (pageId === 'logins') loadLoginAttempts();
+  if (pageId === 'affiliates') loadAffiliates();
+  if (pageId === 'yield') loadYield();
+  if (pageId === 'finances') loadFinances();
   document.getElementById('topbar-title').textContent = pageTitles[pageId] || title;
 }
 
@@ -1813,6 +1902,16 @@ function toggleMaintenance() {
 // =========================================
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// Escape key closes any open modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+});
 
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
@@ -1837,10 +1936,12 @@ function showToast(message, type='info') {
 // SIDEBAR MOBILE
 // =========================================
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open', open);
 }
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
 }
 
 // =========================================

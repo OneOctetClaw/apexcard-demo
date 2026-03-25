@@ -8,7 +8,21 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta name="description" content="La première plateforme financière qui combine crypto, IBAN personnel, et carte physique — sans compromis.">
+<meta name="description" content="La première plateforme financière qui combine crypto, IBAN personnel, et carte physique — sans compromis. Disponible dans 180+ pays.">
+<meta name="keywords" content="carte crypto, IBAN crypto, carte bancaire crypto, fintech, apexcard, bitcoin card, defi card, carte mastercard crypto, yield crypto, stablecoin">
+<meta property="og:title" content="APEXCARD — Banking without borders">
+<meta property="og:description" content="La première plateforme financière qui combine crypto, IBAN personnel, et carte physique — sans compromis. 50k+ clients dans 180 pays.">
+<meta property="og:image" content="https://oneoctetclaw.github.io/apexcard-demo/og-image.png">
+<meta property="og:url" content="https://oneoctetclaw.github.io/apexcard-demo/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="APEXCARD">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="APEXCARD — Banking without borders">
+<meta name="twitter:description" content="Crypto + IBAN + Carte physique. Sans compromis. Disponible dans 180+ pays.">
+<meta name="twitter:image" content="https://oneoctetclaw.github.io/apexcard-demo/og-image.png">
+<link rel="canonical" href="https://oneoctetclaw.github.io/apexcard-demo/">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -255,8 +269,10 @@ canvas#flowfield {
 .hamburger {
   display: none;
   flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: none;
+  background: none; border: none; cursor: pointer;
   padding: 8px;
+  min-height: 44px; min-width: 44px;
+  align-items: center; justify-content: center;
 }
 .hamburger span {
   display: block; width: 24px; height: 2px;
@@ -1409,12 +1425,190 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 .reveal-delay-4 { transition-delay: 0.4s; }
 
 /* ═══════════════════════════════════════════
+   ANIMATE ON SCROLL
+═══════════════════════════════════════════ */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.animate-on-scroll.from-left {
+  transform: translateX(-40px);
+}
+.animate-on-scroll.from-right {
+  transform: translateX(40px);
+}
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+.anim-delay-1 { transition-delay: 0.1s; }
+.anim-delay-2 { transition-delay: 0.2s; }
+.anim-delay-3 { transition-delay: 0.3s; }
+.anim-delay-4 { transition-delay: 0.4s; }
+.anim-delay-5 { transition-delay: 0.5s; }
+.anim-delay-6 { transition-delay: 0.6s; }
+
+/* ═══════════════════════════════════════════
+   HOW IT WORKS SECTION
+═══════════════════════════════════════════ */
+.how-section { padding: 120px 48px; }
+.how-steps {
+  max-width: 1000px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 32px; position: relative;
+}
+.how-steps::before {
+  content: '';
+  position: absolute;
+  top: 48px; left: calc(16.66% + 24px); right: calc(16.66% + 24px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  opacity: 0.3;
+}
+.how-step {
+  text-align: center; padding: 32px 24px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+}
+.how-step:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 64px rgba(124,58,237,0.15);
+  border-color: rgba(124,58,237,0.3);
+}
+.how-step-num {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 800; color: #fff;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 24px rgba(124,58,237,0.4);
+}
+.how-step h3 {
+  font-size: 20px; font-weight: 700;
+  letter-spacing: -0.02em; margin-bottom: 12px;
+}
+.how-step p {
+  font-size: 14px; color: var(--text-muted); line-height: 1.7;
+}
+.how-step-icon { font-size: 32px; margin-bottom: 16px; }
+
+/* ═══════════════════════════════════════════
+   TESTIMONIALS SECTION
+═══════════════════════════════════════════ */
+.testimonials-section { padding: 120px 48px; }
+.testimonials-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.testimonial-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px; padding: 32px;
+  position: relative; overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s, border-color 0.4s;
+}
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(124,58,237,0.12);
+  border-color: rgba(124,58,237,0.25);
+}
+.testimonial-card::before {
+  content: '"';
+  position: absolute; top: 16px; right: 24px;
+  font-size: 80px; font-weight: 900; line-height: 1;
+  color: rgba(124,58,237,0.12);
+  font-family: Georgia, serif;
+}
+.testimonial-stars { color: #F59E0B; font-size: 16px; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-text {
+  font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.85);
+  margin-bottom: 24px; font-style: italic;
+}
+.testimonial-author {
+  display: flex; align-items: center; gap: 12px;
+}
+.testimonial-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(124,58,237,0.4);
+}
+.testimonial-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.testimonial-role { font-size: 12px; color: var(--text-muted); }
+.testimonial-badge {
+  margin-left: auto;
+  padding: 4px 10px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 100px;
+  font-size: 11px; color: var(--emerald); font-weight: 600;
+}
+.testimonial-card.featured {
+  background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.04));
+  border-color: rgba(124,58,237,0.25);
+  grid-column: span 2;
+}
+@media (max-width: 768px) {
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .testimonial-card.featured { grid-column: span 1; }
+  .how-steps { grid-template-columns: 1fr; }
+  .how-steps::before { display: none; }
+}
+
+/* ═══════════════════════════════════════════
    SCROLLBAR
 ═══════════════════════════════════════════ */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,0.7); }
+
+/* ── PAGE FADE-IN (prevents FOUC) ── */
+.page-content { animation: indexFadeIn 0.6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes indexFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── NAV LINK FOCUS ── */
+.nav-links a:focus-visible,
+.btn-ghost:focus-visible,
+.btn-gradient:focus-visible,
+.btn-primary:focus-visible {
+  outline: 2px solid rgba(124,58,237,0.6);
+  outline-offset: 3px;
+}
+
+/* ── FAQ BUTTON FOCUS ── */
+.faq-question:focus-visible {
+  outline: 2px solid rgba(124,58,237,0.5);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ── LANG SWITCHER STYLE ── */
+.lang-switcher { display: inline-flex; gap: 4px; align-items: center; }
+.lang-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px; font-weight: 600;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.lang-btn:hover,
+.lang-btn.active {
+  background: rgba(124,58,237,0.15);
+  border-color: rgba(124,58,237,0.4);
+  color: #fff;
+}
 
 /* ═══════════════════════════════════════════
    RESPONSIVE
@@ -1458,6 +1652,7 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
   .float-stat.fs-1, .float-stat.fs-4 { display: none; }
 }
 </style>
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
@@ -1535,6 +1730,10 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
     <a href="#yield">Yield</a>
     <a href="#pricing">Tarifs</a>
     <a href="onboarding.html" style="color:rgba(124,58,237,0.9)">Ouvrir un compte →</a>
+    <div class="lang-switcher" style="margin-top:8px">
+      <button onclick="i18n.setLang('fr')" data-lang="fr" class="lang-btn">🇫🇷 FR</button>
+      <button onclick="i18n.setLang('en')" data-lang="en" class="lang-btn">🇬🇧 EN</button>
+    </div>
   </div>
 </nav>
 
@@ -1638,26 +1837,26 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
 
 <!-- ─── STATS ─── -->
 <section class="stats-section" id="stats">
-  <div class="stats-grid reveal">
-    <div class="stat-item" data-target="3847" data-prefix="" data-suffix="" data-decimals="0">
+  <div class="stats-grid reveal animate-on-scroll">
+    <div class="stat-item" data-target="50000" data-prefix="" data-suffix="+" data-decimals="0">
       <div class="stat-value" id="stat-0">0</div>
       <div class="stat-label" data-i18n="index.stat0.label">Clients actifs</div>
-      <div class="stat-sub" data-i18n="index.stat0.sub">dans 47 pays</div>
+      <div class="stat-sub" data-i18n="index.stat0.sub">dans 180+ pays</div>
     </div>
     <div class="stat-item" data-target="180" data-prefix="" data-suffix="+" data-decimals="0">
       <div class="stat-value" id="stat-1">0</div>
       <div class="stat-label" data-i18n="index.stat1.label">Pays supportés</div>
       <div class="stat-sub" data-i18n="index.stat1.sub">couverture mondiale</div>
     </div>
-    <div class="stat-item" data-target="1.2" data-prefix="$" data-suffix="M" data-decimals="1">
+    <div class="stat-item" data-target="2.4" data-prefix="$" data-suffix="M" data-decimals="1">
       <div class="stat-value" id="stat-2">$0</div>
       <div class="stat-label" data-i18n="index.stat2.label">Volume traité</div>
       <div class="stat-sub" data-i18n="index.stat2.sub">ce mois</div>
     </div>
-    <div class="stat-item" data-target="24" data-prefix="" data-suffix="%" data-decimals="0">
+    <div class="stat-item" data-target="99.9" data-prefix="" data-suffix="%" data-decimals="1">
       <div class="stat-value" id="stat-3">0</div>
-      <div class="stat-label" data-i18n="index.stat3.label">APY Yield</div>
-      <div class="stat-sub" data-i18n="index.stat3.sub">rendement annuel</div>
+      <div class="stat-label">Uptime garanti</div>
+      <div class="stat-sub">SLA institutionnel</div>
     </div>
   </div>
 </section>
@@ -2098,9 +2297,98 @@ section { padding: 120px 48px; position: relative; z-index: 10; }
   </div>
 </section>
 
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-section animate-on-scroll" id="how">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-tag">Comment ça marche</div>
+      <h2>En 3 étapes, vous êtes prêt</h2>
+      <p>Pas de paperasse, pas d'attente. Votre compte en moins de 5 minutes.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step animate-on-scroll anim-delay-1">
+        <div class="how-step-icon">📧</div>
+        <div class="how-step-num">1</div>
+        <h3>Créez votre compte</h3>
+        <p>Email, numéro de téléphone et mot de passe. Aucune carte de crédit requise pour commencer.</p>
+      </div>
+      <div class="how-step animate-on-scroll anim-delay-2">
+        <div class="how-step-icon">🪪</div>
+        <div class="how-step-num">2</div>
+        <h3>Vérifiez votre identité</h3>
+        <p>KYC 100% digital. Pièce d'identité + selfie liveness en moins de 3 minutes. Validé par notre IA.</p>
+      </div>
+      <div class="how-step animate-on-scroll anim-delay-3">
+        <div class="how-step-icon">💳</div>
+        <div class="how-step-num">3</div>
+        <h3>Profitez de la liberté financière</h3>
+        <p>Carte virtuelle immédiate, carte physique livrée sous 5 jours. IBAN activé dès validation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section class="testimonials-section animate-on-scroll" id="testimonials">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-tag">Témoignages</div>
+      <h2>Ils ont franchi le pas</h2>
+      <p>Plus de 50 000 clients font confiance à APEXCARD dans 180 pays.</p>
+    </div>
+    <div class="testimonials-grid">
+      <!-- Featured -->
+      <div class="testimonial-card featured animate-on-scroll">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">
+          "APEXCARD a changé ma façon de gérer mes finances. J'ai enfin une solution qui couvre à la fois mon activité crypto et mes paiements quotidiens, avec un IBAN à mon nom. Le yield à 24% APY sur mes USDC est juste incroyable — mes intérêts tombent chaque matin."
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">🧑‍💻</div>
+          <div>
+            <div class="testimonial-name">Alexandre Moreau</div>
+            <div class="testimonial-role">Entrepreneur, Paris 🇫🇷</div>
+          </div>
+          <div class="testimonial-badge">Client Premium</div>
+        </div>
+      </div>
+      <!-- Card 1 -->
+      <div class="testimonial-card animate-on-scroll anim-delay-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">
+          "J'étais sceptique au départ, mais le KYC m'a pris exactement 2 minutes 47 secondes. Carte virtuelle opérationnelle immédiatement. Le support est réactif et vraiment humain."
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👩</div>
+          <div>
+            <div class="testimonial-name">Sofia Lindqvist</div>
+            <div class="testimonial-role">Designer Freelance, Stockholm 🇸🇪</div>
+          </div>
+          <div class="testimonial-badge">Client Standard</div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="testimonial-card animate-on-scroll anim-delay-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">
+          "Le programme d'affiliation est une révélation. J'ai recommandé APEXCARD à mon équipe de 12 personnes et je génère maintenant un revenu passif significatif chaque mois grâce aux commissions sur 3 niveaux."
+        </p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👨‍💼</div>
+          <div>
+            <div class="testimonial-name">Karim Benzarti</div>
+            <div class="testimonial-role">Directeur Commercial, Dubai 🇦🇪</div>
+          </div>
+          <div class="testimonial-badge">Client Premium</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ─── CTA FINAL ─── -->
 <section class="cta-section">
-  <div class="cta-card reveal">
+  <div class="cta-card reveal animate-on-scroll">
     <div class="cta-orb cta-orb-1"></div>
     <div class="cta-orb cta-orb-2"></div>
     <h2 data-i18n="index.cta.title">Prêt à rejoindre<br><span class="gradient-text">la révolution financière ?</span></h2>
@@ -2608,7 +2896,7 @@ function initCards3D() {
 //  10. SCROLL EFFECTS
 // ══════════════════════════════════════════════
 function initScrollEffects() {
-  // Reveal on scroll
+  // Reveal on scroll (.reveal classes)
   const reveals = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -2619,6 +2907,17 @@ function initScrollEffects() {
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   reveals.forEach(el => revealObserver.observe(el));
+
+  // Animate on scroll (.animate-on-scroll classes)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
   // Scroll progress variable
   function updateScrollProgress() {
