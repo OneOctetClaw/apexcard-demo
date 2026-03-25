@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEXCARD — Conditions Générales d'Utilisation</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #030308; --violet: #7C3AED; --cyan: #06B6D4;
+    --text: #F1F5F9; --muted: rgba(241,245,249,0.6);
+    --border: rgba(255,255,255,0.08); --surface: rgba(255,255,255,0.04);
+  }
+  html, body { background: var(--bg); font-family: 'Space Grotesk', system-ui, sans-serif; color: var(--text); min-height: 100vh; }
+  .orbs { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.15; }
+  .o1 { width: 500px; height: 500px; background: #7C3AED; top: -200px; left: -100px; }
+  .o2 { width: 400px; height: 400px; background: #06B6D4; bottom: -100px; right: -100px; }
+  .container { max-width: 860px; margin: 0 auto; padding: 4rem 2rem; position: relative; z-index: 1; }
+  .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-size: 0.88rem; margin-bottom: 3rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--text); }
+  .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 3rem; }
+  .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #7C3AED, #06B6D4); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; }
+  .logo-name { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.1em; background: linear-gradient(90deg, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(90deg, #fff, #a78bfa, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 3rem; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 3rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
+  p { color: var(--muted); line-height: 1.75; margin-bottom: 1rem; font-size: 0.95rem; }
+  ul, ol { color: var(--muted); line-height: 1.75; margin-bottom: 1rem; padding-left: 1.5rem; font-size: 0.95rem; }
+  li { margin-bottom: 0.4rem; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); border-radius: 100px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; color: #a78bfa; margin-bottom: 0.5rem; }
+  .warning-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+  .warning-box p { margin: 0; color: rgba(241,245,249,0.75); font-size: 0.9rem; }
+  footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; }
+  footer a { color: var(--cyan); text-decoration: none; margin: 0 1rem; font-size: 0.88rem; }
+  footer p { font-size: 0.82rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<div class="orbs"><div class="orb o1"></div><div class="orb o2"></div></div>
+
+<div class="container">
+  <a href="index.html" class="nav-back">← Retour à l'accueil</a>
+
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    <div class="logo-name">APEXCARD</div>
+  </div>
+
+  <div class="badge">📋 Version 2.0 — Mars 2026</div>
+  <h1>Conditions Générales d'Utilisation</h1>
+  <p class="subtitle">Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation des services APEXCARD. En vous inscrivant, vous acceptez sans réserve ces conditions.</p>
+
+  <!-- 1. Objet -->
+  <h2 id="objet">1. Objet et champ d'application</h2>
+  <p>APEXCARD Financial SAS (ci-après "APEXCARD") est une société immatriculée en France, fournissant des services de paiement sous agrément EMD2. Les présentes CGU définissent les droits et obligations des parties dans le cadre de l'utilisation de la plateforme APEXCARD.</p>
+  <p>En accédant à la plateforme, vous déclarez avoir au moins 18 ans et avoir pris connaissance des présentes CGU.</p>
+
+  <!-- 2. Services -->
+  <h2 id="services">2. Description des services</h2>
+  <p>APEXCARD propose les services suivants :</p>
+  <ul>
+    <li>Compte de paiement avec IBAN personnel</li>
+    <li>Carte de débit virtuelle et/ou physique</li>
+    <li>Portefeuille crypto (BTC, ETH, SOL, USDT)</li>
+    <li>Service d'échange de devises (swap)</li>
+    <li>Programme d'investissement avec rendement (Yield) — soumis à éligibilité</li>
+    <li>Programme d'affiliation</li>
+  </ul>
+
+  <!-- 3. Inscription -->
+  <h2 id="inscription">3. Inscription et vérification d'identité (KYC)</h2>
+  <p>L'ouverture d'un compte APEXCARD est soumise à une procédure de vérification d'identité (Know Your Customer — KYC) conforme aux obligations légales en vigueur (AMLD5, LCB-FT).</p>
+  <p>Vous vous engagez à fournir des informations exactes, complètes et à jour. Toute information fausse peut entraîner la suspension immédiate du compte et un signalement aux autorités compétentes.</p>
+  <p>APEXCARD se réserve le droit de refuser toute inscription sans avoir à en justifier les motifs.</p>
+
+  <!-- 4. Utilisation acceptable -->
+  <h2 id="usage">4. Utilisation acceptable des services</h2>
+  <div class="warning-box">
+    <p>⛔ <strong>Usages strictement interdits :</strong> blanchiment d'argent, financement du terrorisme, achats de substances illicites, contournement de sanctions internationales, activités frauduleuses de toute nature.</p>
+  </div>
+  <p>Vous vous engagez à utiliser les services APEXCARD uniquement à des fins légales et conformément aux lois applicables dans votre pays de résidence.</p>
+
+  <!-- 5. Limites et frais -->
+  <h2 id="limites">5. Limites de transactions et frais</h2>
+  <ul>
+    <li><strong>Tier 0 :</strong> 500€/mois</li>
+    <li><strong>Tier 1 :</strong> 5 000€/mois</li>
+    <li><strong>Tier 2 :</strong> 50 000€/mois</li>
+  </ul>
+  <p>Les frais applicables sont indiqués dans votre espace client et peuvent être modifiés avec un préavis de 30 jours.</p>
+  <p><strong>Frais de recharge :</strong> 3,5% | <strong>Carte virtuelle :</strong> 50€ | <strong>Carte Gold physique :</strong> 99€ | <strong>Frais de swap :</strong> 0,25%</p>
+
+  <!-- 6. Sécurité -->
+  <h2 id="securite-compte">6. Sécurité du compte</h2>
+  <p>Vous êtes responsable de la confidentialité de vos identifiants de connexion. Vous vous engagez à :</p>
+  <ul>
+    <li>Utiliser un mot de passe fort et unique</li>
+    <li>Activer l'authentification à deux facteurs (2FA) si disponible</li>
+    <li>Signaler immédiatement toute utilisation non autorisée à security@apexcard.io</li>
+    <li>Ne jamais partager vos identifiants avec un tiers</li>
+  </ul>
+
+  <!-- 7. AML -->
+  <h2 id="aml">7. Conformité AML/LCB-FT</h2>
+  <p>Conformément aux obligations légales (AMLD5, décret n°2009-1087), APEXCARD est tenu de :</p>
+  <ul>
+    <li>Vérifier l'identité de tous les clients (KYC)</li>
+    <li>Surveiller les transactions et signaler les opérations suspectes aux autorités (TRACFIN)</li>
+    <li>Bloquer les transactions dépassant les seuils réglementaires sans justificatif adéquat</li>
+    <li>Conserver les données de transaction pendant 5 ans minimum</li>
+  </ul>
+  <p>Les transactions supérieures à 10 000€ font l'objet d'un contrôle renforcé automatique.</p>
+
+  <!-- 8. Résiliation -->
+  <h2 id="resiliation">8. Suspension et résiliation</h2>
+  <p>APEXCARD peut suspendre ou résilier votre compte en cas de :</p>
+  <ul>
+    <li>Violation des présentes CGU</li>
+    <li>Activité suspecte ou frauduleuse</li>
+    <li>Non-conformité aux obligations KYC</li>
+    <li>Décision judiciaire ou administrative</li>
+  </ul>
+  <p>Vous pouvez clôturer votre compte à tout moment depuis votre espace client (Paramètres → Supprimer mon compte). La clôture sera effective après traitement de toutes les transactions en cours.</p>
+
+  <!-- 9. Responsabilité -->
+  <h2 id="responsabilite">9. Limitation de responsabilité</h2>
+  <p>APEXCARD s'engage à mettre en œuvre tous les moyens raisonnables pour assurer la disponibilité et la sécurité des services. APEXCARD ne saurait être tenu responsable des pertes indirectes, consécutives ou accessoires.</p>
+
+  <!-- 10. Droit applicable -->
+  <h2 id="droit">10. Droit applicable et juridiction</h2>
+  <p>Les présentes CGU sont régies par le droit français. En cas de litige, les parties s'engagent à rechercher une solution amiable. À défaut, les tribunaux compétents de Paris seront saisis.</p>
+  <p>Pour tout litige, vous pouvez également contacter un médiateur de la consommation agréé.</p>
+
+  <!-- 11. Mentions légales -->
+  <h2 id="mentions">11. Mentions légales</h2>
+  <ul>
+    <li><strong>Raison sociale :</strong> APEXCARD Financial SAS</li>
+    <li><strong>Siège social :</strong> Paris, France</li>
+    <li><strong>Email :</strong> legal@apexcard.io</li>
+    <li><strong>Directeur de la publication :</strong> APEXCARD Financial SAS</li>
+    <li><strong>Hébergement :</strong> Supabase Inc. — EU-Central-1</li>
+  </ul>
+
+  <p style="margin-top:3rem;font-size:0.85rem;color:var(--muted)"><strong>Date d'entrée en vigueur :</strong> Mars 2026. APEXCARD se réserve le droit de modifier ces CGU avec un préavis de 30 jours.</p>
+
+  <footer>
+    <a href="index.html">Accueil</a>
+    <a href="privacy.html">Confidentialité</a>
+    <a href="legal.html">CGU</a>
+    <p style="color:var(--muted)">© 2026 APEXCARD Financial SAS. Tous droits réservés.</p>
+  </footer>
+</div>
+</body>
+</html>

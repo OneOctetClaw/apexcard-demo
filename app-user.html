@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APEXCARD — Dashboard</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -349,7 +353,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
   .action-btn{min-width:80px;font-size:0.78rem}
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -1400,6 +1404,104 @@ function copyText(text) {
 // Global state — set during initApp, used by action handlers
 let currentUserId = null;
 let currentProfile = null;
+
+// =========================================
+// SECURITY: Sanitize function (OWASP A03 - XSS prevention)
+// =========================================
+function sanitize(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+// =========================================
+// SECURITY: PCI DSS - Mask card numbers
+// Only display last 4 digits
+// =========================================
+function maskCardNumber(pan) {
+  if (!pan) return '•••• •••• •••• ????';
+  const clean = String(pan).replace(/\s/g, '');
+  const last4 = clean.slice(-4);
+  return '•••• •••• •••• ' + last4;
+}
+
+// =========================================
+// SECURITY: Session inactivity timeout (PCI DSS Req 8, OWASP A04)
+// Auto-logout after 30 minutes of inactivity
+// =========================================
+let inactivityTimer;
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(async () => {
+    if (typeof sb !== 'undefined') await sb.auth.signOut();
+    window.location.href = 'login.html?reason=timeout';
+  }, 30 * 60 * 1000);
+}
+['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(e => {
+  document.addEventListener(e, resetInactivityTimer, { passive: true });
+});
+resetInactivityTimer();
+
+// =========================================
+// RGPD Art. 17 - Droit à l'effacement
+// =========================================
+async function requestAccountDeletion() {
+  if (!confirm('Are you sure you want to delete your account? This action cannot be undone. Your request will be processed within 30 days as required by GDPR.')) return;
+  try {
+    await sb.from('audit_logs').insert({
+      user_id: currentUserId,
+      action: 'account_deletion_requested',
+      metadata: { email: currentProfile?.email, requested_at: new Date().toISOString() }
+    });
+    showToast('Deletion request submitted. You will be contacted within 30 days.', 'success');
+    setTimeout(async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }, 3000);
+  } catch(e) {
+    showToast('An error occurred. Please contact support@apexcard.io', 'error');
+  }
+}
+
+// =========================================
+// RGPD Art. 20 - Droit à la portabilité
+// =========================================
+async function exportUserData() {
+  if (!currentUserId) return;
+  try {
+    showToast('Preparing your data export...', 'info');
+    const [profile, cards, txs, ibans, wallets] = await Promise.all([
+      sb.from('profiles').select('id, first_name, last_name, email, phone, plan, kyc_tier, kyc_status, created_at').eq('id', currentUserId).single(),
+      sb.from('cards').select('id, type, masked_number, status, currency, monthly_limit, created_at').eq('user_id', currentUserId),
+      sb.from('transactions').select('id, type, amount, currency, status, description, created_at').eq('user_id', currentUserId),
+      sb.from('ibans').select('id, iban, currency, status, created_at').eq('user_id', currentUserId),
+      sb.from('wallets').select('id, currency, balance, created_at').eq('user_id', currentUserId),
+    ]);
+    const exportData = {
+      exported_at: new Date().toISOString(),
+      notice: 'This export contains your personal data as required by GDPR Art. 20 (Right to Portability). For questions, contact dpo@apexcard.io',
+      profile: profile.data,
+      cards: cards.data,
+      transactions: txs.data,
+      ibans: ibans.data,
+      wallets: wallets.data
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'apexcard-data-export-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click(); URL.revokeObjectURL(url);
+    await sb.from('audit_logs').insert({ user_id: currentUserId, action: 'data_export_requested', metadata: { requested_at: new Date().toISOString() } });
+    showToast('Data export downloaded', 'success');
+  } catch(e) {
+    showToast('Export failed. Please contact support.', 'error');
+  }
+}
 
 const { createClient } = supabase;
 const sb = createClient(

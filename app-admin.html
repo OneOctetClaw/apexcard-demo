@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>APEXCARD — Admin Panel</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -283,7 +287,7 @@ svg.chart{width:100%;overflow:visible}
     <div class="nav-item" data-page="yield"><span class="nav-icon">📈</span>Yield</div>
     <div class="nav-item" data-page="finances"><span class="nav-icon">💰</span>Finances</div>
     <div class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span>Paramètres</div>
-    <div class="nav-item logout" onclick="setTimeout(()=>window.location.href='index.html',500);showToast('Déconnexion...','info')"><span class="nav-icon">🚪</span>Déconnexion</div>
+    <div class="nav-item logout" onclick="adminLogout()"><span class="nav-icon">🚪</span>Déconnexion</div>
   </nav>
   <div class="sidebar-user">
     <div class="user-avatar">SA</div>
@@ -781,17 +785,54 @@ svg.chart{width:100%;overflow:visible}
 <script>
 // =========================================
 // SUPABASE ADMIN
+// ⚠️ SECURITY: Only anon key used in frontend.
+// Service role key must NEVER be used in browser.
+// Admin operations rely on RLS + admin role check.
 // =========================================
 const { createClient } = supabase;
 const sb = createClient(
   'https://vhdgqtwsxasuggbeujoo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM4NTYzMiwiZXhwIjoyMDg5OTYxNjMyfQ.BU67jz4uBcDeYhWZcLGoTM3AtwOZIuevVMD71Mk60-k'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODU2MzIsImV4cCI6MjA4OTk2MTYzMn0.J_9V--cflujeSnOsc_3wYDOgiMi54RTF5aDHC4fMZVI'
 );
+
+// =========================================
+// SECURITY: Admin auth guard
+// Only allow access to users in ADMIN_EMAILS whitelist
+// =========================================
+const ADMIN_EMAILS = ['admin@apexcard.io', 'jp@apexcard.io'];
+
+async function checkAdminAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  if (!ADMIN_EMAILS.includes(session.user.email)) {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+// Sanitize function to prevent XSS
+function sanitize(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
 
 // Alias toast → showToast (defined later)
 function toast(msg, type='info') { showToast(msg, type); }
 
 async function initAdmin() {
+  const authorized = await checkAdminAuth();
+  if (!authorized) return;
   await loadKPIs();
   await loadUsers();
   await loadCards();
@@ -834,19 +875,22 @@ async function loadUsers() {
     const tbody = document.getElementById('users-tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = users.map((u, i) => `
-      <tr onclick="openUserDetailModal('${u.first_name || ''} ${u.last_name || ''}', '${u.email}', '${u.plan || '-'}', '0', ${u.kyc_tier || 0}, '${u.kyc_status || 'pending'}')">
+    tbody.innerHTML = users.map((u, i) => {
+      const sFirst = sanitize(u.first_name || ''), sLast = sanitize(u.last_name || ''), sEmail = sanitize(u.email || ''), sPlan = sanitize(u.plan || '-'), sStatus = sanitize(u.kyc_status || 'pending');
+      const tier = u.kyc_tier || 0;
+      return `
+      <tr onclick="openUserDetailModal('${sFirst} ${sLast}', '${sEmail}', '${sPlan}', '0', ${tier}, '${sStatus}')">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${String(i+1).padStart(4,'0')}</span></td>
-        <td><b>${u.first_name || ''} ${u.last_name || ''}</b></td>
-        <td style="color:var(--text2)">${u.email || ''}</td>
-        <td><span class="badge ${(u.kyc_tier||0) >= 2 ? 'badge-violet' : (u.kyc_tier||0) === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${u.kyc_tier || 0}</span></td>
+        <td><b>${sFirst} ${sLast}</b></td>
+        <td style="color:var(--text2)">${sEmail}</td>
+        <td><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${tier}</span></td>
         <td style="text-align:center">-</td>
         <td><b>-</b></td>
         <td style="color:var(--cyan)">-</td>
         <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
         <td><span class="badge ${u.kyc_status === 'approved' ? 'badge-green' : u.kyc_status === 'rejected' ? 'badge-red' : 'badge-gold'}">● ${u.kyc_status === 'approved' ? 'Actif' : u.kyc_status === 'rejected' ? 'Rejeté' : 'Pending'}</span></td>
       </tr>
-    `).join('');
+    `}).join('');
 
     const h1 = document.querySelector('#page-users h1');
     if (h1) h1.innerHTML = `Utilisateurs <span style="color:var(--text3);font-size:16px">(${users.length})</span>`;
@@ -854,13 +898,14 @@ async function loadUsers() {
 }
 
 function openUserDetailModal(name, email, plan, balance, tier, status) {
-  document.getElementById('modal-user-title').textContent = `👤 ${name}`;
+  const sName = sanitize(name), sEmail = sanitize(email), sPlan = sanitize(plan), sStatus = sanitize(status);
+  document.getElementById('modal-user-title').textContent = `👤 ${sName}`;
   document.getElementById('modal-user-body').innerHTML = `
-    <div class="detail-row"><span class="detail-label">Nom</span><span class="detail-value">${name}</span></div>
-    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${email}</span></div>
-    <div class="detail-row"><span class="detail-label">Plan</span><span class="detail-value">${plan}</span></div>
-    <div class="detail-row"><span class="detail-label">KYC Tier</span><span class="detail-value"><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${tier}</span></span></div>
-    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${status === 'approved' ? 'badge-green' : status === 'rejected' ? 'badge-red' : 'badge-gold'}">${status}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Nom</span><span class="detail-value">${sName}</span></div>
+    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${sEmail}</span></div>
+    <div class="detail-row"><span class="detail-label">Plan</span><span class="detail-value">${sPlan}</span></div>
+    <div class="detail-row"><span class="detail-label">KYC Tier</span><span class="detail-value"><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${sanitize(String(tier))}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${status === 'approved' ? 'badge-green' : status === 'rejected' ? 'badge-red' : 'badge-gold'}">${sStatus}</span></span></div>
   `;
   openModal('modal-user');
 }
@@ -877,29 +922,32 @@ async function loadCards() {
     const tbody = document.getElementById('cards-tbody');
     if (!tbody) return;
 
-    tbody.innerHTML = cards.map(c => `
-      <tr onclick="openCardDetailModal('${c.id.slice(0,8)}', '${(c.profiles?.first_name||'')} ${(c.profiles?.last_name||'')}', '${c.type}', '${c.masked_number || '•••• •••• •••• ????'}', '${c.balance}', '${c.monthly_limit}')">
-        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${c.id.slice(0,8)}</span></td>
-        <td><b>${c.profiles?.first_name || ''} ${c.profiles?.last_name || ''}</b></td>
-        <td><span class="badge ${c.type === 'gold' ? 'badge-gold' : c.type === 'physical' ? 'badge-cyan' : 'badge-violet'}">${c.type}</span></td>
-        <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${c.masked_number || '•••• •••• •••• ????'}</td>
-        <td><span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-red'}">● ${c.status}</span></td>
+    tbody.innerHTML = cards.map(c => {
+      const sId = sanitize(c.id.slice(0,8)), sFirst = sanitize(c.profiles?.first_name||''), sLast = sanitize(c.profiles?.last_name||''), sType = sanitize(c.type||''), sMasked = sanitize(c.masked_number||'•••• •••• •••• ????'), sStatus = sanitize(c.status||'');
+      return `
+      <tr onclick="openCardDetailModal('${sId}', '${sFirst} ${sLast}', '${sType}', '${sMasked}', '${parseFloat(c.balance||0).toFixed(2)}', '${parseFloat(c.monthly_limit||0).toFixed(0)}')">
+        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sId}</span></td>
+        <td><b>${sFirst} ${sLast}</b></td>
+        <td><span class="badge ${c.type === 'gold' ? 'badge-gold' : c.type === 'physical' ? 'badge-cyan' : 'badge-violet'}">${sType}</span></td>
+        <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${sMasked}</td>
+        <td><span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-red'}">● ${sStatus}</span></td>
         <td style="color:var(--green);font-weight:600">$${parseFloat(c.balance||0).toFixed(2)}</td>
         <td>$${parseFloat(c.monthly_limit||0).toFixed(0)}</td>
         <td style="color:var(--text3)">${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();blockCardReal('${c.id}')">Bloquer</button></td>
+        <td><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();blockCard('${sanitize(c.id)}')">Bloquer</button></td>
       </tr>
-    `).join('');
+    `}).join('');
   } catch(e) { console.error('loadCards error:', e); }
 }
 
 function openCardDetailModal(id, user, type, number, balance, limit) {
-  document.getElementById('modal-card-title').textContent = `💳 Carte #${id}`;
+  const sId = sanitize(id), sUser = sanitize(user), sType = sanitize(type), sNumber = sanitize(number);
+  document.getElementById('modal-card-title').textContent = `💳 Carte #${sId}`;
   document.getElementById('modal-card-body').innerHTML = `
-    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace">#${id}</span></div>
-    <div class="detail-row"><span class="detail-label">Utilisateur</span><span class="detail-value">${user}</span></div>
-    <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${type}</span></div>
-    <div class="detail-row"><span class="detail-label">Numéro</span><span class="detail-value">${number}</span></div>
+    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace">#${sId}</span></div>
+    <div class="detail-row"><span class="detail-label">Utilisateur</span><span class="detail-value">${sUser}</span></div>
+    <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${sType}</span></div>
+    <div class="detail-row"><span class="detail-label">Numéro (masqué)</span><span class="detail-value">${sNumber}</span></div>
     <div class="detail-row"><span class="detail-label">Solde</span><span class="detail-value" style="color:var(--green);font-weight:700">$${parseFloat(balance||0).toFixed(2)}</span></div>
     <div class="detail-row"><span class="detail-label">Limite mensuelle</span><span class="detail-value">$${parseFloat(limit||0).toFixed(0)}</span></div>
   `;
@@ -925,15 +973,17 @@ async function loadTransactions() {
     if (!tbody) return;
 
     tbody.innerHTML = txs.map(t => {
-      const flagged = parseFloat(t.amount || 0) > 4000;
+      // AML: flag transactions > 10,000 (AMLD5 threshold)
+      const flagged = parseFloat(t.amount || 0) > 10000;
       const isCredit = t.type === 'deposit' || t.type === 'yield' || t.type === 'commission';
+      const sFirst = sanitize(t.profiles?.first_name||''), sLast = sanitize(t.profiles?.last_name||''), sType = sanitize(t.type||''), sCurrency = sanitize(t.currency||'USD'), sStatus = sanitize(t.status||'');
       return `<tr style="${flagged ? 'background:rgba(239,68,68,0.04)' : ''}">
-        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${t.id.slice(0,8)}</span></td>
-        <td><b>${t.profiles?.first_name || ''} ${t.profiles?.last_name || ''}</b></td>
-        <td><span class="badge badge-violet">${t.type}</span></td>
-        <td style="${isCredit ? 'color:var(--green)' : ''};font-weight:600">${isCredit ? '+' : '-'}$${parseFloat(t.amount||0).toFixed(2)}</td>
-        <td><span class="badge badge-gray">${t.currency || 'USD'}</span></td>
-        <td><span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${flagged ? '🚨 ' : ''}${t.status}</span></td>
+        <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sanitize(t.id.slice(0,8))}</span></td>
+        <td><b>${sFirst} ${sLast}</b></td>
+        <td><span class="badge badge-violet">${sType}</span></td>
+        <td style="${isCredit ? 'color:var(--green)' : ''};font-weight:600">${isCredit ? '+' : '-'}$${parseFloat(t.amount||0).toFixed(2)}${flagged ? ' 🚨' : ''}</td>
+        <td><span class="badge badge-gray">${sCurrency}</span></td>
+        <td><span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${sStatus}</span></td>
         <td style="color:var(--text3)">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
       </tr>`;
     }).join('');
@@ -1271,7 +1321,13 @@ function renderCards() {
 }
 
 function blockCard(id) {
-  showToast(`Carte ${id} bloquée avec succès`, 'error');
+  document.getElementById('modal-confirm-title').textContent = '🚫 Confirmer blocage carte';
+  document.getElementById('modal-confirm-body').textContent = `Êtes-vous sûr de vouloir bloquer la carte ${sanitize(id)} ? Cette action peut être annulée en la réactivant.`;
+  document.getElementById('modal-confirm-ok').onclick = async () => {
+    closeModal('modal-confirm');
+    await blockCardReal(id);
+  };
+  openModal('modal-confirm');
 }
 
 function showCardModal(id) {
@@ -1352,7 +1408,22 @@ function renderKYC() {
 }
 
 function kycAction(idx, action) {
-  const name = kycPending[idx].name;
+  const name = sanitize(kycPending[idx].name);
+  if (action === 'reject') {
+    document.getElementById('modal-confirm-title').textContent = '❌ Confirmer rejet KYC';
+    document.getElementById('modal-confirm-body').textContent = `Êtes-vous sûr de vouloir rejeter le dossier KYC de ${name} ? L'utilisateur devra soumettre à nouveau ses documents.`;
+    document.getElementById('modal-confirm-ok').onclick = () => {
+      closeModal('modal-confirm');
+      _doKycAction(idx, action);
+    };
+    openModal('modal-confirm');
+  } else {
+    _doKycAction(idx, action);
+  }
+}
+
+function _doKycAction(idx, action) {
+  const name = sanitize(kycPending[idx].name);
   kycPending.splice(idx,1);
   kycCount = Math.max(0, kycCount-1);
   document.getElementById('kyc-badge').textContent = kycCount;
@@ -1460,6 +1531,31 @@ function toggleSidebar() {
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
 }
+
+// =========================================
+// SECURE LOGOUT
+// =========================================
+async function adminLogout() {
+  showToast('Déconnexion en cours...', 'info');
+  await sb.auth.signOut();
+  window.location.href = 'login.html';
+}
+
+// =========================================
+// INACTIVITY TIMEOUT (30 min) — PCI DSS Req 8
+// =========================================
+let inactivityTimer;
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(async () => {
+    await sb.auth.signOut();
+    window.location.href = 'login.html?reason=timeout';
+  }, 30 * 60 * 1000);
+}
+['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(e => {
+  document.addEventListener(e, resetInactivityTimer, { passive: true });
+});
+resetInactivityTimer();
 </script>
 </body>
 </html>
