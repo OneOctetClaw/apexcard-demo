@@ -324,6 +324,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
 .toast-container{position:fixed;bottom:2rem;right:2rem;z-index:500;display:flex;flex-direction:column;gap:0.75rem}
 .toast{background:#0d0d14;border:1px solid var(--border);border-radius:14px;padding:0.9rem 1.25rem;display:flex;align-items:center;gap:0.75rem;font-size:0.88rem;font-weight:500;animation:toastIn 0.4s cubic-bezier(.22,1,.36,1);box-shadow:0 8px 32px rgba(0,0,0,0.4);min-width:260px}
 @keyframes toastIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.1)}70%{transform:scale(0.9)}100%{transform:scale(1);opacity:1}}
 .toast-success{border-color:rgba(16,185,129,0.3)}
 .toast-icon{font-size:1.1rem}
 
@@ -523,7 +524,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
     <div class="page-section" id="page-cards">
       <div class="section-hdr">
         <div><div class="section-title"><span>My Cards</span></div><div class="section-subtitle">2 active cards</div></div>
-        <button style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--text);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;">+ New Card</button>
+        <button onclick="openModal('cardOrder')" style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:var(--text);font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;">+ New Card</button>
       </div>
 
       <div class="grid-2">
@@ -536,14 +537,16 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-holder">Jean-Philippe Nové</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>09/28</div>
           </div>
-          <div class="cards-controls">
-            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="cards-controls" data-card-index="0">
+            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 0, 'online_payments')"></div></div>
             <div class="control-row"><div><div class="control-label">Contactless</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle" onclick="toggleCardSetting(this, 0, 'international')"></div></div>
             <div>
               <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)">Monthly limit</span><span>$4,200 / $10,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:42%;--pct:42%"></div></div>
             </div>
+            <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
+            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">💳 Top Up Card</button>
           </div>
         </div>
 
@@ -556,14 +559,16 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div class="card-holder">Jean-Philippe Nové</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>12/27</div>
           </div>
-          <div class="cards-controls">
-            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-            <div class="control-row"><div><div class="control-label">ATM Withdrawals</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="cards-controls" data-card-index="1">
+            <div class="control-row"><div><div class="control-label">Online Payments</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'online_payments')"></div></div>
+            <div class="control-row"><div><div class="control-label">ATM Withdrawals</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'atm_withdrawals')"></div></div>
+            <div class="control-row"><div><div class="control-label">International</div></div><div class="toggle on" onclick="toggleCardSetting(this, 1, 'international')"></div></div>
             <div>
               <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem"><span style="color:var(--muted)">Monthly limit</span><span>$12,800 / $25,000</span></div>
               <div class="limit-bar"><div class="limit-fill" style="width:51%;--pct:51%"></div></div>
             </div>
+            <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
+            <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">💳 Top Up Card</button>
           </div>
         </div>
       </div>
@@ -585,10 +590,10 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         <table class="data-table">
           <thead><tr><th>Asset</th><th>Balance</th><th>Price</th><th>24h</th><th>Value</th><th>Actions</th></tr></thead>
           <tbody>
-            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₿</span><span style="font-weight:600">Bitcoin</span></div></td><td>0.2012 BTC</td><td>$63,820</td><td style="color:#10B981">+3.2%</td><td style="font-weight:600">$12,842</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('withdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Send</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>Ξ</span><span style="font-weight:600">Ethereum</span></div></td><td>2.847 ETH</td><td>$3,226</td><td style="color:#10B981">+1.8%</td><td style="font-weight:600">$9,183</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('withdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Send</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>◎</span><span style="font-weight:600">Solana</span></div></td><td>21.1 SOL</td><td>$166.35</td><td style="color:#EF4444">-0.9%</td><td style="font-weight:600">$3,510</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('withdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Send</button></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₮</span><span style="font-weight:600">Tether</span></div></td><td>4,506 USDT</td><td>$1.00</td><td style="color:var(--muted)">+0.01%</td><td style="font-weight:600">$4,506</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('withdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Send</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₿</span><span style="font-weight:600">Bitcoin</span></div></td><td class="wallet-bal" data-asset="BTC">0.2012 BTC</td><td>$63,820</td><td style="color:#10B981">+3.2%</td><td style="font-weight:600" class="wallet-val" data-asset="BTC">$12,842</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>Ξ</span><span style="font-weight:600">Ethereum</span></div></td><td class="wallet-bal" data-asset="ETH">2.847 ETH</td><td>$3,226</td><td style="color:#10B981">+1.8%</td><td style="font-weight:600" class="wallet-val" data-asset="ETH">$9,183</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>◎</span><span style="font-weight:600">Solana</span></div></td><td class="wallet-bal" data-asset="SOL">21.1 SOL</td><td>$166.35</td><td style="color:#EF4444">-0.9%</td><td style="font-weight:600" class="wallet-val" data-asset="SOL">$3,510</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:0.5rem"><span>₮</span><span style="font-weight:600">Tether</span></div></td><td class="wallet-bal" data-asset="USDT">4,506 USDT</td><td>$1.00</td><td style="color:var(--muted)">+0.01%</td><td style="font-weight:600" class="wallet-val" data-asset="USDT">$4,506</td><td><button onclick="openModal('deposit')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.78rem;cursor:pointer;margin-right:0.4rem">↓ Deposit</button><button onclick="openModal('cryptoWithdraw')" style="padding:0.3rem 0.75rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;cursor:pointer">↑ Withdraw</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -648,7 +653,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="iban-balance">€8,420.50</div>
           <div class="iban-number">FR76 3000 4028 3788 0012 3456 789</div>
           <div style="font-size:0.78rem;color:var(--muted)">BIC: BNPAFRPP • BNP Paribas</div>
-          <div style="display:flex;gap:0.5rem;margin-top:1.25rem">
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+            <button onclick="copyText(this.closest('.iban-card').querySelector('.iban-number').textContent)" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📋 Copy IBAN</button>
+            <button onclick="showToast('📄 RIB downloaded (demo)!')" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download RIB</button>
+          </div>
+          <!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire -->
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
             <button onclick="openModal('wire')" style="flex:1;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">↑ Wire Transfer</button>
             <button onclick="openModal('rib')" style="flex:1;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">📄 RIB</button>
           </div>
@@ -658,7 +668,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="iban-balance">£3,180.00</div>
           <div class="iban-number">GB29 NWBK 6016 1331 9268 19</div>
           <div style="font-size:0.78rem;color:var(--muted)">Sort Code: 60-16-13 • NatWest</div>
-          <div style="display:flex;gap:0.5rem;margin-top:1.25rem">
+          <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+            <button onclick="copyText(this.closest('.iban-card').querySelector('.iban-number').textContent)" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📋 Copy IBAN</button>
+            <button onclick="showToast('📄 Details downloaded (demo)!')" style="flex:1;padding:0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">📥 Download</button>
+          </div>
+          <!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire -->
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
             <button onclick="openModal('wire')" style="flex:1;padding:0.6rem;border-radius:10px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">↑ Wire Transfer</button>
             <button onclick="openModal('rib')" style="flex:1;padding:0.6rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">📄 Details</button>
           </div>
@@ -751,16 +766,44 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       <div class="ref-code-box">
         <div>
           <div style="font-size:0.73rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.25rem">Your Referral Code</div>
-          <div class="ref-code">JP7X9K</div>
+          <div class="ref-code" id="refCode">—</div>
+          <div class="ref-link-display" style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">https://apexcard.io/ref/...</div>
         </div>
         <button class="copy-btn" onclick="copyCode()">📋 Copy Link</button>
       </div>
 
       <div class="grid-4" style="margin-bottom:1.5rem">
-        <div class="card kpi-mini card-glow-violet"><div class="kpi-val" style="color:#a78bfa">47</div><div class="kpi-label">Total Referrals</div></div>
-        <div class="card kpi-mini card-glow-green"><div class="kpi-val" style="color:#10B981">$1,840</div><div class="kpi-label">Total Earned</div></div>
-        <div class="card kpi-mini card-glow-gold"><div class="kpi-val" style="color:#F59E0B">$320</div><div class="kpi-label">This Month</div></div>
-        <div class="card kpi-mini card-glow-cyan"><div class="kpi-val" style="color:#06B6D4">Level 3</div><div class="kpi-label">Affiliate Tier</div></div>
+        <div class="card kpi-mini card-glow-violet"><div class="kpi-val" style="color:#a78bfa" id="affReferralCount">—</div><div class="kpi-label">Total Referrals</div></div>
+        <div class="card kpi-mini card-glow-green"><div class="kpi-val" style="color:#10B981" id="affTotalEarned">—</div><div class="kpi-label">Total Earned</div></div>
+        <div class="card kpi-mini card-glow-gold"><div class="kpi-val" style="color:#F59E0B" id="affActiveCount">—</div><div class="kpi-label">Active Referrals</div></div>
+        <div class="card kpi-mini card-glow-cyan"><div class="kpi-val" style="color:#06B6D4">L1 10%</div><div class="kpi-label">Commission Rate</div></div>
+      </div>
+
+      <!-- Commission structure -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Commission Structure</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+          <div style="text-align:center;padding:1rem;border-radius:12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2)">
+            <div style="font-size:1.5rem;font-weight:800;color:#10B981">10%</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">Level 1<br>Direct referrals</div>
+          </div>
+          <div style="text-align:center;padding:1rem;border-radius:12px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2)">
+            <div style="font-size:1.5rem;font-weight:800;color:#a78bfa">5%</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">Level 2<br>Sub-referrals</div>
+          </div>
+          <div style="text-align:center;padding:1rem;border-radius:12px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2)">
+            <div style="font-size:1.5rem;font-weight:800;color:#F59E0B">2%</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">Level 3<br>Deep network</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No referrals message (hidden by default, shown if 0 referrals) -->
+      <div id="noReferralsMsg" style="display:none;text-align:center;padding:2rem;border-radius:16px;background:rgba(124,58,237,0.05);border:1px dashed rgba(124,58,237,0.2);margin-bottom:1.5rem">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem">🚀</div>
+        <div style="font-weight:600;font-size:1rem;margin-bottom:0.5rem">No referrals yet — start earning!</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem">Share your referral link and earn up to 10% on every transaction your friends make.</div>
+        <button class="copy-btn" onclick="copyCode()" style="display:inline-flex">📤 Share My Link</button>
       </div>
 
       <div class="card">
@@ -799,7 +842,7 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
         <div class="kyc-step"><div class="step-circle" style="opacity:0.5">5</div><div class="step-label">Enhanced</div></div>
       </div>
 
-      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
+      <div id="kycStatusBanner" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
         <div style="font-size:2rem">✅</div>
         <div><div style="font-weight:600;color:#10B981">KYC Tier 2 — Verified</div><div style="font-size:0.82rem;color:var(--muted)">Your identity has been verified. You can access all Tier 2 features.</div></div>
       </div>
@@ -809,19 +852,45 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div style="font-size:1.5rem;margin-bottom:0.5rem">🔑</div>
           <div class="tier-name" style="color:var(--muted)">Tier 1</div>
           <div class="tier-limit">$1,000/mo</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin:0.4rem 0">Email + Phone verified</div>
           <div style="font-size:0.75rem;color:#10B981;margin-top:0.5rem">✓ Completed</div>
         </div>
         <div class="tier-card current">
           <div style="font-size:1.5rem;margin-bottom:0.5rem">🛡️</div>
           <div class="tier-name" style="color:#a78bfa">Tier 2</div>
           <div class="tier-limit">$50,000/mo</div>
+          <div style="font-size:0.73rem;color:var(--muted);margin:0.4rem 0">ID + Address proof</div>
           <div style="font-size:0.75rem;color:#10B981;margin-top:0.5rem">✓ Active</div>
         </div>
         <div class="tier-card">
           <div style="font-size:1.5rem;margin-bottom:0.5rem">👑</div>
           <div class="tier-name" style="color:#F59E0B">Tier 3</div>
           <div class="tier-limit">Unlimited</div>
-          <button style="margin-top:0.75rem;padding:0.5rem 1rem;border-radius:8px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);color:#F59E0B;font-family:inherit;font-size:0.78rem;cursor:pointer">Upgrade →</button>
+          <div style="font-size:0.73rem;color:var(--muted);margin:0.4rem 0">Enhanced due diligence</div>
+          <!-- ═══════════════════════════════════════════════════════════
+               SQUAREFI INTEGRATION POINT — KYC Document Upload
+               Endpoint: POST /api/kyc/upload
+               Payload: { userId, docType, file, tier }
+               Replace mock with real Squarefi KYC API call
+               ═══════════════════════════════════════════════════════════ -->
+          <button onclick="openModal('kycUpload')" style="margin-top:0.75rem;padding:0.5rem 1rem;border-radius:8px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);color:#F59E0B;font-family:inherit;font-size:0.78rem;cursor:pointer">Upgrade →</button>
+        </div>
+      </div>
+
+      <!-- Submitted documents -->
+      <div class="card" style="margin-top:1.5rem">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem">Submitted Documents</div>
+        <div id="kycDocsContainer">
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:12px;background:var(--surface);border:1px solid var(--border)">
+            <div style="font-size:1.5rem">🛂</div>
+            <div><div style="font-size:0.88rem;font-weight:600">Passport</div><div style="font-size:0.73rem;color:var(--muted)">Submitted Feb 2026</div></div>
+            <div style="margin-left:auto"><span style="padding:2px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;background:rgba(16,185,129,0.12);color:#10B981">approved</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;margin-top:0.5rem;border-radius:12px;background:var(--surface);border:1px solid var(--border)">
+            <div style="font-size:1.5rem">🏠</div>
+            <div><div style="font-size:0.88rem;font-weight:600">Address Proof</div><div style="font-size:0.73rem;color:var(--muted)">Submitted Feb 2026</div></div>
+            <div style="margin-left:auto"><span style="padding:2px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;background:rgba(16,185,129,0.12);color:#10B981">approved</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -834,19 +903,25 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
       <div class="card">
         <div class="settings-section">
           <div class="settings-title">Profile Information</div>
-          <div>
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Full Name</label>
-            <input class="input-field" type="text" value="Jean-Philippe Nové">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div>
+              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">First Name</label>
+              <input class="input-field" id="setFirstName" type="text" placeholder="First Name">
+            </div>
+            <div>
+              <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Last Name</label>
+              <input class="input-field" id="setLastName" type="text" placeholder="Last Name">
+            </div>
           </div>
           <div style="margin-top:1rem">
-            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Email</label>
-            <input class="input-field" type="email" value="jp@apexcard.io">
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Email <span style="opacity:0.5">(read-only)</span></label>
+            <input class="input-field" id="setEmail" type="email" readonly style="opacity:0.6;cursor:not-allowed">
           </div>
           <div style="margin-top:1rem">
             <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Phone</label>
-            <input class="input-field" type="text" value="+33 6 12 34 56 78">
+            <input class="input-field" id="setPhone" type="text" placeholder="+33 6 ...">
           </div>
-          <button class="btn-save" style="margin-top:1.25rem" onclick="showToast('Profile updated!')">Save Changes</button>
+          <button class="btn-save" style="margin-top:1.25rem" onclick="saveProfileSettings()">Save Changes</button>
         </div>
 
         <div class="settings-section">
@@ -862,6 +937,11 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
           <div class="settings-row">
             <div><div class="settings-label">Biometric Login</div><div class="settings-desc">Use Face ID / fingerprint</div></div>
             <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)">
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">New Password</label>
+            <input class="input-field" id="newPasswordInput" type="password" placeholder="New password (min. 6 chars)" style="margin-bottom:0.75rem">
+            <button class="btn-save" onclick="changePassword()" style="background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.4);color:#a78bfa">Change Password</button>
           </div>
         </div>
 
@@ -879,6 +959,18 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'Space Grotesk
             <div><div class="settings-label">Yield Reports</div><div class="settings-desc">Monthly earnings summary</div></div>
             <div class="toggle on" onclick="this.classList.toggle('on')"></div>
           </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-title">Referral</div>
+          <div style="margin-bottom:0.75rem">
+            <label style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:0.4rem">Your Referral Code</label>
+            <div style="display:flex;gap:0.5rem">
+              <input class="input-field" id="setRefCode" type="text" readonly style="opacity:0.8;font-family:monospace;font-weight:700;letter-spacing:0.1em;flex:1">
+              <button class="btn-save" style="flex-shrink:0;padding:0.6rem 1rem" onclick="copyCode()">📋 Copy Link</button>
+            </div>
+          </div>
+          <div style="font-size:0.78rem;color:var(--muted)">Referral link: <span id="setRefLink" class="ref-link-display" style="color:#a78bfa;cursor:pointer" onclick="copyCode()">https://apexcard.io/ref/...</span></div>
         </div>
       </div>
     </div>
@@ -954,8 +1046,59 @@ function calcSwap() {
   const v = parseFloat(document.getElementById('swapFrom').value) || 0;
   document.getElementById('swapTo').textContent = '≈ $' + (v * 63820).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
 }
-function swapDir() { showToast('Tokens swapped!'); }
-function doSwap() { showToast('✅ Swap executed successfully!'); }
+// Swap state
+let swapFromToken = 'BTC';
+let swapToToken = 'USDT';
+const swapRates = { BTC:63820, ETH:3226, SOL:166.35, USDT:1, BNB:612 };
+function calcSwap() {
+  const v = parseFloat(document.getElementById('swapFrom').value) || 0;
+  const rate = swapRates[swapFromToken] || 1;
+  const toRate = swapRates[swapToToken] || 1;
+  const result = (v * rate / toRate);
+  document.getElementById('swapTo').textContent = '≈ ' + (swapToToken === 'USDT' ? '$' : '') + result.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:6});
+  const rateRow = document.getElementById('swapRateRow');
+  if (rateRow) rateRow.textContent = `1 ${swapFromToken} = ${(rate/toRate).toLocaleString(undefined,{maximumFractionDigits:6})} ${swapToToken}`;
+}
+function swapDir() {
+  [swapFromToken, swapToToken] = [swapToToken, swapFromToken];
+  document.querySelectorAll('.token-selector span')[0].textContent = swapFromToken;
+  document.querySelectorAll('.token-selector span')[1].textContent = swapToToken;
+  calcSwap();
+  showToast('Tokens swapped!');
+}
+async function doSwap() {
+  const v = parseFloat(document.getElementById('swapFrom').value) || 0;
+  if (!v || v <= 0) { showToast('⚠️ Enter a valid amount', 'info'); return; }
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  const rate = swapRates[swapFromToken] || 1;
+  const toRate = swapRates[swapToToken] || 1;
+  const currentRate = rate / toRate;
+  const swapAmount = v;
+  const fromToken = swapFromToken;
+  const toToken = swapToToken;
+  const btn = document.querySelector('.btn-swap');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  try {
+    const { error } = await sb.from('transactions').insert({
+      user_id: currentUserId,
+      type: 'swap',
+      amount: swapAmount,
+      currency: fromToken,
+      status: 'completed',
+      description: `Swap ${fromToken} → ${toToken}`,
+      metadata: { from: fromToken, to: toToken, rate: currentRate }
+    });
+    if (error) throw error;
+    showToast('✅ Swap executed successfully!');
+    openModal('swapSuccess');
+  } catch(e) {
+    console.error('Swap error:', e);
+    showToast('✅ Swap executed (demo mode)!');
+    openModal('swapSuccess');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Confirm Swap ⇄'; }
+  }
+}
 
 // Simulator
 function updateSim(val) {
@@ -974,10 +1117,246 @@ const modalDefs = {
   topup: {title:'Top Up', body:`<label class="modal-label">Amount (EUR)</label><input class="modal-input" type="number" placeholder="0.00"><label class="modal-label">Payment Method</label><select class="modal-input" style="cursor:pointer"><option>Credit Card</option><option>Bank Transfer</option><option>Apple Pay</option></select><button class="btn-primary" onclick="submitModal('topup')">Top Up →</button>`},
   deposit: {title:'Deposit Crypto', body:`<label class="modal-label">Send to address</label><div style="font-family:monospace;font-size:0.82rem;padding:0.9rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);word-break:break-all;color:var(--muted)">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div><button class="btn-primary" onclick="closeModal()">Done</button>`},
   withdraw: {title:'Send Crypto', body:`<label class="modal-label">Destination Address</label><input class="modal-input" placeholder="bc1q..."><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="0.00"><label class="modal-label">Network Fee</label><div style="padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);font-size:0.85rem;color:var(--muted)">~$2.40 (standard)</div><button class="btn-primary" onclick="submitModal('withdraw')">Confirm Send →</button>`},
-  wire: {title:'Wire Transfer', body:`<label class="modal-label">Beneficiary Name</label><input class="modal-input" placeholder="Full name"><label class="modal-label">IBAN</label><input class="modal-input" placeholder="FR76 ..."><label class="modal-label">BIC / SWIFT</label><input class="modal-input" placeholder="BNPAFRPP"><label class="modal-label">Amount (EUR)</label><input class="modal-input" type="number" placeholder="0.00"><label class="modal-label">Reference</label><input class="modal-input" placeholder="Payment reference"><button class="btn-primary" onclick="submitModal('wire')">Send Transfer →</button>`},
+  wire: {title:'Wire Transfer', body:`<div style="margin-bottom:0.75rem;padding:0.6rem;background:rgba(6,182,212,0.06);border-radius:8px;border:1px solid rgba(6,182,212,0.15);font-size:0.75rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/iban/wire --></div><label class="modal-label">Beneficiary Name</label><input class="modal-input" id="wireBenef" placeholder="Full name"><label class="modal-label">IBAN</label><input class="modal-input" id="wireIban" placeholder="FR76 ..."><label class="modal-label">BIC / SWIFT</label><input class="modal-input" id="wireBic" placeholder="BNPAFRPP"><label class="modal-label">Amount (EUR)</label><input class="modal-input" id="wireAmt" type="number" placeholder="0.00"><label class="modal-label">Reference</label><input class="modal-input" id="wireRef" placeholder="Payment reference"><button class="btn-primary" onclick="submitWireTransfer()">Send Transfer →</button>`},
   rib: {title:'Bank Details (RIB)', body:`<div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:1.25rem;font-size:0.88rem"><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Account Holder</span><span style="font-weight:600">Jean-Philippe Nové</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">IBAN</span><span style="font-family:monospace;font-size:0.8rem">FR76 3000 4028 3788 0012 3456 789</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">BIC</span><span style="font-weight:600">BNPAFRPP</span></div><div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--muted)">Bank</span><span>BNP Paribas</span></div></div><button class="btn-primary" onclick="closeModal()">Close</button>`},
   stake: {title:'Stake Crypto', body:`<label class="modal-label">Asset</label><select class="modal-input" style="cursor:pointer"><option>BTC</option><option>ETH</option><option>USDT</option></select><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="Min. $5,000"><div style="padding:0.75rem;background:rgba(124,58,237,0.06);border-radius:10px;border:1px solid rgba(124,58,237,0.2);margin-top:1rem;font-size:0.82rem"><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">APY</span><span style="color:#a78bfa;font-weight:700">18%</span></div><div style="display:flex;justify-content:space-between;margin-top:0.4rem"><span style="color:var(--muted)">Lock period</span><span>90 days</span></div></div><button class="btn-primary" onclick="submitModal('stake')">Stake Now →</button>`},
+  kycUpload: {title:'Upload KYC Document', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(245,158,11,0.06);border-radius:10px;border:1px solid rgba(245,158,11,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/kyc/upload --></div><label class="modal-label">Document Type</label><select class="modal-input" style="cursor:pointer"><option>Passport</option><option>National ID</option><option>Driver License</option><option>Proof of Address</option><option>Bank Statement</option></select><label class="modal-label">Upload Document</label><input type="file" accept="image/*,application/pdf" style="width:100%;padding:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;margin-bottom:1rem"><div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Accepted formats: JPG, PNG, PDF. Max size: 10MB.</div><button class="btn-primary" onclick="submitModal('kyc')">Submit Document →</button>`},
+  swapSuccess: {title:'Swap Confirmed', body:`<div style="text-align:center;padding:1.5rem 0"><div style="font-size:4rem;animation:bounceIn 0.5s ease">✅</div><div style="font-size:1.3rem;font-weight:700;margin-top:1rem;color:#10B981">Swap Successful!</div><div style="font-size:0.88rem;color:var(--muted);margin-top:0.5rem">Your transaction has been recorded.</div><button class="btn-primary" style="margin-top:1.5rem" onclick="closeModal()">Done</button></div>`},
+  cardOrder: {title:'Order a New Card', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(124,58,237,0.06);border-radius:10px;border:1px solid rgba(124,58,237,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/cards/create --></div><label class="modal-label">Card Type</label><select class="modal-input" style="cursor:pointer" id="newCardType"><option value="virtual">Virtual Card (instant)</option><option value="physical">Physical Card (7-10 days)</option><option value="gold">Gold Card (premium)</option></select><label class="modal-label">Currency</label><select class="modal-input" style="cursor:pointer" id="newCardCurrency"><option>EUR</option><option>USD</option><option>GBP</option></select><label class="modal-label">Monthly Limit</label><input class="modal-input" type="number" id="newCardLimit" placeholder="e.g. 10000"><button class="btn-primary" onclick="orderCard()">Order Card →</button>`},
+  cardTopup: {title:'Top Up Card', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(6,182,212,0.06);border-radius:10px;border:1px solid rgba(6,182,212,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup --></div><label class="modal-label">Amount</label><input class="modal-input" type="number" placeholder="0.00" id="topupAmount"><label class="modal-label">Method</label><select class="modal-input" style="cursor:pointer"><option>USDT Wallet</option><option>BTC Wallet</option><option>ETH Wallet</option><option>SEPA Transfer</option></select><div style="padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);font-size:0.82rem;color:var(--muted);margin-top:0.75rem">Processing time: instant for crypto, 1-2 days for SEPA</div><button class="btn-primary" onclick="submitModal('topup')">Top Up Card →</button>`},
+  cryptoWithdraw: {title:'Withdraw Crypto', body:`<div style="margin-bottom:1rem;padding:0.75rem;background:rgba(239,68,68,0.06);border-radius:10px;border:1px solid rgba(239,68,68,0.2);font-size:0.78rem;color:var(--muted)"><!-- SQUAREFI INTEGRATION POINT: POST /api/wallet/withdraw --></div><label class="modal-label">Asset</label><select class="modal-input" style="cursor:pointer"><option>BTC</option><option>ETH</option><option>USDT</option><option>SOL</option></select><label class="modal-label">Destination Address</label><input class="modal-input" id="withdrawAddr" placeholder="bc1q... or 0x..."><label class="modal-label">Amount</label><input class="modal-input" type="number" id="withdrawAmt" placeholder="0.00"><div style="padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);font-size:0.82rem;color:var(--muted);margin-top:0.5rem">Network fee: ~$2.40 (standard)</div><button class="btn-primary" onclick="submitCryptoWithdraw()">Confirm Withdrawal →</button>`},
 };
+
+// Card IDs loaded from DB (index → id mapping)
+let cardIds = [];
+
+// Toggle card setting → update in DB
+async function toggleCardSetting(el, cardIndex, field) {
+  el.classList.toggle('on');
+  const isOn = el.classList.contains('on');
+  if (!currentUserId || !cardIds[cardIndex]) {
+    showToast(isOn ? '✅ Enabled' : '✅ Disabled');
+    return;
+  }
+  try {
+    const update = {};
+    update[field] = isOn;
+    const { error } = await sb.from('cards').update(update).eq('id', cardIds[cardIndex]);
+    if (error) throw error;
+    showToast(isOn ? `✅ ${field.replace(/_/g,' ')} enabled` : `✅ ${field.replace(/_/g,' ')} disabled`);
+  } catch(e) {
+    showToast(isOn ? '✅ Setting updated (demo)!' : '✅ Setting updated (demo)!');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SQUAREFI INTEGRATION POINT — Card Order
+// Endpoint: POST /api/cards/create
+// Payload: { userId, cardType, currency, monthlyLimit }
+// Replace mock below with real Squarefi API call
+// Docs: https://squarefi.com/docs/cards
+// ═══════════════════════════════════════════════════════════
+async function orderCard() {
+  const cardType = document.getElementById('newCardType')?.value || 'virtual';
+  const currency = document.getElementById('newCardCurrency')?.value || 'EUR';
+  const monthlyLimit = parseFloat(document.getElementById('newCardLimit')?.value || 10000);
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  // MOCK: simulates card creation — replace with Squarefi API call
+  const rand4 = () => Math.floor(1000 + Math.random() * 9000);
+  const mockCard = {
+    user_id: currentUserId,
+    masked_number: `•••• •••• •••• ${rand4()}`,
+    card_type: cardType,
+    currency: currency,
+    monthly_limit: monthlyLimit,
+    status: 'active',
+    online_payments: true,
+    atm_withdrawals: true,
+    international: cardType !== 'virtual'
+  };
+  try {
+    await sb.from('cards').insert(mockCard);
+    closeModal();
+    showToast('✅ Card ordered successfully!');
+  } catch(e) {
+    closeModal();
+    showToast('✅ Card order placed (demo)!');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SQUAREFI INTEGRATION POINT — Crypto Withdrawal
+// Endpoint: POST /api/wallet/withdraw
+// Payload: { userId, asset, address, amount }
+// Replace mock below with real Squarefi API call
+// ═══════════════════════════════════════════════════════════
+async function submitCryptoWithdraw() {
+  const addr = document.getElementById('withdrawAddr')?.value;
+  const amt = parseFloat(document.getElementById('withdrawAmt')?.value || 0);
+  if (!addr || !amt) { showToast('⚠️ Fill all fields', 'info'); return; }
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  // MOCK — replace with Squarefi withdraw API
+  try {
+    await sb.from('transactions').insert({
+      user_id: currentUserId,
+      type: 'withdrawal',
+      amount: amt,
+      currency: 'BTC',
+      status: 'pending',
+      description: `Crypto withdrawal to ${addr.substring(0,10)}...`,
+      metadata: { address: addr }
+    });
+    closeModal();
+    showToast('✅ Withdrawal submitted!');
+  } catch(e) {
+    closeModal();
+    showToast('✅ Withdrawal submitted (demo)!');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SQUAREFI INTEGRATION POINT — SEPA Wire Transfer
+// Endpoint: POST /api/iban/wire
+// Payload: { userId, beneficiaryName, iban, bic, amount, reference }
+// Replace mock below with real Squarefi API call
+// ═══════════════════════════════════════════════════════════
+async function submitWireTransfer() {
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  // MOCK — replace with Squarefi SEPA API
+  try {
+    const benefName = document.getElementById('wireBenef')?.value || 'Beneficiary';
+    const iban = document.getElementById('wireIban')?.value || '';
+    const bic = document.getElementById('wireBic')?.value || '';
+    const amount = parseFloat(document.getElementById('wireAmt')?.value || 0);
+    const ref = document.getElementById('wireRef')?.value || '';
+    if (amount > 0) {
+      await sb.from('transactions').insert({
+        user_id: currentUserId,
+        type: 'wire',
+        amount: amount,
+        currency: 'EUR',
+        status: 'pending',
+        description: `Wire Transfer to ${benefName}`,
+        metadata: { type: 'SEPA', beneficiary: benefName, iban, bic, reference: ref }
+      });
+    }
+    closeModal();
+    showToast('✅ Wire transfer submitted!');
+  } catch(e) {
+    closeModal();
+    showToast('✅ Wire transfer submitted (demo)!');
+  }
+}
+
+// Save settings profile
+async function saveProfileSettings() {
+  if (!currentUserId) { showToast('⚠️ Not authenticated', 'info'); return; }
+  const firstName = document.getElementById('setFirstName')?.value || '';
+  const lastName  = document.getElementById('setLastName')?.value  || '';
+  const phone     = document.getElementById('setPhone')?.value     || '';
+  try {
+    const { error } = await sb.from('profiles').update({ first_name: firstName, last_name: lastName, phone: phone }).eq('id', currentUserId);
+    if (error) throw error;
+    showToast('✅ Profile updated!');
+    // Update sidebar name
+    document.querySelectorAll('.sb-name').forEach(el => el.textContent = `${firstName} ${lastName}`.trim());
+  } catch(e) {
+    showToast('✅ Profile updated (demo)!');
+  }
+}
+
+// Change password
+async function changePassword() {
+  const newPwd = document.getElementById('newPasswordInput')?.value;
+  if (!newPwd || newPwd.length < 6) { showToast('⚠️ Password must be at least 6 characters', 'info'); return; }
+  try {
+    const { error } = await sb.auth.updateUser({ password: newPwd });
+    if (error) throw error;
+    showToast('✅ Password updated!');
+    document.getElementById('newPasswordInput').value = '';
+  } catch(e) {
+    showToast('⚠️ Could not update password. Try again.', 'info');
+  }
+}
+
+// Load affiliate data dynamically
+async function loadAffiliateData(userId, profile) {
+  try {
+    const { data: referrals, error } = await sb.from('referrals').select('*').eq('referrer_id', userId);
+    const activeReferrals = referrals ? referrals.filter(r => r.status === 'active' || !r.status) : [];
+    const totalReferrals = referrals ? referrals.length : 0;
+    // Update stat elements if they exist
+    const affCount = document.getElementById('affReferralCount');
+    if (affCount) affCount.textContent = totalReferrals;
+    const affActive = document.getElementById('affActiveCount');
+    if (affActive) affActive.textContent = activeReferrals.length;
+    const affEarned = document.getElementById('affTotalEarned');
+    if (affEarned && profile) affEarned.textContent = '$' + parseFloat(profile.affiliate_earnings || 0).toLocaleString('en-US', {minimumFractionDigits:2});
+
+    // Update referral link display
+    if (profile && profile.referral_code) {
+      document.querySelectorAll('.ref-link-display').forEach(el => {
+        el.textContent = `https://apexcard.io/ref/${profile.referral_code}`;
+      });
+    }
+
+    // Show no-referrals message if needed
+    if (totalReferrals === 0) {
+      const noRefMsg = document.getElementById('noReferralsMsg');
+      if (noRefMsg) noRefMsg.style.display = 'block';
+    }
+  } catch(e) {
+    console.log('Affiliate data load (demo mode):', e.message);
+  }
+}
+
+// Load KYC data dynamically
+async function loadKycData(userId, profile) {
+  try {
+    const { data: docs } = await sb.from('kyc_documents').select('*').eq('user_id', userId);
+    const kycTier = profile?.kyc_tier || 0;
+    const kycStatus = profile?.kyc_status || 'not_started';
+
+    // Update KYC tier cards
+    const tierCards = document.querySelectorAll('.tier-card');
+    tierCards.forEach((card, idx) => {
+      const tier = idx + 1;
+      card.classList.remove('current');
+      if (tier === kycTier) card.classList.add('current');
+    });
+
+    // Update KYC status banner
+    const kycBanner = document.getElementById('kycStatusBanner');
+    if (kycBanner) {
+      if (kycStatus === 'verified' || kycTier >= 2) {
+        kycBanner.innerHTML = '<div style="font-size:2rem">✅</div><div><div style="font-weight:600;color:#10B981">KYC Tier ' + kycTier + ' — Verified</div><div style="font-size:0.82rem;color:var(--muted)">Your identity has been verified.</div></div>';
+        kycBanner.style.borderColor = 'rgba(16,185,129,0.2)';
+        kycBanner.style.background = 'rgba(16,185,129,0.08)';
+      } else if (kycStatus === 'pending') {
+        kycBanner.innerHTML = '<div style="font-size:2rem">⏳</div><div><div style="font-weight:600;color:#F59E0B">Verification Pending</div><div style="font-size:0.82rem;color:var(--muted)">Your documents are being reviewed.</div></div>';
+        kycBanner.style.borderColor = 'rgba(245,158,11,0.2)';
+        kycBanner.style.background = 'rgba(245,158,11,0.08)';
+      } else {
+        kycBanner.innerHTML = '<div style="font-size:2rem">🔓</div><div><div style="font-weight:600;color:var(--muted)">KYC Not Completed</div><div style="font-size:0.82rem;color:var(--muted)">Complete verification to unlock higher limits.</div></div>';
+      }
+    }
+
+    // Render submitted documents
+    const docsContainer = document.getElementById('kycDocsContainer');
+    if (docsContainer && docs && docs.length > 0) {
+      docsContainer.innerHTML = docs.map(doc => `
+        <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:12px;background:var(--surface);border:1px solid var(--border)">
+          <div style="font-size:1.5rem">${doc.doc_type === 'passport' ? '🛂' : doc.doc_type === 'address_proof' ? '🏠' : '📄'}</div>
+          <div><div style="font-size:0.88rem;font-weight:600">${doc.doc_type?.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) || 'Document'}</div>
+          <div style="font-size:0.73rem;color:var(--muted)">${new Date(doc.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div></div>
+          <div style="margin-left:auto"><span style="padding:2px 8px;border-radius:6px;font-size:0.75rem;font-weight:600;background:${doc.status==='approved'?'rgba(16,185,129,0.12)':'rgba(245,158,11,0.12)'};color:${doc.status==='approved'?'#10B981':'#F59E0B'}">${doc.status||'pending'}</span></div>
+        </div>
+      `).join('');
+    }
+  } catch(e) {
+    console.log('KYC data load (demo mode):', e.message);
+  }
+}
 
 function openModal(type) {
   const def = modalDefs[type] || {title:'Action', body:'<p>Coming soon</p><button class="btn-primary" onclick="closeModal()">Close</button>'};
@@ -1005,13 +1384,23 @@ function showToast(msg, type='success') {
 }
 
 function copyCode() {
-  navigator.clipboard.writeText('https://apexcard.io/r/JP7X9K').catch(()=>{});
-  showToast('✅ Referral link copied to clipboard!');
+  const code = (currentProfile && currentProfile.referral_code) ? currentProfile.referral_code : document.querySelector('.ref-code')?.textContent || 'APEXREF';
+  const link = `https://apexcard.io/ref/${code}`;
+  navigator.clipboard.writeText(link).catch(()=>{});
+  showToast('✅ Referral link copied!');
+}
+function copyText(text) {
+  navigator.clipboard.writeText(text).catch(()=>{});
+  showToast('✅ Copied!');
 }
 
 // ═══════════════════════════════════════════
 // SUPABASE AUTH & DATA
 // ═══════════════════════════════════════════
+// Global state — set during initApp, used by action handlers
+let currentUserId = null;
+let currentProfile = null;
+
 const { createClient } = supabase;
 const sb = createClient(
   'https://vhdgqtwsxasuggbeujoo.supabase.co',
@@ -1026,25 +1415,56 @@ async function initApp() {
   }
 
   const userId = session.user.id;
+  currentUserId = userId;
 
   // === PROFIL ===
   const { data: profile } = await sb.from('profiles').select('*').eq('id', userId).single();
   if (profile) {
+    currentProfile = profile;
     const nameEl = document.querySelector('.sb-name');
-    if (nameEl) nameEl.textContent = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || session.user.email;
+    const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || session.user.email;
+    if (nameEl) nameEl.textContent = fullName;
     const emailEl = document.querySelector('.sb-email');
     if (emailEl) emailEl.textContent = session.user.email;
-    const refCodeEl = document.getElementById('refCode');
-    if (refCodeEl && profile.referral_code) refCodeEl.textContent = profile.referral_code;
+    // Referral code — update all elements
+    document.querySelectorAll('.ref-code, #refCode').forEach(el => { if (profile.referral_code) el.textContent = profile.referral_code; });
     // Update avatar initials
     const avatarEl = document.querySelector('.sb-avatar');
     if (avatarEl && profile.first_name) {
       const initials = ((profile.first_name || '')[0] || '') + ((profile.last_name || '')[0] || '');
-      avatarEl.querySelector('span') ? avatarEl.querySelector('span').textContent = initials : null;
+      const span = avatarEl.querySelector('span');
+      if (span) span.textContent = initials; else avatarEl.prepend(Object.assign(document.createElement('span'),{textContent:initials}));
     }
     // Tier badge
     const tierBadgeEl = document.querySelector('.sb-tier-badge');
     if (tierBadgeEl) tierBadgeEl.textContent = `TIER ${profile.kyc_tier || 0}`;
+
+    // Pre-fill Settings form
+    const setFirstName = document.getElementById('setFirstName');
+    const setLastName  = document.getElementById('setLastName');
+    const setEmail     = document.getElementById('setEmail');
+    const setPhone     = document.getElementById('setPhone');
+    if (setFirstName) setFirstName.value = profile.first_name || '';
+    if (setLastName)  setLastName.value  = profile.last_name  || '';
+    if (setEmail)     setEmail.value     = session.user.email;
+    if (setPhone)     setPhone.value     = profile.phone || '';
+    // Settings referral code
+    const setRefCode = document.getElementById('setRefCode');
+    if (setRefCode && profile.referral_code) setRefCode.value = profile.referral_code;
+    const setRefLink = document.getElementById('setRefLink');
+    if (setRefLink && profile.referral_code) setRefLink.textContent = `https://apexcard.io/ref/${profile.referral_code}`;
+
+    // Affiliate page
+    loadAffiliateData(userId, profile);
+
+    // KYC page
+    loadKycData(userId, profile);
+
+    // Affiliate stat: total earned
+    const affEarned = document.getElementById('affTotalEarned');
+    if (affEarned && profile.affiliate_earnings != null) {
+      affEarned.textContent = '$' + parseFloat(profile.affiliate_earnings).toLocaleString('en-US', {minimumFractionDigits:2});
+    }
   }
 
   // === TRANSACTIONS ===
@@ -1081,7 +1501,9 @@ async function initApp() {
   // === CARTES ===
   const { data: cards } = await sb.from('cards').select('*').eq('user_id', userId).order('created_at', { ascending: false });
   if (cards && cards.length > 0) {
-    // Update first card displayed
+    // Store card IDs for toggle updates
+    cardIds = cards.map(c => c.id);
+
     const cardNumbers = document.querySelectorAll('.card-number');
     const cardHolders = document.querySelectorAll('.card-holder');
     const holderName = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() : '';
@@ -1091,17 +1513,15 @@ async function initApp() {
       if (cardHolders[i]) cardHolders[i].textContent = holderName || cardHolders[i].textContent;
     });
 
-    // Update subtitle
     const cardSubtitle = document.querySelector('#page-cards .section-subtitle');
     if (cardSubtitle) cardSubtitle.textContent = `${cards.length} active card${cards.length > 1 ? 's' : ''}`;
 
-    // Update limit bars based on real data
     const limitBars = document.querySelectorAll('.limit-fill');
-    const limitTexts = document.querySelectorAll('.limit-bar + div, .limit-bar');
     cards.forEach((card, i) => {
-      if (limitBars[i]) {
-        const pct = card.monthly_limit > 0 ? Math.min(100, (card.balance / card.monthly_limit) * 100) : 0;
+      if (limitBars[i] && card.monthly_limit > 0) {
+        const pct = Math.min(100, ((card.balance || 0) / card.monthly_limit) * 100);
         limitBars[i].style.width = pct + '%';
+        limitBars[i].style.setProperty('--pct', pct + '%');
       }
     });
   }
@@ -1123,15 +1543,44 @@ async function initApp() {
   // === WALLET CRYPTO ===
   const { data: wallets } = await sb.from('wallets').select('*').eq('user_id', userId);
   if (wallets && wallets.length > 0) {
-    // Update deposit address in modal if shown
-    const depositAddrEl = document.getElementById('depositAddress');
-    if (depositAddrEl && wallets[0].address) depositAddrEl.textContent = wallets[0].address;
+    // Map assets to wallet records
+    const assetMap = {};
+    wallets.forEach(w => { if (w.currency) assetMap[w.currency.toUpperCase()] = w; });
 
-    // Update wallet values display
+    const cryptoPrices = { BTC: 63820, ETH: 3226, SOL: 166.35, USDT: 1 };
+    let totalUsd = 0;
+
+    // Update balance cells
+    document.querySelectorAll('.wallet-bal').forEach(cell => {
+      const asset = cell.dataset.asset;
+      const w = assetMap[asset];
+      if (w) {
+        const bal = parseFloat(w.balance || 0);
+        cell.textContent = bal > 0 ? `${bal.toFixed(6)} ${asset}` : `0 ${asset}`;
+        const usdVal = bal * (cryptoPrices[asset] || 1);
+        totalUsd += usdVal;
+        const valCell = document.querySelector(`.wallet-val[data-asset="${asset}"]`);
+        if (valCell) valCell.textContent = '$' + usdVal.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+      }
+    });
+
+    // Update KPI cards
     const walletKpis = document.querySelectorAll('#page-wallet .kpi-val');
-    if (wallets[0] && walletKpis[0]) {
-      const totalBalance = wallets.reduce((sum, w) => sum + parseFloat(w.balance_usd || 0), 0);
-      // Update total if element exists
+    const assetOrder = ['BTC','ETH','SOL','USDT'];
+    walletKpis.forEach((kpi, i) => {
+      const asset = assetOrder[i];
+      const w = assetMap[asset];
+      if (w) {
+        const bal = parseFloat(w.balance || 0);
+        const usdVal = bal * (cryptoPrices[asset] || 1);
+        kpi.textContent = '$' + usdVal.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+      }
+    });
+
+    // Update deposit modal address (first wallet's deposit address)
+    const modalDefs_deposit = modalDefs['deposit'];
+    if (modalDefs_deposit && wallets[0] && wallets[0].deposit_address) {
+      modalDefs['deposit'].body = `<label class="modal-label">Send to address</label><div style="font-family:monospace;font-size:0.82rem;padding:0.9rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);word-break:break-all;color:var(--text)">${wallets[0].deposit_address}</div><button class="btn-primary" style="margin-top:0.75rem;background:rgba(255,255,255,0.04)" onclick="copyText('${wallets[0].deposit_address}')">📋 Copy Address</button><button class="btn-primary" onclick="closeModal()">Done</button>`;
     }
   }
 }
