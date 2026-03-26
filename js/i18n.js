@@ -433,6 +433,10 @@ const TRANSLATIONS = {
     'admin.nav.logins': 'Connexions',
     'admin.nav.settings': 'Paramètres système',
     'admin.nav.swaps': 'Swap Monitor',
+    'admin.nav.comms': 'Communications',
+    'admin.nav.ibans': 'IBANs',
+    'admin.nav.risk': 'Risk Scoring',
+    'admin.nav.reports': 'Rapports',
     'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Se déconnecter',
 
@@ -1253,6 +1257,10 @@ const TRANSLATIONS = {
     'admin.nav.logins': 'Login History',
     'admin.nav.settings': 'System Settings',
     'admin.nav.swaps': 'Swap Monitor',
+    'admin.nav.comms': 'Communications',
+    'admin.nav.ibans': 'IBANs',
+    'admin.nav.risk': 'Risk Scoring',
+    'admin.nav.reports': 'Reports',
     'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Sign out',
 

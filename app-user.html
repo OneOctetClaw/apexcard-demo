@@ -458,6 +458,150 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
 .swap-hist-table td{padding:0.65rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
 .swap-hist-table tr:last-child td{border-bottom:none}
 .swap-hist-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* ===== NEW FEATURE CSS ===== */
+/* Notifications Bell & Panel */
+.notif-bell{position:relative;cursor:pointer;padding:8px 10px;border-radius:10px;transition:background 0.2s;display:inline-flex;align-items:center;font-size:1.2rem;margin-right:8px}
+.notif-bell:hover{background:rgba(255,255,255,0.06)}
+.notif-badge{position:absolute;top:2px;right:2px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center;line-height:1.4}
+.notif-panel{position:fixed;right:0;top:0;bottom:0;width:340px;background:rgba(10,10,20,0.97);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:300;transform:translateX(100%);transition:transform 0.3s cubic-bezier(.22,1,.36,1);overflow-y:auto;display:flex;flex-direction:column}
+.notif-panel.open{transform:translateX(0)}
+.notif-panel-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,20,0.97);z-index:1}
+.notif-panel-header span{font-weight:700;font-size:1rem}
+.notif-panel-header button{background:none;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:0.75rem;cursor:pointer;padding:4px 10px;border-radius:8px;transition:all 0.2s}
+.notif-panel-header button:hover{color:var(--text);border-color:rgba(124,58,237,0.4)}
+.notif-overlay{position:fixed;inset:0;z-index:299;background:rgba(0,0,0,0.4);display:none}
+.notif-overlay.open{display:block}
+.notif-item{padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;display:flex;gap:12px;align-items:flex-start}
+.notif-item:hover{background:var(--surface)}
+.notif-item.unread{background:rgba(124,58,237,0.06)}
+.notif-item-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.notif-item-title{font-size:0.88rem;font-weight:600;margin-bottom:3px}
+.notif-item-body{font-size:0.78rem;color:var(--muted);line-height:1.4}
+.notif-item-time{font-size:0.7rem;color:var(--muted);margin-top:4px}
+/* Transactions */
+.tx-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.tx-filter-select{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-family:inherit;font-size:12px;color:var(--text);outline:none;cursor:pointer}
+.tx-filter-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:12px;color:var(--text);outline:none;min-width:150px}
+.tx-filter-reset{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.75rem;cursor:pointer;transition:all 0.2s}
+.tx-filter-reset:hover{color:var(--text)}
+.tx-table-wrap{overflow-x:auto}
+.tx-full-table{width:100%;border-collapse:collapse;font-size:0.82rem;min-width:700px}
+.tx-full-table th{font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0.6rem 0.75rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.tx-full-table td{padding:0.75rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+.tx-full-table tr:hover td{background:rgba(255,255,255,0.02)}
+.tx-type-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:0.68rem;font-weight:700;white-space:nowrap}
+.tx-status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;font-size:0.68rem;font-weight:600;white-space:nowrap}
+.tx-action-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.85rem;transition:all 0.2s;color:var(--muted)}
+.tx-action-btn:hover{background:var(--surface);color:var(--text);border-color:rgba(124,58,237,0.4)}
+.tx-timeline{display:flex;align-items:center;margin:1rem 0}
+.tx-timeline-step{display:flex;flex-direction:column;align-items:center;flex:1}
+.tx-timeline-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--bg);position:relative;z-index:1}
+.tx-timeline-dot.done{background:#10B981;border-color:#10B981}
+.tx-timeline-dot.active{background:#F59E0B;border-color:#F59E0B}
+.tx-timeline-line{flex:1;height:2px;background:var(--border)}
+.tx-timeline-line.done{background:#10B981}
+.tx-timeline-label{font-size:0.65rem;color:var(--muted);margin-top:4px;text-align:center}
+/* Support */
+.support-chat{border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.support-msgs{height:300px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,0.01)}
+.chat-msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:0.85rem;line-height:1.4}
+.chat-msg.agent{align-self:flex-start;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);border-bottom-left-radius:4px}
+.chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.15));border:1px solid rgba(124,58,237,0.3);border-bottom-right-radius:4px}
+.chat-msg .chat-sender{font-size:0.7rem;font-weight:700;margin-bottom:4px}
+.chat-msg.agent .chat-sender{color:#a78bfa}
+.chat-msg.user .chat-sender{color:#67e8f9}
+.chat-typing{align-self:flex-start;padding:10px 14px;border-radius:14px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);font-size:0.85rem;color:var(--muted);font-style:italic}
+.support-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.support-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-family:inherit;font-size:0.85rem;color:var(--text);outline:none}
+.support-input:focus{border-color:rgba(124,58,237,0.5)}
+.support-send-btn{padding:8px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;flex-shrink:0;transition:all 0.2s}
+/* FAQ */
+.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:0.9rem;font-weight:600;transition:background 0.2s}
+.faq-q:hover{background:var(--surface)}
+.faq-q .faq-arrow{transition:transform 0.3s;color:var(--muted)}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-a{display:none;padding:0 16px 16px;font-size:0.85rem;color:var(--muted);line-height:1.6}
+.faq-item.open .faq-a{display:block}
+/* Service status */
+.service-status-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem}
+.service-status-row:last-child{border-bottom:none}
+.service-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.service-dot.green{background:#10B981;box-shadow:0 0 6px rgba(16,185,129,0.5)}
+.service-dot.yellow{background:#F59E0B;box-shadow:0 0 6px rgba(245,158,11,0.5)}
+.service-dot.red{background:#EF4444;box-shadow:0 0 6px rgba(239,68,68,0.5)}
+/* KYC Stepper */
+.kyc-stepper{display:flex;align-items:center;margin-bottom:2rem}
+.kyc-step-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;border:2px solid var(--border)}
+.kyc-step-dot.done{background:rgba(16,185,129,0.15);border-color:#10B981;color:#10B981}
+.kyc-step-dot.active-step{background:rgba(124,58,237,0.15);border-color:#7C3AED;color:#a78bfa;box-shadow:0 0 14px rgba(124,58,237,0.3)}
+.kyc-step-dot.locked{background:rgba(255,255,255,0.03);color:var(--muted)}
+.kyc-step-line-new{flex:1;height:2px;background:var(--border)}
+.kyc-step-line-new.done{background:#10B981}
+.kyc-tier-card{padding:1.5rem;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative}
+.kyc-tier-card.active-tier{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.06)}
+.kyc-tier-card.locked-tier{opacity:0.6}
+.kyc-tier-badge2{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#7C3AED,#06B6D4);border-radius:100px;font-size:0.62rem;font-weight:800;padding:2px 12px;color:#fff;white-space:nowrap}
+.kyc-drop-zone{border:2px dashed rgba(124,58,237,0.4);border-radius:14px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.3s}
+.kyc-drop-zone:hover{border-color:rgba(124,58,237,0.8);background:rgba(124,58,237,0.05)}
+/* Markets */
+.market-header-row,.market-row{display:grid;grid-template-columns:36px minmax(140px,1fr) 110px 70px 70px 70px 100px 90px;gap:8px;align-items:center;padding:10px 12px}
+.market-header-row{padding:8px 12px;border-bottom:1px solid var(--border)}
+.market-row{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s}
+.market-row:hover{background:rgba(255,255,255,0.02)}
+.market-sparkline{width:80px;height:30px}
+.market-buy-btn{padding:5px 12px;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:#10B981;font-family:inherit;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.market-buy-btn:hover{background:rgba(16,185,129,0.18);transform:translateY(-1px)}
+.market-filter-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.market-filter-tab{padding:6px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;font-size:0.78rem;cursor:pointer;transition:all 0.2s}
+.market-filter-tab.active,.market-filter-tab:hover{background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.4);color:var(--text)}
+/* Security Score */
+.security-score-bar-wrap{height:8px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;margin:8px 0 12px}
+.security-score-bar{height:100%;border-radius:4px;transition:width 1s ease}
+.security-score-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.82rem}
+.security-score-item:last-child{border-bottom:none}
+/* Yield countdown */
+.yield-countdown{display:flex;align-items:center;justify-content:center;gap:12px;padding:1.25rem;background:rgba(16,185,129,0.05);border-radius:14px;border:1px solid rgba(16,185,129,0.2);margin-bottom:1.25rem}
+.countdown-unit{text-align:center}
+.countdown-val{font-size:1.8rem;font-weight:800;color:#10B981;font-family:'Space Grotesk',monospace;min-width:2ch;display:inline-block}
+.countdown-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.countdown-sep{font-size:1.5rem;font-weight:700;color:rgba(16,185,129,0.5);margin-bottom:16px}
+/* Cashback */
+.cashback-card{padding:1rem 1.25rem;background:rgba(245,158,11,0.06);border-radius:14px;border:1px solid rgba(245,158,11,0.2);margin-top:1rem}
+.cashback-rate-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.cashback-rate-badge{padding:2px 8px;border-radius:100px;font-size:0.72rem;font-weight:600;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#F59E0B}
+/* Card suspended */
+.card-suspended-overlay{position:absolute;inset:0;border-radius:20px;background:rgba(239,68,68,0.28);display:flex;align-items:center;justify-content:center;z-index:5}
+.card-suspended-badge{background:#EF4444;color:#fff;font-size:0.8rem;font-weight:800;padding:6px 16px;border-radius:8px;letter-spacing:0.1em}
+/* Fee selector */
+.fee-option{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;margin-bottom:6px}
+.fee-option:hover{border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.05)}
+.fee-option.selected{border-color:rgba(124,58,237,0.6);background:rgba(124,58,237,0.08)}
+/* Whitelist */
+.whitelist-addr-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);margin-bottom:8px}
+/* Events */
+.event-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.event-item:last-child{border-bottom:none}
+.event-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.event-label{font-size:0.85rem;font-weight:600}
+.event-detail{font-size:0.75rem;color:var(--muted);margin-top:2px}
+/* Last login */
+.last-login-info{font-size:0.68rem;color:var(--muted);margin-top:2px;line-height:1.3}
+/* PIN modal */
+.pin-step{display:none}
+.pin-step.pin-active{display:block}
+.pin-input-row{display:flex;gap:8px;justify-content:center;margin:12px 0}
+/* Reveal card */
+.reveal-btn{background:none;border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:2px 7px;cursor:pointer;font-size:0.75rem;color:rgba(255,255,255,0.7);margin-left:8px;vertical-align:middle;transition:all 0.2s}
+.reveal-btn:hover{background:rgba(255,255,255,0.1)}
+@media(max-width:768px){
+  .notif-panel{width:100%}
+  .market-header-row,.market-row{grid-template-columns:30px 1fr 90px 60px}
+  .market-header-row>*:nth-child(n+5),.market-row>*:nth-child(n+5){display:none}
+  .market-header-row>*:nth-child(8),.market-row>*:nth-child(8){display:block}
+}
+
 </style>
 <link rel="stylesheet" href="css/responsive.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
@@ -481,14 +625,21 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         <div class="sb-logo-icon">⬡</div>
         <div class="sb-logo-name">APEXCARD</div>
       </div>
-      <div class="sb-user">
-        <div class="sb-avatar">
-          JP
-          <div class="sb-tier-badge">T2</div>
+      <div class="sb-user" style="flex-wrap:wrap;gap:0.5rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;flex:1">
+          <div class="sb-avatar">
+            JP
+            <div class="sb-tier-badge">T2</div>
+          </div>
+          <div class="sb-user-info">
+            <div class="sb-name">Loading…</div>
+            <div class="sb-email"></div>
+            <div class="last-login-info" id="last-login-display">Dernière connexion : Paris, France · il y a 2h</div>
+          </div>
         </div>
-        <div class="sb-user-info">
-          <div class="sb-name">Loading…</div>
-          <div class="sb-email"></div>
+        <div class="notif-bell" onclick="toggleNotifPanel()" id="notif-bell-new">
+          🔔
+          <span class="notif-badge" id="notif-badge-new">3</span>
         </div>
       </div>
     </div>
@@ -498,6 +649,8 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="nav-icon">⬡</span> <span data-i18n="app.nav.dashboard">Dashboard</span></div>
       <div class="nav-item" onclick="showPage('cards', this)"><span class="nav-icon">💳</span> <span data-i18n="app.nav.cards">My Cards</span></div>
       <div class="nav-item" onclick="showPage('wallet', this)"><span class="nav-icon">₿</span> <span data-i18n="app.nav.wallet">Crypto Wallet</span></div>
+      <div class="nav-item" onclick="showPage('markets', this)"><span class="nav-icon">📊</span> <span>Markets</span></div>
+      <div class="nav-item" onclick="showPage('transactions', this)"><span class="nav-icon">↕️</span> <span>Transactions</span></div>
       <div class="nav-item" onclick="showPage('swap', this)"><span class="nav-icon">⇄</span> <span data-i18n="app.nav.swap">Swap</span></div>
 
       <div class="sb-section" data-i18n="app.section.banking">Banking</div>
@@ -508,6 +661,7 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="nav-item" onclick="showPage('affiliate', this)"><span class="nav-icon">👥</span> <span data-i18n="app.nav.affiliate">Parrainage</span> <span class="nav-badge">47</span></div>
       <div class="nav-item" onclick="showPage('kyc', this)"><span class="nav-icon">✓</span> <span data-i18n="app.nav.kyc">KYC Verification</span></div>
       <div class="nav-item" onclick="showPage('documents', this)"><span class="nav-icon">📄</span> <span data-i18n="app.nav.documents">Documents</span></div>
+      <div class="nav-item" onclick="showPage('support', this)"><span class="nav-icon">💬</span> <span>Support</span></div>
       <div class="nav-item" onclick="showPage('settings', this)"><span class="nav-icon">⚙</span> <span data-i18n="app.nav.settings">Settings</span></div>
     </nav>
 
@@ -556,6 +710,25 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         <div class="balance-label" data-i18n="app.dashboard.balance_label">Valeur totale du portefeuille</div>
         <div class="balance-amount"><span id="balanceCounter">$0</span></div>
         <div class="balance-change" data-i18n="app.dashboard.change">↑ +12.4% &nbsp; +$3,301.25 this month</div>
+        <div class="portfolio-sparkline-wrap">
+          <svg id="portfolio-sparkline-svg" viewBox="0 0 400 60" preserveAspectRatio="none" style="width:100%;height:60px;margin-top:0.5rem;opacity:0.85">
+            <defs>
+              <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="0,55 0,42 18,38 36,40 54,33 72,35 90,28 108,30 126,24 144,26 162,19 180,22 198,15 216,17 234,11 252,14 270,8 288,11 306,5 324,8 342,3 360,6 378,2 400,4 400,55" fill="url(#sparkGrad)"/>
+            <polyline points="0,42 18,38 36,40 54,33 72,35 90,28 108,30 126,24 144,26 162,19 180,22 198,15 216,17 234,11 252,14 270,8 288,11 306,5 324,8 342,3 360,6 378,2 400,4" fill="none" stroke="url(#tickerGrad2)" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="tickerGrad2" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#7C3AED"/>
+                <stop offset="100%" stop-color="#06B6D4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--muted);margin-top:2px"><span>30j</span><span style="color:#10B981;font-weight:600">+22.4%</span></div>
+        </div>
         <div id="balance-breakdown" style="display:flex;gap:1rem;justify-content:center;margin-top:0.5rem;font-size:0.78rem;color:var(--muted);flex-wrap:wrap">
           <span>💰 Crypto <strong id="balance-crypto">$0</strong></span>
           <span style="opacity:0.4">|</span>
@@ -633,7 +806,7 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="card" style="margin-top:1.25rem">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
           <div style="font-size:0.88rem;font-weight:700" data-i18n="app.dashboard.recent_tx">Recent Transactions</div>
-          <div style="font-size:0.78rem;color:#7C3AED;cursor:pointer" data-i18n="app.dashboard.view_all">View all →</div>
+          <div style="font-size:0.78rem;color:#7C3AED;cursor:pointer" onclick="showPage('transactions',document.querySelector('.nav-item[onclick*=transactions]'))" data-i18n="app.dashboard.view_all">View all →</div>
         </div>
         <!-- Loading skeleton -->
         <div class="tx-feed" id="tx-dashboard-loading">
@@ -642,6 +815,49 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
           <div class="skeleton-row"><div class="skeleton skeleton-icon"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line sm"></div></div><div class="skeleton" style="width:80px;height:20px;border-radius:6px"></div></div>
         </div>
       </div>
+
+      <!-- Security Score + Upcoming Events -->
+      <div class="grid-2" style="margin-top:1.25rem">
+        <div class="card card-glow-violet">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+            <div style="font-size:0.88rem;font-weight:700">&#128737;&#65039; Score de sécurité</div>
+            <div style="font-size:1.4rem;font-weight:800;color:#F59E0B">65<span style="font-size:0.75rem;color:var(--muted)">/100</span></div>
+          </div>
+          <div class="security-score-bar-wrap"><div class="security-score-bar" style="width:65%;background:linear-gradient(90deg,#F59E0B,#EF4444 30%,#F59E0B)"></div></div>
+          <div class="security-score-item"><span style="color:#10B981">&#x2705;</span><span style="flex:1">Email vérifié</span><span style="color:#10B981;font-size:0.75rem">+20</span></div>
+          <div class="security-score-item"><span style="color:#F59E0B">&#x26A0;&#xFE0F;</span><span style="flex:1">2FA non activé</span><span style="color:var(--muted);font-size:0.75rem">+25 possible</span></div>
+          <div class="security-score-item"><span style="color:#10B981">&#x2705;</span><span style="flex:1">KYC Tier 1</span><span style="color:#10B981;font-size:0.75rem">+20</span></div>
+          <div class="security-score-item"><span style="color:#F59E0B">&#x26A0;&#xFE0F;</span><span style="flex:1">Whitelist adresses</span><span style="color:var(--muted);font-size:0.75rem">+15 possible</span></div>
+          <div class="security-score-item"><span style="color:#10B981">&#x2705;</span><span style="flex:1">Compte &gt;30j</span><span style="color:#10B981;font-size:0.75rem">+20</span></div>
+          <button onclick="showPage('settings',document.querySelector('.nav-item[onclick*=settings]'))" style="width:100%;margin-top:1rem;padding:0.55rem;border-radius:10px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">Améliorer &#x2192;</button>
+        </div>
+        <div class="card card-glow-cyan">
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">&#128197; A venir</div>
+          <div class="event-item">
+            <div class="event-icon">&#128200;</div>
+            <div>
+              <div class="event-label">Prochain yield</div>
+              <div class="event-detail">Dans 8 jours · +$84.20 estimé</div>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-icon">&#128184;</div>
+            <div>
+              <div class="event-label">Virement programmé</div>
+              <div class="event-detail">Aucun virement programmé</div>
+              <a style="font-size:0.75rem;color:#a78bfa;cursor:pointer" onclick="openModal('wire')">Programmer un virement &#x2192;</a>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-icon">&#128737;&#65039;</div>
+            <div>
+              <div class="event-label">KYC Tier 1</div>
+              <div class="event-detail">Valide jusqu'au 14 jan. 2027</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- CARDS -->
@@ -657,7 +873,8 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
             <div class="card-hologram"></div>
             <div class="card-brand">VIRTUAL</div>
             <div class="card-chip"></div>
-            <div class="card-number">4111 •••• •••• 7823</div>
+            <div class="card-number" id="card-num-0">4111 •••• •••• 7823 <button class="reveal-btn" onclick="revealCardNum(0)" id="reveal-num-0">👁</button></div>
+            <div style="font-size:0.75rem;opacity:0.7;margin-bottom:0.5rem">CVV: <span id="card-cvv-0">•••</span> <button class="reveal-btn" onclick="revealCVV(0)" id="reveal-cvv-0">👁</button></div>
             <div class="card-holder">DEMO USER</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>09/28</div>
           </div>
@@ -671,15 +888,25 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
             </div>
             <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
             <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer" data-i18n="app.cards.topup">💳 Top Up Card</button>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button onclick="openPinModal(0)" style="flex:1;padding:0.5rem;border-radius:10px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">🔑 Changer PIN</button>
+              <button onclick="reportCardLost(0)" style="flex:1;padding:0.5rem;border-radius:10px;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.08);color:#EF4444;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">🚨 Perdue/Volée</button>
+            </div>
+            <div class="cashback-card">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.88rem;font-weight:700;color:#F59E0B">💰 Cashback ce mois</span><span style="font-size:1.1rem;font-weight:800;color:#F59E0B">$12.40</span></div>
+              <div class="cashback-rate-row"><span class="cashback-rate-badge">0.5% standard</span><span class="cashback-rate-badge">1% restaurants</span><span class="cashback-rate-badge">2% voyage</span></div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Prochain versement : fin du mois</div>
+            </div>
           </div>
         </div>
 
         <div>
-          <div class="credit-card-3d card-gold">
+          <div class="credit-card-3d card-gold" id="card-3d-1">
             <div class="card-hologram"></div>
             <div class="card-brand" style="color:#fcd34d">GOLD</div>
             <div class="card-chip"></div>
-            <div class="card-number">5412 •••• •••• 3091</div>
+            <div class="card-number" id="card-num-1">5412 •••• •••• 3091 <button class="reveal-btn" onclick="revealCardNum(1)" id="reveal-num-1">👁</button></div>
+            <div style="font-size:0.75rem;opacity:0.7;margin-bottom:0.5rem">CVV: <span id="card-cvv-1">•••</span> <button class="reveal-btn" onclick="revealCVV(1)" id="reveal-cvv-1">👁</button></div>
             <div class="card-holder">DEMO USER</div>
             <div class="card-expiry"><div style="font-size:0.65rem;opacity:0.6">EXPIRES</div>12/27</div>
           </div>
@@ -693,6 +920,15 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
             </div>
             <!-- SQUAREFI INTEGRATION POINT: POST /api/cards/topup -->
             <button onclick="openModal('cardTopup')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer" data-i18n="app.cards.topup">💳 Top Up Card</button>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button onclick="openPinModal(1)" style="flex:1;padding:0.5rem;border-radius:10px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">🔑 Changer PIN</button>
+              <button onclick="reportCardLost(1)" style="flex:1;padding:0.5rem;border-radius:10px;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.08);color:#EF4444;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">🚨 Perdue/Volée</button>
+            </div>
+            <div class="cashback-card">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.88rem;font-weight:700;color:#F59E0B">💰 Cashback ce mois</span><span style="font-size:1.1rem;font-weight:800;color:#F59E0B">$28.90</span></div>
+              <div class="cashback-rate-row"><span class="cashback-rate-badge">1% standard</span><span class="cashback-rate-badge">2% restaurants</span><span class="cashback-rate-badge">3% voyage</span></div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Prochain versement : fin du mois</div>
+            </div>
           </div>
         </div>
       </div>
@@ -981,6 +1217,61 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="section-hdr">
         <div><div class="section-title"><span data-i18n="app.yield.title">Yield & Staking</span></div><div class="section-subtitle" data-i18n="app.yield.sub">Earn passive income on your crypto</div></div>
       </div>
+
+      <!-- Yield Countdown + Simulator Enhanced + History -->
+      <div class="yield-countdown">
+        <span style="font-size:0.88rem;color:var(--muted);margin-right:8px">⏱ Prochain versement dans :</span>
+        <div class="countdown-unit"><div class="countdown-val" id="cd-days">08</div><div class="countdown-label">Jours</div></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><div class="countdown-val" id="cd-hours">14</div><div class="countdown-label">Heures</div></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><div class="countdown-val" id="cd-mins">22</div><div class="countdown-label">Min</div></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><div class="countdown-val" id="cd-secs">00</div><div class="countdown-label">Sec</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:1.25rem">
+        <div class="card">
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">🧮 Simulateur interactif</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem">Montant à investir</div>
+          <div class="slider-wrap" style="margin-bottom:0.5rem">
+            <input type="range" min="100" max="50000" step="100" value="12000" id="simSliderNew" oninput="updateSimNew(this.value)" style="--val:23.8%">
+          </div>
+          <div style="text-align:center;font-size:2rem;font-weight:800;color:#10B981;margin-bottom:0.5rem" id="simAmtNew">$12,000</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem">Durée</div>
+          <div class="slider-wrap" style="margin-bottom:0.75rem">
+            <input type="range" min="1" max="24" value="12" id="simDurNew" oninput="updateSimNew()" style="--val:47.8%">
+          </div>
+          <div id="simDurLabel" style="text-align:center;font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem">Durée : 12 mois</div>
+          <div class="card" style="padding:0.9rem;background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.2)">
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0"><span style="color:var(--muted);font-size:0.82rem">Rendement total</span><span style="color:#10B981;font-weight:600" id="simTotalYield">+$2,880.00</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0"><span style="color:var(--muted);font-size:0.82rem">Mensuel moyen</span><span style="color:#10B981;font-weight:600" id="simMonthlyNew">+$240.00</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0"><span style="color:var(--muted);font-size:0.82rem">Capital final</span><span style="color:#a78bfa;font-weight:600" id="simFinalVal">$14,880.00</span></div>
+          </div>
+          <button onclick="openModal('stake')" style="width:100%;margin-top:0.75rem;padding:0.7rem;border-radius:12px;border:none;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;font-family:inherit;font-size:0.88rem;font-weight:700;cursor:pointer">Investir ce montant →</button>
+        </div>
+        <div class="card">
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">📅 Historique des distributions</div>
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Montant</th><th>Capital</th><th>APY</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted)">10 Mars</td><td style="color:#10B981;font-weight:600">+$240.00</td><td>$12,000</td><td>24%</td></tr>
+              <tr><td style="color:var(--muted)">10 Févr.</td><td style="color:#10B981;font-weight:600">+$218.00</td><td>$10,900</td><td>24%</td></tr>
+              <tr><td style="color:var(--muted)">10 Janv.</td><td style="color:#10B981;font-weight:600">+$195.00</td><td>$9,750</td><td>24%</td></tr>
+              <tr><td style="color:var(--muted)">10 Déc.</td><td style="color:#10B981;font-weight:600">+$172.00</td><td>$8,600</td><td>24%</td></tr>
+              <tr><td style="color:var(--muted)">10 Nov.</td><td style="color:#10B981;font-weight:600">+$148.00</td><td>$7,400</td><td>24%</td></tr>
+            </tbody>
+          </table>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:1rem;background:rgba(124,58,237,0.05);border-radius:12px;border:1px solid rgba(124,58,237,0.2);margin-top:1rem">
+            <div class="toggle on" onclick="this.classList.toggle('on')" style="flex-shrink:0;margin-top:2px"></div>
+            <div>
+              <div style="font-size:0.88rem;font-weight:600">🔄 Réinvestissement automatique</div>
+              <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">Vos gains sont réinvestis automatiquement chaque mois pour maximiser les intérêts composés.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-3" style="margin-bottom:1.5rem">
         <div class="apy-card apy-glow">
           <div style="font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase" data-i18n="app.yield.current_apy">Current APY</div>
@@ -1046,6 +1337,97 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="section-hdr">
         <div><div class="section-title"><span data-i18n="app.affiliate.title">Affiliate Program</span></div><div class="section-subtitle" data-i18n="app.affiliate.sub">Earn by referring friends</div></div>
       </div>
+
+      <!-- Affiliate QR + Enhanced table -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">🔗 QR Code de parrainage</div>
+        <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+          <div class="affiliate-qr">
+            <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="border-radius:10px;background:white;padding:8px">
+              <rect x="10" y="10" width="40" height="40" fill="none" stroke="#000" stroke-width="3"/>
+              <rect x="17" y="17" width="26" height="26" fill="#000"/>
+              <rect x="70" y="10" width="40" height="40" fill="none" stroke="#000" stroke-width="3"/>
+              <rect x="77" y="17" width="26" height="26" fill="#000"/>
+              <rect x="10" y="70" width="40" height="40" fill="none" stroke="#000" stroke-width="3"/>
+              <rect x="17" y="77" width="26" height="26" fill="#000"/>
+              <rect x="70" y="70" width="8" height="8" fill="#000"/>
+              <rect x="82" y="70" width="8" height="8" fill="#000"/>
+              <rect x="94" y="70" width="8" height="8" fill="#000"/>
+              <rect x="70" y="82" width="8" height="8" fill="#000"/>
+              <rect x="94" y="82" width="8" height="8" fill="#000"/>
+              <rect x="70" y="94" width="8" height="8" fill="#000"/>
+              <rect x="82" y="94" width="8" height="8" fill="#000"/>
+              <rect x="94" y="94" width="8" height="8" fill="#000"/>
+              <rect x="52" y="10" width="8" height="8" fill="#000"/>
+              <rect x="52" y="22" width="8" height="8" fill="#000"/>
+              <rect x="52" y="34" width="8" height="8" fill="#000"/>
+              <rect x="10" y="52" width="8" height="8" fill="#000"/>
+              <rect x="22" y="52" width="8" height="8" fill="#000"/>
+              <rect x="34" y="52" width="8" height="8" fill="#000"/>
+              <rect x="46" y="52" width="8" height="8" fill="#000"/>
+              <rect x="58" y="52" width="8" height="8" fill="#000"/>
+              <rect x="64" y="64" width="8" height="8" fill="#7C3AED"/>
+            </svg>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem">Partagez ce QR code pour inviter vos amis directement</div>
+            <button onclick="copyCode()" class="copy-btn" style="display:inline-flex">📋 Copier le lien</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">👥 Mes filleuls</div>
+        <table class="data-table">
+          <thead><tr><th>Prénom</th><th>Inscription</th><th>KYC</th><th>1er dépôt</th><th>Commission</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Marie C.</td>
+              <td style="color:var(--muted)">12 Mars</td>
+              <td><span class="status-badge status-active">✅ KYC 1</span></td>
+              <td style="color:#10B981">$500</td>
+              <td style="color:#10B981;font-weight:600">+$40.00</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Paul T.</td>
+              <td style="color:var(--muted)">8 Mars</td>
+              <td><span class="status-badge status-pending">⏳ Pending</span></td>
+              <td style="color:var(--muted)">—</td>
+              <td style="color:var(--muted)">$0</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Lucas B.</td>
+              <td style="color:var(--muted)">2 Mars</td>
+              <td><span class="status-badge status-active">✅ KYC 2</span></td>
+              <td style="color:#10B981">$2,400</td>
+              <td style="color:#10B981;font-weight:600">+$192.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">💸 Mes revenus de parrainage</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem">
+          <div style="padding:1rem;border-radius:12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);text-align:center">
+            <div style="font-size:1.2rem;font-weight:800;color:#10B981">$232.00</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Level 1<br>8% sur $2,900</div>
+          </div>
+          <div style="padding:1rem;border-radius:12px;background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.2);text-align:center">
+            <div style="font-size:1.2rem;font-weight:800;color:#a78bfa">$15.60</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Level 2<br>3% sur $520</div>
+          </div>
+          <div style="padding:1rem;border-radius:12px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);text-align:center">
+            <div style="font-size:1.2rem;font-weight:800;color:#F59E0B">$2.10</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">Level 3<br>1%</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;background:rgba(16,185,129,0.08);border-radius:10px;border:1px solid rgba(16,185,129,0.2)">
+          <span style="font-weight:700">Total à percevoir</span>
+          <span style="font-size:1.2rem;font-weight:800;color:#10B981">$249.70</span>
+        </div>
+      </div>
+
       <div class="ref-code-box">
         <div>
           <div style="font-size:0.73rem;color:var(--muted);font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.25rem" data-i18n="app.affiliate.your_code">Your Referral Code</div>
@@ -1117,12 +1499,84 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         <div><div class="section-title"><span data-i18n="app.kyc.title">KYC Verification</span></div><div class="section-subtitle" data-i18n="app.kyc.sub">Identity verification status</div></div>
       </div>
 
-      <div class="kyc-steps">
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.email">Email</div></div>
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.phone">Phone</div></div>
-        <div class="kyc-step"><div class="step-circle active">✓</div><div class="step-label" data-i18n="app.kyc.identity">Identity</div></div>
-        <div class="kyc-step"><div class="step-circle done">✓</div><div class="step-label" data-i18n="app.kyc.address">Address</div></div>
-        <div class="kyc-step"><div class="step-circle" style="opacity:0.5">5</div><div class="step-label" data-i18n="app.kyc.tier.enhanced">Enhanced</div></div>
+      <!-- KYC Stepper -->
+      <div class="kyc-stepper">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="kyc-step-dot done">✓</div>
+          <div style="font-size:0.68rem;color:#10B981;margin-top:4px;text-align:center">T0<br>Basique</div>
+        </div>
+        <div class="kyc-step-line done"></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="kyc-step-dot done">✓</div>
+          <div style="font-size:0.68rem;color:#10B981;margin-top:4px;text-align:center">T1<br>Vérifié</div>
+        </div>
+        <div class="kyc-step-line-new done"></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="kyc-step-dot active-step">2</div>
+          <div style="font-size:0.68rem;color:#a78bfa;margin-top:4px;text-align:center">T2<br>Pro</div>
+        </div>
+        <div class="kyc-step-line-new"></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="kyc-step-dot locked">3</div>
+          <div style="font-size:0.68rem;color:var(--muted);margin-top:4px;text-align:center">T3<br>Institutionnel</div>
+        </div>
+      </div>
+
+      <!-- KYC Tier Cards Grid -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+        <div class="kyc-tier-card">
+          <div class="kyc-tier-badge2">✓ COMPLÉTÉ</div>
+          <div style="text-align:center;padding-top:1rem">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">🔑</div>
+            <div style="font-size:1rem;font-weight:800;color:#10B981">Tier 0 — Basique</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin:0.4rem 0">Limite : $500/mois</div>
+          </div>
+          <div style="border-top:1px solid var(--border);margin-top:0.75rem;padding-top:0.75rem">
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem">Débloque :</div>
+            <div style="font-size:0.78rem">✅ Compte de paiement</div>
+            <div style="font-size:0.78rem">✅ Carte virtuelle</div>
+            <div style="font-size:0.78rem">✅ Dépôts crypto</div>
+          </div>
+        </div>
+        <div class="kyc-tier-card">
+          <div class="kyc-tier-badge2">✓ COMPLÉTÉ</div>
+          <div style="text-align:center;padding-top:1rem">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">🛡️</div>
+            <div style="font-size:1rem;font-weight:800;color:#10B981">Tier 1 — Vérifié</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin:0.4rem 0">Limite : $10,000/mois</div>
+          </div>
+          <div style="border-top:1px solid var(--border);margin-top:0.75rem;padding-top:0.75rem">
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem">Débloque :</div>
+            <div style="font-size:0.78rem">✅ Virements SEPA</div>
+            <div style="font-size:0.78rem">✅ Carte physique</div>
+            <div style="font-size:0.78rem">✅ Retraits crypto</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">📄 Passeport requis</div>
+          </div>
+        </div>
+        <div class="kyc-tier-card active-tier">
+          <div class="kyc-tier-badge2">EN COURS</div>
+          <div style="text-align:center;padding-top:1rem">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">⭐</div>
+            <div style="font-size:1rem;font-weight:800;color:#a78bfa">Tier 2 — Pro</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin:0.4rem 0">Limite : $50,000/mois</div>
+          </div>
+          <div style="border-top:1px solid rgba(124,58,237,0.2);margin-top:0.75rem;padding-top:0.75rem">
+            <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem">Débloque :</div>
+            <div style="font-size:0.78rem">✅ Yield &amp; Staking</div>
+            <div style="font-size:0.78rem">✅ Carte Gold</div>
+            <div style="font-size:0.78rem">✅ API access</div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">📄 Justificatif domicile requis</div>
+          </div>
+          <!-- Upload zone -->
+          <div class="kyc-drop-zone" style="margin-top:0.75rem" onclick="document.getElementById('kyc-file-input').click()">
+            <div style="font-size:1.5rem;margin-bottom:0.5rem">📎</div>
+            <div style="font-size:0.85rem;font-weight:600">Glissez votre justificatif ici</div>
+            <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">ou cliquez pour sélectionner</div>
+            <div style="font-size:0.68rem;color:var(--muted);margin-top:6px">JPG, PNG, PDF · Max 10MB</div>
+            <input type="file" id="kyc-file-input" accept="image/*,application/pdf" style="display:none" onchange="handleKycFileUpload(this)">
+          </div>
+          <div id="kyc-upload-status" style="display:none;margin-top:0.5rem;padding:0.5rem;background:rgba(16,185,129,0.1);border-radius:8px;font-size:0.78rem;color:#10B981;text-align:center">✅ Document reçu — en cours d'analyse</div>
+        </div>
       </div>
 
       <div id="kycStatusBanner" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem">
@@ -1244,6 +1698,35 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
           </div>
         </div>
 
+
+        <div class="settings-section">
+          <div class="settings-title">📋 Adresses whitelistées</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+            <div>
+              <div class="settings-label">Whitelist obligatoire</div>
+              <div class="settings-desc">Les retraits sont uniquement vers ces adresses</div>
+            </div>
+            <div class="toggle" id="whitelist-toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="whitelist-addr-item">
+            <div class="whitelist-addr-icon" style="background:rgba(245,158,11,0.1)">₿</div>
+            <div style="flex:1">
+              <div class="whitelist-addr-name">Mon wallet BTC personnel</div>
+              <div class="whitelist-addr-str">bc1q…9f4a2b · Bitcoin mainnet</div>
+            </div>
+            <button onclick="showToast('Adresse supprimée')" style="background:none;border:1px solid rgba(239,68,68,0.3);color:#EF4444;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:0.75rem">✕</button>
+          </div>
+          <div class="whitelist-addr-item">
+            <div class="whitelist-addr-icon" style="background:rgba(124,58,237,0.1)">Ξ</div>
+            <div style="flex:1">
+              <div class="whitelist-addr-name">MetaMask principal</div>
+              <div class="whitelist-addr-str">0x4F3…c8B2 · Ethereum ERC-20</div>
+            </div>
+            <button onclick="showToast('Adresse supprimée')" style="background:none;border:1px solid rgba(239,68,68,0.3);color:#EF4444;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:0.75rem">✕</button>
+          </div>
+          <button onclick="openModal('addWhitelist')" style="width:100%;margin-top:0.75rem;padding:0.6rem;border-radius:10px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);color:#a78bfa;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">+ Ajouter une adresse</button>
+        </div>
+
         <div class="settings-section">
           <div class="settings-title" data-i18n="app.settings.referral">Referral</div>
           <div style="margin-bottom:0.75rem">
@@ -1257,6 +1740,155 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         </div>
       </div>
     </div>
+
+
+    <!-- ===== TRANSACTIONS ===== -->
+    <div class="page-section" id="page-transactions">
+      <div class="section-hdr">
+        <div><div class="section-title"><span>Transactions</span></div><div class="section-subtitle">Historique complet</div></div>
+        <button onclick="downloadTransactionsCSV()" style="padding:0.6rem 1.25rem;border-radius:12px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);color:#06B6D4;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer">📥 Exporter CSV</button>
+      </div>
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="tx-filter-bar">
+          <input class="tx-filter-input" id="tx-search" type="text" placeholder="🔍 Rechercher..." oninput="filterTransactions()">
+          <select class="tx-filter-select" id="tx-type-filter" onchange="filterTransactions()">
+            <option value="">Tous les types</option>
+            <option value="fiat">Fiat</option>
+            <option value="crypto">Crypto</option>
+            <option value="swap">Swap</option>
+            <option value="yield">Yield</option>
+            <option value="card">Carte</option>
+            <option value="affiliate">Affilié</option>
+          </select>
+          <select class="tx-filter-select" id="tx-status-filter" onchange="filterTransactions()">
+            <option value="">Tous statuts</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+          </select>
+          <select class="tx-filter-select" id="tx-date-filter" onchange="filterTransactions()">
+            <option value="1">Ce mois</option>
+            <option value="3">3 mois</option>
+            <option value="6">6 mois</option>
+            <option value="12">1 an</option>
+          </select>
+          <button class="tx-filter-reset" onclick="resetTxFilters()">↺ Reset</button>
+        </div>
+        <div class="tx-table-wrap">
+          <table class="tx-full-table" id="tx-main-table">
+            <thead>
+              <tr>
+                <th>Réf.</th><th>Date</th><th>Description</th><th>Contrepartie</th><th>Type</th><th style="text-align:right">Montant</th><th>Statut</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody">
+            </tbody>
+          </table>
+        </div>
+        <div id="tx-empty" style="display:none;text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem">Aucune transaction trouvée</div>
+      </div>
+    </div>
+
+    <!-- ===== MARKETS ===== -->
+    <div class="page-section" id="page-markets">
+      <div class="section-hdr">
+        <div>
+          <div class="section-title"><span>Markets</span></div>
+          <div class="section-subtitle" id="markets-timestamp">Cours mis à jour en temps réel</div>
+        </div>
+      </div>
+      <div class="ticker-wrap" style="margin-bottom:1.25rem">
+        <div class="ticker" id="markets-ticker"></div>
+      </div>
+      <div class="market-filter-tabs">
+        <button class="market-filter-tab active" onclick="filterMarkets('all',this)">Tous</button>
+        <button class="market-filter-tab" onclick="filterMarkets('gainers',this)">📈 Top gagnants</button>
+        <button class="market-filter-tab" onclick="filterMarkets('losers',this)">📉 Top perdants</button>
+        <button class="market-filter-tab" onclick="filterMarkets('stables',this)">🔒 Stablecoins</button>
+      </div>
+      <div class="card" style="padding:0">
+        <div class="market-header-row" style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">
+          <span>#</span><span>Asset</span><span>Prix</span><span>24h</span><span>7j</span><span>30j</span><span>Vol. 24h</span><span>Action</span>
+        </div>
+        <div id="markets-list"></div>
+      </div>
+    </div>
+
+    <!-- ===== SUPPORT ===== -->
+    <div class="page-section" id="page-support">
+      <div class="section-hdr">
+        <div><div class="section-title"><span>Support</span></div><div class="section-subtitle">Nous sommes là pour vous aider</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:1.25rem">
+        <!-- Chat -->
+        <div class="card">
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">💬 Chat avec le support</div>
+          <div class="support-chat">
+            <div class="support-msgs" id="support-msgs">
+              <div class="chat-msg agent">
+                <div class="chat-sender">APEX Support</div>
+                Bonjour ! 👋 Je suis votre assistant APEX. Comment puis-je vous aider aujourd'hui ? Vous pouvez me poser des questions sur vos retraits, le KYC, ou votre carte.
+              </div>
+            </div>
+            <div class="support-input-row">
+              <input class="support-input" id="support-input" type="text" placeholder="Écrivez votre message..." onkeydown="if(event.key==='Enter')sendSupportMsg()">
+              <button class="support-send-btn" onclick="sendSupportMsg()">Envoyer ✉️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Status -->
+        <div>
+          <div class="card" style="margin-bottom:1.25rem">
+            <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">🔧 Status des services</div>
+            <div class="service-status-row"><div class="service-dot green"></div><div class="service-label">Paiements cartes</div><div class="service-status-text" style="color:#10B981">Opérationnel</div></div>
+            <div class="service-status-row"><div class="service-dot green"></div><div class="service-label">Virements SEPA</div><div class="service-status-text" style="color:#10B981">Opérationnel</div></div>
+            <div class="service-status-row"><div class="service-dot green"></div><div class="service-label">Crypto dépôts</div><div class="service-status-text" style="color:#10B981">Opérationnel</div></div>
+            <div class="service-status-row"><div class="service-dot yellow"></div><div class="service-label">Crypto retraits BTC</div><div class="service-status-text" style="color:#F59E0B">Latence modérée</div></div>
+            <div class="service-status-row"><div class="service-dot green"></div><div class="service-label">KYC / Vérification</div><div class="service-status-text" style="color:#10B981">Opérationnel</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="card">
+        <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">❓ Questions fréquentes</div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Comment effectuer un retrait ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Pour effectuer un retrait, allez dans "Crypto Wallet" ou "IBAN Accounts", sélectionnez l'asset souhaité et cliquez sur "Withdraw". Les retraits crypto sont traités en 2-24h selon le réseau. Les virements SEPA prennent 1-2 jours ouvrés.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Quels sont les délais de virement SEPA ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Les virements SEPA standard sont traités en 1 jour ouvré (J+1). Le SEPA instantané est disponible pour les banques participantes (sous 2 heures). Les SWIFT internationaux prennent 2-3 jours ouvrés.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Comment compléter mon KYC ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Allez dans "KYC Verification" et suivez les étapes. Vous aurez besoin d'une pièce d'identité valide (passeport ou carte nationale) et d'un justificatif de domicile de moins de 3 mois. La vérification prend généralement 24-48h.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Pourquoi ma carte est-elle refusée ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Votre carte peut être refusée si : le solde est insuffisant, vous avez atteint votre limite mensuelle, les paiements en ligne ou internationaux sont désactivés, ou si la transaction a été bloquée pour sécurité. Vérifiez vos paramètres dans "My Cards".</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Comment activer l'authentification 2FA ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Allez dans Settings → Security et activez le toggle "Two-Factor Authentication". Vous devrez scanner un QR code avec une app d'authentification (Google Authenticator, Authy). Le 2FA est fortement recommandé pour protéger votre compte.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Quels sont les frais de swap ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Les frais varient selon le type de swap : Crypto↔Crypto : 0.25% · Fiat→Crypto ou Crypto→Fiat : 1.5% · Fiat↔Fiat : 0.5%. Les frais de réseau blockchain s'ajoutent pour les transferts on-chain.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Comment débloquer des limites plus élevées ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Complétez votre vérification KYC pour accéder à des limites plus élevées. Tier 1 : $10,000/mois · Tier 2 : $50,000/mois · Tier 3 : Illimité. Plus votre KYC est avancé, plus vos limites augmentent.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)"><span>Comment fermer mon compte ?</span><span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Pour fermer votre compte, contactez notre support à support@apexcard.io avec la mention "Demande de fermeture de compte". Conformément au RGPD, votre demande sera traitée dans les 30 jours. Assurez-vous d'avoir retiré tous vos fonds avant la fermeture.</div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- ══ DOCUMENTS ══ -->
     <div class="page-section" id="page-documents">
@@ -3075,6 +3707,646 @@ function downloadAttestation() {
   showToast(attestLang==='fr' ? "Attestation téléchargée — ouvrez puis Fichier > Imprimer > PDF" : 'Letter downloaded — open then File > Print > PDF');
 }
 
+
+// ===== NOTIFICATION PANEL =====
+const NOTIF_DATA = [
+  { id:1, icon:'💳', title:'Transaction reçue', body:'$12,400 USDT reçus sur votre compte', time:'il y a 5 min', read:false, type:'success' },
+  { id:2, icon:'🔐', title:'Nouvelle connexion', body:'Connexion depuis Paris, France — iPhone', time:'il y a 2h', read:false, type:'info' },
+  { id:3, icon:'⚠️', title:'KYC requis', body:'Complétez votre vérification pour débloquer les virements', time:'il y a 1j', read:false, type:'warn' },
+  { id:4, icon:'📈', title:'Yield distribué', body:'+$84.20 crédités sur votre compte staking', time:'il y a 2j', read:true, type:'success' },
+  { id:5, icon:'🎉', title:'Filleul inscrit', body:'Marc D. a rejoint via votre lien — +$10 bonus', time:'il y a 3j', read:true, type:'success' },
+];
+let _notifPanelOpen = false;
+function toggleNotifPanel() {
+  _notifPanelOpen = !_notifPanelOpen;
+  const panel = document.getElementById('notif-panel-drawer');
+  const overlay = document.getElementById('notif-overlay-drawer');
+  if (panel) panel.classList.toggle('open', _notifPanelOpen);
+  if (overlay) overlay.classList.toggle('open', _notifPanelOpen);
+  if (_notifPanelOpen) renderNotifPanel();
+}
+function renderNotifPanel() {
+  const list = document.getElementById('notif-drawer-list');
+  if (!list) return;
+  const unread = NOTIF_DATA.filter(n => !n.read).length;
+  const badge = document.getElementById('notif-badge-new');
+  if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? 'inline' : 'none'; }
+  list.innerHTML = NOTIF_DATA.map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}" onclick="markOneRead(${n.id})">
+      <div class="notif-item-icon">${n.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="notif-item-title">${n.title}</div>
+        <div class="notif-item-body">${n.body}</div>
+        <div class="notif-item-time">${n.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function markOneRead(id) {
+  const n = NOTIF_DATA.find(x => x.id === id);
+  if (n) n.read = true;
+  renderNotifPanel();
+}
+function markAllRead() {
+  NOTIF_DATA.forEach(n => n.read = true);
+  renderNotifPanel();
+  showToast('Toutes les notifications marquées comme lues');
+}
+(function initNotifBadge() {
+  setTimeout(() => {
+    const unread = NOTIF_DATA.filter(n => !n.read).length;
+    const badge = document.getElementById('notif-badge-new');
+    if (badge) { badge.textContent = unread; badge.style.display = unread > 0 ? 'inline' : 'none'; }
+  }, 500);
+})();
+
+// ===== TRANSACTIONS PAGE =====
+const TX_MOCK = [
+  { ref:'TX-2026-0031', date:'2026-03-24', desc:'Virement SEPA reçu', counterpart:'Pierre Martin', type:'fiat', amount:+5800, cur:'EUR', status:'completed', fee:0, iban:'FR76 3000 •••• •••• 7823' },
+  { ref:'TX-2026-0030', date:'2026-03-23', desc:'Paiement Amazon', counterpart:'AMAZON EU SARL', type:'card', amount:-14.99, cur:'USD', status:'completed', fee:0 },
+  { ref:'TX-2026-0029', date:'2026-03-22', desc:'Swap ETH → USDT', counterpart:'Protocol interne', type:'swap', amount:+3124, cur:'USD', status:'completed', fee:7.81 },
+  { ref:'TX-2026-0028', date:'2026-03-21', desc:'Dépôt USDT', counterpart:'0x4F3C…c8B2', type:'crypto', amount:+2000, cur:'USDT', status:'completed', fee:2.4 },
+  { ref:'TX-2026-0027', date:'2026-03-20', desc:'Commission affilié L1', counterpart:'3 filleuls actifs', type:'affiliate', amount:+89, cur:'USD', status:'completed', fee:0 },
+  { ref:'TX-2026-0026', date:'2026-03-18', desc:'Retrait BTC', counterpart:'bc1q…4a2f', type:'crypto', amount:-0.05, cur:'BTC', status:'completed', fee:4.8 },
+  { ref:'TX-2026-0025', date:'2026-03-17', desc:'Air France', counterpart:'AIR FRANCE KLM', type:'card', amount:-420, cur:'EUR', status:'completed', fee:0 },
+  { ref:'TX-2026-0024', date:'2026-03-15', desc:'Yield mensuel', counterpart:'APEXCARD Yield Pool', type:'yield', amount:+240, cur:'USD', status:'completed', fee:0 },
+  { ref:'TX-2026-0023', date:'2026-03-12', desc:'Swap BTC → ETH', counterpart:'Protocol interne', type:'swap', amount:-0.05, cur:'BTC', status:'completed', fee:3.19 },
+  { ref:'TX-2026-0022', date:'2026-03-10', desc:'Deliveroo', counterpart:'DELIVEROO FR', type:'card', amount:-28.50, cur:'EUR', status:'completed', fee:0 },
+  { ref:'TX-2026-0021', date:'2026-03-08', desc:'Commission affilié L2', counterpart:'2 filleuls L2', type:'affiliate', amount:+42, cur:'USD', status:'completed', fee:0 },
+  { ref:'TX-2026-0020', date:'2026-03-07', desc:'Dépôt ETH', counterpart:'0x8A1F…3D90', type:'crypto', amount:+1.5, cur:'ETH', status:'completed', fee:1.8 },
+  { ref:'TX-2026-0019', date:'2026-03-05', desc:'Virement émis SEPA', counterpart:'Sophie Lambert', type:'fiat', amount:-1200, cur:'EUR', status:'completed', fee:0.5 },
+  { ref:'TX-2026-0018', date:'2026-03-03', desc:'Swap USDT → BNB', counterpart:'Protocol interne', type:'swap', amount:-500, cur:'USDT', status:'pending', fee:2.5 },
+  { ref:'TX-2026-0017', date:'2026-03-01', desc:'Freelance Paiement', counterpart:'TechCorp SAS', type:'fiat', amount:+3500, cur:'EUR', status:'completed', fee:0 },
+  { ref:'TX-2026-0016', date:'2026-02-28', desc:'Retrait ETH', counterpart:'0x7C3A…9d2F', type:'crypto', amount:-0.8, cur:'ETH', status:'pending', fee:3.2 },
+  { ref:'TX-2026-0015', date:'2026-02-25', desc:'Yield mensuel', counterpart:'APEXCARD Yield Pool', type:'yield', amount:+218, cur:'USD', status:'completed', fee:0 },
+  { ref:'TX-2026-0014', date:'2026-02-20', desc:'Swap EUR → BTC', counterpart:'Protocol interne', type:'swap', amount:+0.0168, cur:'BTC', status:'failed', fee:15 },
+  { ref:'TX-2026-0013', date:'2026-02-15', desc:'Netflix', counterpart:'NETFLIX INTERNATIONAL', type:'card', amount:-17.99, cur:'EUR', status:'completed', fee:0 },
+  { ref:'TX-2026-0012', date:'2026-02-10', desc:'Bonus parrainage', counterpart:'Marc D.', type:'affiliate', amount:+10, cur:'USD', status:'completed', fee:0 },
+];
+const TX_TYPE_COLORS = {fiat:'#06B6D4',crypto:'#7C3AED',swap:'#F59E0B',yield:'#10B981',card:'#EF4444',affiliate:'#f97316'};
+const TX_TYPE_LABELS = {fiat:'Fiat',crypto:'Crypto',swap:'Swap',yield:'Yield',card:'Carte',affiliate:'Affilié'};
+
+function renderTxTable(data) {
+  const tbody = document.getElementById('tx-tbody');
+  const empty = document.getElementById('tx-empty');
+  if (!tbody) return;
+  if (!data || data.length === 0) {
+    tbody.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  const statusBadge = (s) => {
+    const cfg = {completed:{c:'#10B981',bg:'rgba(16,185,129,0.1)',label:'✅ Completed'},pending:{c:'#F59E0B',bg:'rgba(245,158,11,0.1)',label:'⏳ Pending'},failed:{c:'#EF4444',bg:'rgba(239,68,68,0.1)',label:'❌ Failed'}};
+    const x = cfg[s] || cfg.completed;
+    return `<span class="tx-status-badge" style="color:${x.c};background:${x.bg};border:1px solid ${x.c}40">${x.label}</span>`;
+  };
+  tbody.innerHTML = data.map(tx => {
+    const pos = tx.amount > 0;
+    const amt = Math.abs(tx.amount);
+    const sym = tx.cur === 'EUR' ? '€' : tx.cur === 'GBP' ? '£' : (tx.cur === 'BTC' || tx.cur === 'ETH') ? '' : '$';
+    const fmtAmt = amt < 1 ? amt.toFixed(6) : amt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const tc = TX_TYPE_COLORS[tx.type] || '#94a3b8';
+    const tl = TX_TYPE_LABELS[tx.type] || tx.type;
+    return `<tr>
+      <td style="font-size:0.72rem;color:var(--muted);font-family:monospace">${tx.ref}</td>
+      <td style="color:var(--muted);white-space:nowrap">${tx.date}</td>
+      <td style="font-weight:600">${tx.desc}</td>
+      <td style="color:var(--muted);font-size:0.82rem">${tx.counterpart}</td>
+      <td><span class="tx-type-badge" style="color:${tc};background:${tc}18;border:1px solid ${tc}30">${tl}</span></td>
+      <td style="text-align:right;font-weight:700;color:${pos?'#10B981':'#EF4444'};white-space:nowrap">${pos?'+':'-'}${sym}${fmtAmt} ${tx.cur}</td>
+      <td>${statusBadge(tx.status)}</td>
+      <td><button class="tx-action-btn" onclick='showTxDetail(${JSON.stringify(tx).replace(/'/g,"\\'")})'">👁</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTransactions() {
+  const search = (document.getElementById('tx-search')?.value || '').toLowerCase();
+  const typeF = document.getElementById('tx-type-filter')?.value || '';
+  const statusF = document.getElementById('tx-status-filter')?.value || '';
+  const dateF = parseInt(document.getElementById('tx-date-filter')?.value || '1');
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - dateF);
+  const filtered = TX_MOCK.filter(tx => {
+    if (typeF && tx.type !== typeF) return false;
+    if (statusF && tx.status !== statusF) return false;
+    if (new Date(tx.date) < cutoff) return false;
+    if (search && !tx.desc.toLowerCase().includes(search) && !tx.counterpart.toLowerCase().includes(search) && !tx.ref.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  renderTxTable(filtered);
+}
+
+function resetTxFilters() {
+  ['tx-search','tx-type-filter','tx-status-filter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const dateEl = document.getElementById('tx-date-filter');
+  if (dateEl) dateEl.value = '1';
+  filterTransactions();
+}
+
+function showTxDetail(tx) {
+  const pos = tx.amount > 0;
+  const amt = Math.abs(tx.amount);
+  const sym = tx.cur === 'EUR' ? '€' : tx.cur === 'GBP' ? '£' : (tx.cur === 'BTC' || tx.cur === 'ETH') ? '' : '$';
+  const fmtAmt = amt < 1 ? amt.toFixed(6) : amt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const isCompleted = tx.status === 'completed';
+  const isPending = tx.status === 'pending';
+  const isFailed = tx.status === 'failed';
+  const overlay = document.getElementById('modal-tx-overlay');
+  const content = document.getElementById('modal-tx-content');
+  if (!overlay || !content) return;
+  content.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-title">📋 Détail transaction</div>
+      <button class="modal-close" onclick="document.getElementById('modal-tx-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:1.25rem;margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Référence</span><span style="font-family:monospace;font-weight:600">${tx.ref}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Date</span><span>${tx.date} 14:32 UTC</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Type</span><span>${TX_TYPE_LABELS[tx.type] || tx.type}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Description</span><span style="font-weight:600">${tx.desc}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Contrepartie</span><span>${tx.counterpart}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Montant brut</span><span style="font-weight:700;color:${pos?'#10B981':'#EF4444'}">${pos?'+':'-'}${sym}${fmtAmt} ${tx.cur}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--muted)">Frais réseau</span><span>${tx.fee > 0 ? '$'+tx.fee.toFixed(2) : 'Gratuit'}</span></div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:8px">Timeline</div>
+      <div style="display:flex;align-items:center;gap:0">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="width:14px;height:14px;border-radius:50%;background:#10B981"></div>
+          <div style="font-size:0.65rem;color:#10B981;margin-top:4px">Initié</div>
+        </div>
+        <div style="flex:1;height:2px;background:${!isFailed?'#10B981':'#EF4444'}"></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="width:14px;height:14px;border-radius:50%;background:${!isFailed?'#10B981':'#EF4444'}"></div>
+          <div style="font-size:0.65rem;color:${!isFailed?'#10B981':'#EF4444'};margin-top:4px">En cours</div>
+        </div>
+        <div style="flex:1;height:2px;background:${isCompleted?'#10B981':isFailed?'#EF4444':'rgba(255,255,255,0.1)'}"></div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div style="width:14px;height:14px;border-radius:50%;background:${isCompleted?'#10B981':isFailed?'#EF4444':'rgba(255,255,255,0.1)'};border:${isPending?'2px solid #F59E0B':'none'}"></div>
+          <div style="font-size:0.65rem;color:${isCompleted?'#10B981':isFailed?'#EF4444':'var(--muted)'};margin-top:4px">${isCompleted?'Complété':isFailed?'Échoué':'En attente'}</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="navigator.clipboard.writeText('${tx.ref}').then(()=>showToast('Référence copiée'))" style="flex:1;padding:0.65rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">📋 Copier la référence</button>
+      <button onclick="showToast('Reçu PDF généré (demo)');document.getElementById('modal-tx-overlay').classList.remove('open')" style="flex:1;padding:0.65rem;border-radius:10px;border:none;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">📥 Reçu PDF</button>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+document.getElementById('modal-tx-overlay')?.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+
+function downloadTransactionsCSV() {
+  const rows = [['Référence','Date','Description','Contrepartie','Type','Montant','Devise','Statut','Frais']];
+  TX_MOCK.forEach(tx => rows.push([tx.ref, tx.date, tx.desc, tx.counterpart, tx.type, tx.amount, tx.cur, tx.status, tx.fee || 0]));
+  const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'APEXCARD_transactions.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV téléchargé');
+}
+
+// Init transactions page
+const _origShowPage2 = showPage;
+showPage = function(id, el) {
+  _origShowPage2(id, el);
+  if (id === 'transactions') {
+    renderTxTable(TX_MOCK.filter(tx => {
+      const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 1);
+      return new Date(tx.date) >= cutoff;
+    }));
+  }
+  if (id === 'markets') initMarketsPage();
+  if (id === 'support') {/* already inited */}
+};
+
+// ===== YIELD SIMULATOR ENHANCED =====
+function updateSimNew(val) {
+  const amt = parseInt(document.getElementById('simSliderNew')?.value || 12000);
+  const dur = parseInt(document.getElementById('simDurNew')?.value || 12);
+  const pctAmt = ((amt - 100) / (50000 - 100)) * 100;
+  const pctDur = ((dur - 1) / 23) * 100;
+  const simSlider = document.getElementById('simSliderNew');
+  if (simSlider) simSlider.style.setProperty('--val', pctAmt + '%');
+  const simDur = document.getElementById('simDurNew');
+  if (simDur) simDur.style.setProperty('--val', pctDur + '%');
+  const monthly = amt * 0.24 / 12;
+  const total = monthly * dur;
+  const finalVal = amt + total;
+  const el = document.getElementById('simAmtNew');
+  if (el) el.textContent = '$' + amt.toLocaleString();
+  const durLbl = document.getElementById('simDurLabel');
+  if (durLbl) durLbl.textContent = 'Durée : ' + dur + ' mois';
+  const totEl = document.getElementById('simTotalYield');
+  if (totEl) totEl.textContent = '+$' + total.toFixed(2);
+  const monEl = document.getElementById('simMonthlyNew');
+  if (monEl) monEl.textContent = '+$' + monthly.toFixed(2);
+  const finEl = document.getElementById('simFinalVal');
+  if (finEl) finEl.textContent = '$' + finalVal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+// ===== YIELD COUNTDOWN =====
+(function startYieldCountdown() {
+  const target = new Date();
+  target.setDate(target.getDate() + 8);
+  target.setHours(target.getHours() + 14);
+  target.setMinutes(target.getMinutes() + 22);
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) return;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const fmt = v => String(v).padStart(2,'0');
+    const cdD = document.getElementById('cd-days'); if (cdD) cdD.textContent = fmt(d);
+    const cdH = document.getElementById('cd-hours'); if (cdH) cdH.textContent = fmt(h);
+    const cdM = document.getElementById('cd-mins'); if (cdM) cdM.textContent = fmt(m);
+    const cdS = document.getElementById('cd-secs'); if (cdS) cdS.textContent = fmt(s);
+  }
+  setInterval(tick, 1000); tick();
+})();
+
+// ===== MARKETS PAGE =====
+const MARKET_DATA = [
+  { rank:1, sym:'BTC', name:'Bitcoin', icon:'₿', price:63820, d1:+2.4, d7:+8.1, d30:+22, vol:'$48.2B', stable:false, pts:'0,28 15,22 30,25 45,12 55,18 70,8 80,5', up:true },
+  { rank:2, sym:'ETH', name:'Ethereum', icon:'Ξ', price:3226, d1:-0.8, d7:+5.2, d30:+18, vol:'$22.1B', stable:false, pts:'0,20 15,24 30,18 45,22 55,14 70,18 80,15', up:false },
+  { rank:3, sym:'SOL', name:'Solana', icon:'◎', price:166.35, d1:+4.2, d7:+12, d30:+35, vol:'$5.8B', stable:false, pts:'0,24 15,20 25,22 40,14 55,10 70,6 80,4', up:true },
+  { rank:4, sym:'USDT', name:'Tether', icon:'₮', price:1.00, d1:0, d7:0, d30:0, vol:'$120B', stable:true, pts:'0,16 20,16 40,15 60,16 80,16', up:true },
+  { rank:5, sym:'BNB', name:'BNB', icon:'⬡', price:612, d1:+1.1, d7:+3.2, d30:+9, vol:'$3.4B', stable:false, pts:'0,20 15,18 30,22 45,16 55,14 70,12 80,10', up:true },
+  { rank:6, sym:'XRP', name:'XRP', icon:'✕', price:0.62, d1:-1.4, d7:+2.1, d30:+14, vol:'$3.1B', stable:false, pts:'0,16 15,20 30,14 45,18 55,22 70,16 80,18', up:false },
+  { rank:7, sym:'ADA', name:'Cardano', icon:'◆', price:0.48, d1:+0.8, d7:+1.4, d30:+5, vol:'$0.8B', stable:false, pts:'0,18 15,16 30,20 45,16 55,14 70,16 80,15', up:true },
+  { rank:8, sym:'AVAX', name:'Avalanche', icon:'🔺', price:38.20, d1:+4.2, d7:+9.4, d30:+28, vol:'$0.9B', stable:false, pts:'0,24 15,20 25,22 40,12 55,8 70,5 80,4', up:true },
+  { rank:9, sym:'DOT', name:'Polkadot', icon:'●', price:8.14, d1:-2.1, d7:-0.4, d30:+3, vol:'$0.4B', stable:false, pts:'0,12 15,16 30,14 45,18 55,20 70,18 80,20', up:false },
+  { rank:10, sym:'MATIC', name:'Polygon', icon:'◈', price:0.88, d1:+1.9, d7:+4.8, d30:+12, vol:'$0.6B', stable:false, pts:'0,20 15,18 30,22 45,14 55,12 70,10 80,8', up:true },
+  { rank:11, sym:'LINK', name:'Chainlink', icon:'🔗', price:15.40, d1:+3.2, d7:+7.6, d30:+18, vol:'$0.7B', stable:false, pts:'0,22 15,18 30,20 45,12 55,8 70,6 80,5', up:true },
+  { rank:12, sym:'UNI', name:'Uniswap', icon:'🦄', price:8.92, d1:-0.5, d7:+2.1, d30:+8, vol:'$0.3B', stable:false, pts:'0,16 15,18 30,14 45,16 55,18 70,16 80,14', up:false },
+];
+let _marketFilter = 'all';
+function filterMarkets(type, btn) {
+  _marketFilter = type;
+  document.querySelectorAll('.market-filter-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderMarkets();
+}
+function renderMarkets() {
+  const list = document.getElementById('markets-list');
+  if (!list) return;
+  let data = [...MARKET_DATA];
+  if (_marketFilter === 'gainers') data = data.filter(x => x.d1 > 0).sort((a,b) => b.d1 - a.d1);
+  else if (_marketFilter === 'losers') data = data.filter(x => x.d1 < 0).sort((a,b) => a.d1 - b.d1);
+  else if (_marketFilter === 'stables') data = data.filter(x => x.stable);
+  const fmt = v => v >= 1 ? '$' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '$' + v.toFixed(4);
+  const pctColor = v => v > 0 ? '#10B981' : v < 0 ? '#EF4444' : 'var(--muted)';
+  const pctStr = v => v > 0 ? '+'+v+'%' : v+'%';
+  const lineColor = m => m.up ? '#10B981' : '#EF4444';
+  list.innerHTML = data.map(m => `
+    <div class="market-row">
+      <span style="color:var(--muted);font-size:0.82rem">${m.rank}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">${m.icon}</div>
+        <div><div style="font-weight:600;font-size:0.88rem">${m.name}</div><div style="font-size:0.72rem;color:var(--muted)">${m.sym}</div></div>
+      </div>
+      <div style="font-weight:600;font-size:0.88rem">${fmt(m.price)}</div>
+      <div style="color:${pctColor(m.d1)};font-weight:600;font-size:0.82rem">${pctStr(m.d1)}</div>
+      <div style="color:${pctColor(m.d7)};font-size:0.82rem">${pctStr(m.d7)}</div>
+      <div style="color:${pctColor(m.d30)};font-size:0.82rem">${pctStr(m.d30)}</div>
+      <div>
+        <svg class="market-sparkline" viewBox="0 0 80 30" preserveAspectRatio="none">
+          <polyline points="${m.pts}" fill="none" stroke="${lineColor(m)}" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:0.65rem;color:var(--muted)">${m.vol}</div>
+      </div>
+      <button class="market-buy-btn" onclick="openMarketBuy('${m.sym}')">Acheter</button>
+    </div>
+  `).join('');
+}
+function initMarketsPage() {
+  renderMarkets();
+  const ts = document.getElementById('markets-timestamp');
+  if (ts) ts.textContent = 'Cours mis à jour · ' + new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  // Ticker
+  const mt = document.getElementById('markets-ticker');
+  const tickerHtml2 = MARKET_DATA.slice(0,8).map(x => `<div class="ticker-item"><span class="ticker-coin">${x.sym}</span><span class="ticker-price">$${x.price.toLocaleString()}</span><span class="${x.d1>=0?'ticker-up':'ticker-dn'}">${x.d1>=0?'+':''}${x.d1}%</span></div>`).join('');
+  if (mt) mt.innerHTML = tickerHtml2 + tickerHtml2;
+}
+function openMarketBuy(sym) {
+  // Navigate to swap page, set fiat2crypto mode, select asset
+  showPage('swap', document.querySelector('.nav-item[onclick*="swap"]'));
+  setTimeout(() => {
+    const swapTab = document.querySelector('.swap-tab:nth-child(2)');
+    if (swapTab) swapTab.click();
+    const toSel = document.getElementById('f2c-to');
+    if (toSel) { toSel.value = sym; calcFiatCrypto(); }
+  }, 100);
+}
+
+// ===== SUPPORT PAGE =====
+const SUPPORT_RESPONSES = {
+  retrait: 'Les retraits crypto sont traités sous 2-24h selon le réseau. Les virements SEPA prennent 1-2 jours ouvrés. Pour accélérer, vérifiez que votre KYC est complet.',
+  kyc: 'Pour compléter votre KYC, allez dans "KYC Verification". Vous aurez besoin d\'une pièce d\'identité (passeport) et d\'un justificatif de domicile. La vérification prend 24-48h.',
+  carte: 'Si votre carte est refusée, vérifiez : le solde disponible, votre limite mensuelle, et que les paiements en ligne/internationaux sont activés dans "My Cards".',
+};
+function sendSupportMsg() {
+  const input = document.getElementById('support-input');
+  if (!input || !input.value.trim()) return;
+  const msg = input.value.trim();
+  input.value = '';
+  const msgs = document.getElementById('support-msgs');
+  if (!msgs) return;
+  // Add user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-msg user';
+  userDiv.innerHTML = `<div class="chat-sender">Vous</div>${msg}`;
+  msgs.appendChild(userDiv);
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing';
+  typing.textContent = 'APEX Support est en train d\'écrire...';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+  // Find response
+  const lowerMsg = msg.toLowerCase();
+  let response = 'Je transmets votre demande à un agent humain. Délai de réponse : 2-4h. Référence : #SUP-' + Date.now().toString().slice(-6);
+  for (const [key, val] of Object.entries(SUPPORT_RESPONSES)) {
+    if (lowerMsg.includes(key)) { response = val; break; }
+  }
+  setTimeout(() => {
+    typing.remove();
+    const agentDiv = document.createElement('div');
+    agentDiv.className = 'chat-msg agent';
+    agentDiv.innerHTML = `<div class="chat-sender">APEX Support</div>${response}`;
+    msgs.appendChild(agentDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200 + Math.random() * 800);
+}
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  if (!item) return;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ===== CARD FEATURES =====
+const CARD_FULL_NUMS = ['4111 2345 6789 7823', '5412 9876 5432 3091'];
+const CARD_CVVS = ['492', '731'];
+let cardRevealTimers = {};
+function revealCardNum(idx) {
+  const numEl = document.getElementById('card-num-' + idx);
+  const btn = document.getElementById('reveal-num-' + idx);
+  if (!numEl || !btn) return;
+  if (btn.textContent === '🙈') {
+    numEl.childNodes[0].textContent = (idx === 0 ? '4111 •••• •••• 7823' : '5412 •••• •••• 3091') + ' ';
+    btn.textContent = '👁';
+    clearTimeout(cardRevealTimers['num' + idx]);
+    return;
+  }
+  numEl.childNodes[0].textContent = CARD_FULL_NUMS[idx] + ' ';
+  btn.textContent = '🙈';
+  clearTimeout(cardRevealTimers['num' + idx]);
+  cardRevealTimers['num' + idx] = setTimeout(() => {
+    if (numEl.childNodes[0]) numEl.childNodes[0].textContent = (idx === 0 ? '4111 •••• •••• 7823' : '5412 •••• •••• 3091') + ' ';
+    if (btn) btn.textContent = '👁';
+  }, 15000);
+}
+function revealCVV(idx) {
+  const cvvEl = document.getElementById('card-cvv-' + idx);
+  const btn = document.getElementById('reveal-cvv-' + idx);
+  if (!cvvEl || !btn) return;
+  if (btn.textContent === '🙈') {
+    cvvEl.textContent = '•••';
+    btn.textContent = '👁';
+    clearTimeout(cardRevealTimers['cvv' + idx]);
+    return;
+  }
+  cvvEl.textContent = CARD_CVVS[idx];
+  btn.textContent = '🙈';
+  clearTimeout(cardRevealTimers['cvv' + idx]);
+  cardRevealTimers['cvv' + idx] = setTimeout(() => {
+    if (cvvEl) cvvEl.textContent = '•••';
+    if (btn) btn.textContent = '👁';
+  }, 15000);
+}
+
+// PIN Modal
+let _pinCardIdx = 0;
+function openPinModal(idx) {
+  _pinCardIdx = idx;
+  const body = `
+    <div id="pin-step-1" class="pin-step pin-active">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:2.5rem">🔑</div>
+        <div style="font-weight:700;margin-top:0.5rem">Étape 1 / 3</div>
+        <div style="font-size:0.82rem;color:var(--muted)">Saisissez votre ancien PIN</div>
+      </div>
+      <input class="modal-input" type="password" id="old-pin" maxlength="4" placeholder="•••• (ancien PIN)" style="text-align:center;letter-spacing:0.5em;font-size:1.5rem">
+      <button class="btn-primary" onclick="pinStep2()">Continuer →</button>
+    </div>
+    <div id="pin-step-2" class="pin-step">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:2.5rem">🔒</div>
+        <div style="font-weight:700;margin-top:0.5rem">Étape 2 / 3</div>
+        <div style="font-size:0.82rem;color:var(--muted)">Choisissez votre nouveau PIN</div>
+      </div>
+      <input class="modal-input" type="password" id="new-pin" maxlength="4" placeholder="•••• (nouveau PIN)" style="text-align:center;letter-spacing:0.5em;font-size:1.5rem;margin-bottom:0.5rem">
+      <input class="modal-input" type="password" id="confirm-pin" maxlength="4" placeholder="•••• (confirmation)" style="text-align:center;letter-spacing:0.5em;font-size:1.5rem">
+      <button class="btn-primary" onclick="pinStep3()">Confirmer →</button>
+    </div>
+    <div id="pin-step-3" class="pin-step" style="text-align:center;padding:2rem 0">
+      <div style="font-size:4rem;animation:bounceIn 0.5s ease">✅</div>
+      <div style="font-size:1.2rem;font-weight:700;color:#10B981;margin-top:1rem">PIN modifié avec succès !</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-top:0.5rem">Votre nouveau PIN est actif.</div>
+      <button class="btn-primary" style="margin-top:1.5rem" onclick="closeModal()">Fermer</button>
+    </div>
+  `;
+  document.getElementById('modal-content').innerHTML = `<div class="modal-header"><div class="modal-title">🔑 Changer le PIN</div><button class="modal-close" onclick="closeModal()">✕</button></div>${body}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function pinStep2() {
+  const old = document.getElementById('old-pin')?.value;
+  if (!old || old.length < 4) { showToast('Entrez un PIN à 4 chiffres','info'); return; }
+  document.getElementById('pin-step-1').classList.remove('pin-active');
+  document.getElementById('pin-step-2').classList.add('pin-active');
+}
+function pinStep3() {
+  const np = document.getElementById('new-pin')?.value;
+  const cp = document.getElementById('confirm-pin')?.value;
+  if (!np || np.length < 4) { showToast('PIN doit faire 4 chiffres','info'); return; }
+  if (np !== cp) { showToast('Les PINs ne correspondent pas','info'); return; }
+  document.getElementById('pin-step-2').classList.remove('pin-active');
+  document.getElementById('pin-step-3').classList.add('pin-active');
+}
+
+// Report lost card
+let cardSuspended = [false, false];
+function reportCardLost(idx) {
+  if (cardSuspended[idx]) { showToast('Carte déjà suspendue'); return; }
+  const body = `
+    <div style="text-align:center;padding:1rem">
+      <div style="font-size:3rem">🚨</div>
+      <div style="font-size:1.1rem;font-weight:700;margin-top:0.75rem;color:#EF4444">Signaler carte perdue/volée</div>
+      <div style="font-size:0.85rem;color:var(--muted);margin:0.75rem 0">Cette action va immédiatement suspendre votre carte. Vous ne pourrez plus l'utiliser jusqu'à ce qu'elle soit réactivée par notre support.</div>
+      <div style="display:flex;gap:8px;margin-top:1rem">
+        <button onclick="closeModal()" style="flex:1;padding:0.75rem;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;cursor:pointer">Annuler</button>
+        <button onclick="confirmCardLost(${idx})" style="flex:1;padding:0.75rem;border-radius:12px;border:none;background:#EF4444;color:#fff;font-family:inherit;font-weight:700;cursor:pointer">🚨 Confirmer</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-content').innerHTML = `<div class="modal-header"><div class="modal-title">Signalement</div><button class="modal-close" onclick="closeModal()">✕</button></div>${body}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function confirmCardLost(idx) {
+  cardSuspended[idx] = true;
+  closeModal();
+  showToast('🚨 Carte signalée — Suspendue immédiatement');
+  // Visual suspension
+  const cards = document.querySelectorAll('.credit-card-3d');
+  if (cards[idx]) {
+    let overlay = cards[idx].querySelector('.card-suspended-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'card-suspended-overlay';
+      overlay.innerHTML = '<div class="card-suspended-badge">🚨 SUSPENDED</div>';
+      cards[idx].style.position = 'relative';
+      cards[idx].appendChild(overlay);
+    }
+  }
+}
+
+// ===== RECEIVE MODAL — Enhanced =====
+const RECEIVE_NETWORKS = {
+  ETH: { name:'Ethereum (ERC-20)', addr:'0x4F3C8a2B7e9D1f6C5A8E3d2B9c0F7a1E4d6C8b2', warn:'N\'envoyer que des tokens ERC-20 sur ce réseau' },
+  BSC: { name:'BSC (BEP-20)', addr:'0x7E8D3F1A6B9C2E5D8F1A4B7C0E3D6F9A2B5C8E1', warn:'N\'envoyer que des tokens BEP-20 sur ce réseau' },
+  SOL: { name:'Solana', addr:'7vFGn8QmZpR2bTxL9wKcHjYeDsUfA3NqP6oMiV4Wk1', warn:'N\'envoyer que des tokens SPL sur Solana' },
+  BTC: { name:'Bitcoin mainnet', addr:'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', warn:'N\'envoyer que du BTC natif sur Bitcoin mainnet' },
+  TRX: { name:'TRON (TRC-20)', addr:'TBd6mXVX6LbQxvJEfzd8o3YwBpKJ7NqFr2', warn:'N\'envoyer que des tokens TRC-20 sur ce réseau' },
+};
+function openReceiveModal() {
+  const nets = Object.entries(RECEIVE_NETWORKS);
+  const body = `
+    <div style="margin-bottom:1rem">
+      <label class="modal-label">Réseau</label>
+      <select class="modal-input" id="recv-network" onchange="updateReceiveAddr()" style="cursor:pointer">
+        ${nets.map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('')}
+      </select>
+    </div>
+    <div id="recv-addr-box" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.75rem">
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">Adresse de dépôt</div>
+      <div id="recv-addr" style="font-family:monospace;font-size:0.78rem;word-break:break-all;color:var(--text)">${nets[0][1].addr}</div>
+    </div>
+    <div style="text-align:center;margin-bottom:0.75rem">
+      <svg id="recv-qr" width="140" height="140" viewBox="0 0 140 140" style="background:white;border-radius:10px;padding:8px">
+        <rect x="10" y="10" width="45" height="45" fill="none" stroke="#000" stroke-width="3"/><rect x="18" y="18" width="29" height="29" fill="#000"/>
+        <rect x="85" y="10" width="45" height="45" fill="none" stroke="#000" stroke-width="3"/><rect x="93" y="18" width="29" height="29" fill="#000"/>
+        <rect x="10" y="85" width="45" height="45" fill="none" stroke="#000" stroke-width="3"/><rect x="18" y="93" width="29" height="29" fill="#000"/>
+        <rect x="85" y="85" width="10" height="10" fill="#000"/><rect x="99" y="85" width="10" height="10" fill="#000"/><rect x="113" y="85" width="10" height="10" fill="#000"/>
+        <rect x="85" y="99" width="10" height="10" fill="#000"/><rect x="113" y="99" width="10" height="10" fill="#000"/>
+        <rect x="85" y="113" width="10" height="10" fill="#000"/><rect x="99" y="113" width="10" height="10" fill="#000"/><rect x="113" y="113" width="10" height="10" fill="#000"/>
+        <rect x="62" y="10" width="10" height="10" fill="#000"/><rect x="62" y="24" width="10" height="10" fill="#000"/><rect x="62" y="38" width="10" height="10" fill="#000"/>
+        <rect x="10" y="62" width="10" height="10" fill="#000"/><rect x="24" y="62" width="10" height="10" fill="#000"/><rect x="38" y="62" width="10" height="10" fill="#000"/>
+        <rect x="62" y="62" width="10" height="10" fill="#7C3AED"/>
+      </svg>
+    </div>
+    <div id="recv-warn" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:0.75rem;font-size:0.78rem;color:#F59E0B;margin-bottom:1rem">
+      ⚠️ ${nets[0][1].warn}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="navigator.clipboard.writeText(document.getElementById('recv-addr').textContent).then(()=>showToast('Adresse copiée'))" style="flex:1;padding:0.65rem;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">📋 Copier l'adresse</button>
+      <button onclick="closeModal()" style="flex:1;padding:0.65rem;border-radius:10px;border:none;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer">✓ Fermer</button>
+    </div>
+  `;
+  document.getElementById('modal-content').innerHTML = `<div class="modal-header"><div class="modal-title">↓ Recevoir des cryptos</div><button class="modal-close" onclick="closeModal()">✕</button></div>${body}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function updateReceiveAddr() {
+  const net = document.getElementById('recv-network')?.value;
+  const data = RECEIVE_NETWORKS[net];
+  if (!data) return;
+  const addrEl = document.getElementById('recv-addr');
+  const warnEl = document.getElementById('recv-warn');
+  if (addrEl) addrEl.textContent = data.addr;
+  if (warnEl) warnEl.innerHTML = '⚠️ ' + data.warn;
+}
+// Override receive modal
+modalDefs['receive'] = { title:'Recevoir des cryptos', body: () => { openReceiveModal(); return '<div style="color:var(--muted);text-align:center">Chargement...</div>'; } };
+
+// ===== WITHDRAW MODAL — Fee selector =====
+const FEE_OPTIONS = [
+  { id:'eco', icon:'🐌', label:'Économique', time:'~45 min', fee:1.20 },
+  { id:'std', icon:'⚡', label:'Standard', time:'~10 min', fee:2.40, default:true },
+  { id:'fast', icon:'🚀', label:'Rapide', time:'~2 min', fee:4.80 },
+];
+let _selectedFee = 'std';
+function selectFee(id) {
+  _selectedFee = id;
+  FEE_OPTIONS.forEach(f => {
+    const el = document.getElementById('fee-opt-' + f.id);
+    if (el) el.classList.toggle('selected', f.id === id);
+  });
+}
+modalDefs['cryptoWithdraw'] = { title:'Retrait Crypto', body: () => `
+  <label class="modal-label">Asset</label>
+  <select class="modal-input" style="cursor:pointer"><option>BTC</option><option>ETH</option><option>USDT</option><option>SOL</option></select>
+  <label class="modal-label">Adresse de destination</label>
+  <input class="modal-input" id="withdrawAddr" placeholder="bc1q... ou 0x...">
+  <label class="modal-label">Montant</label>
+  <input class="modal-input" type="number" id="withdrawAmt" placeholder="0.00">
+  <label class="modal-label">Vitesse de transaction</label>
+  ${FEE_OPTIONS.map(f => `
+    <div class="fee-option ${f.default ? 'selected' : ''}" id="fee-opt-${f.id}" onclick="selectFee('${f.id}')">
+      <span style="font-size:1.2rem">${f.icon}</span>
+      <div style="flex:1"><div style="font-weight:600">${f.label}</div><div style="font-size:0.75rem;color:var(--muted)">${f.time}</div></div>
+      <div style="font-weight:700;color:#F59E0B">$${f.fee.toFixed(2)}</div>
+    </div>
+  `).join('')}
+  <button class="btn-primary" onclick="submitCryptoWithdraw()">Confirmer le retrait →</button>
+`};
+
+// ===== ADD WHITELIST MODAL =====
+modalDefs['addWhitelist'] = { title:'Ajouter une adresse', body:`
+  <label class="modal-label">Nom de l'adresse</label>
+  <input class="modal-input" placeholder="ex: Mon wallet personnel">
+  <label class="modal-label">Adresse</label>
+  <input class="modal-input" placeholder="bc1q... ou 0x...">
+  <label class="modal-label">Réseau</label>
+  <select class="modal-input" style="cursor:pointer">
+    <option>Bitcoin mainnet</option>
+    <option>Ethereum (ERC-20)</option>
+    <option>BSC (BEP-20)</option>
+    <option>Solana</option>
+    <option>TRON (TRC-20)</option>
+  </select>
+  <button class="btn-primary" onclick="closeModal();showToast('✅ Adresse ajoutée à la whitelist')">Ajouter →</button>
+`};
+
+// ===== KYC FILE UPLOAD =====
+function handleKycFileUpload(input) {
+  const file = input.files[0];
+  const status = document.getElementById('kyc-upload-status');
+  if (!file || !status) return;
+  status.style.display = 'block';
+  status.textContent = '⏳ Analyse en cours...';
+  setTimeout(() => {
+    status.textContent = '✅ Document reçu — en cours d\'analyse';
+    showToast('📄 Document soumis pour vérification KYC');
+  }, 1500);
+}
+
+// Override receive buttons in wallet page to use new modal
+document.querySelectorAll && setTimeout(() => {
+  document.querySelectorAll('[onclick*="openModal(\'deposit\')"]').forEach(btn => {
+    btn.setAttribute('onclick', 'openReceiveModal()');
+  });
+}, 1000);
+
+
 // Init documents / swap when page becomes visible
 const _origShowPage = showPage;
 showPage = function(id, el) {
@@ -3097,5 +4369,21 @@ document.addEventListener('DOMContentLoaded', function() {
   if (window.i18n) window.i18n.initLang();
 });
 </script>
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel" id="notif-panel-drawer">
+  <div class="notif-panel-header">
+    <span>🔔 Notifications</span>
+    <button onclick="markAllRead()">Tout lire</button>
+  </div>
+  <div id="notif-drawer-list"></div>
+</div>
+<div class="notif-overlay" id="notif-overlay-drawer" onclick="toggleNotifPanel()"></div>
+
+<!-- TX DETAIL MODAL (standalone) -->
+<div class="modal-overlay" id="modal-tx-overlay" style="z-index:210">
+  <div class="modal" id="modal-tx-content" style="max-width:520px"></div>
+</div>
+
 </body>
 </html>
