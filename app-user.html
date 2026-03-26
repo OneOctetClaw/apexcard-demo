@@ -1943,6 +1943,10 @@ async function downloadRIB(currency) {
   const lastName  = profile.last_name  || '';
   const holderName = (firstName + ' ' + lastName).trim() || 'Account Holder';
 
+  // Détecte la langue courante
+  const lang = localStorage.getItem('apexcard_lang') || 'fr';
+  const isFR = lang === 'fr';
+
   let ibanNumber = '—';
   if (currentUserId) {
     try {
@@ -1951,24 +1955,50 @@ async function downloadRIB(currency) {
     } catch(e) {}
   }
 
-  const bicMap   = { EUR: 'APXCFRPP', GBP: 'APXCGB2L', USD: 'APXCUS33' };
-  const bicCode  = bicMap[currency] || 'APXCFRPP';
-  const symMap   = { EUR: '€', GBP: '£', USD: '$' };
-  const sym      = symMap[currency] || currency;
-  const typeMap  = { EUR: 'SEPA', GBP: 'FPS / CHAPS', USD: 'SWIFT' };
-  const accType  = 'Personal — ' + (typeMap[currency] || 'SWIFT');
-  const routeMap = { EUR: 'SEPA Zone', GBP: '60-16-13 (ApexCard UK)', USD: '021000021' };
-  const routing  = routeMap[currency] || '—';
-  const instrMap = {
-    EUR: ['For SEPA transfers, use IBAN + BIC above.', 'Standard processing time: 1 business day.', 'Instant SEPA available for participating banks.'],
-    GBP: ['For UK domestic: Sort Code + Account Number.', 'For international: IBAN + BIC.', 'Faster Payments: within 2 hours.'],
-    USD: ['For USD wire transfers, include SWIFT/BIC code.', 'Include account holder name as reference.', 'Processing time: 1–3 business days.']
-  };
-  const instrs = instrMap[currency] || instrMap.USD;
-  const dateStr = new Date().toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  const ribLabel = currency === 'EUR' ? "RELEVÉ D'IDENTITÉ BANCAIRE (RIB)" : 'BANK ACCOUNT DETAILS';
+  const bicMap  = { EUR: 'APXCFRPP', GBP: 'APXCGB2L', USD: 'APXCUS33' };
+  const bicCode = bicMap[currency] || 'APXCFRPP';
+  const symMap  = { EUR: '€', GBP: '£', USD: '$' };
+  const sym     = symMap[currency] || currency;
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+  // Textes selon langue
+  const T = {
+    docTitle:    isFR ? (currency === 'EUR' ? "RELEVÉ D'IDENTITÉ BANCAIRE (RIB)" : "COORDONNÉES BANCAIRES") : "BANK ACCOUNT DETAILS",
+    generated:   isFR ? `Généré le` : `Generated`,
+    section1:    isFR ? "TITULAIRE DU COMPTE" : "ACCOUNT HOLDER",
+    section2:    isFR ? "COORDONNÉES BANCAIRES" : "BANK ACCOUNT DETAILS",
+    section3:    isFR ? "INSTRUCTIONS DE VIREMENT" : "TRANSFER INSTRUCTIONS",
+    fullName:    isFR ? "Nom complet" : "Full Name",
+    currency:    isFR ? "Devise du compte" : "Account Currency",
+    accType:     isFR ? "Type de compte" : "Account Type",
+    status:      isFR ? "Statut" : "Status",
+    active:      isFR ? "Actif ✓" : "Active ✓",
+    typeVal:     isFR
+      ? (currency === 'EUR' ? 'Personnel — SEPA' : currency === 'GBP' ? 'Personnel — FPS / CHAPS' : 'Personnel — SWIFT')
+      : (currency === 'EUR' ? 'Personal — SEPA' : currency === 'GBP' ? 'Personal — FPS / CHAPS' : 'Personal — SWIFT'),
+    bankName:    isFR ? "Nom de la banque" : "Bank Name",
+    bankAddr:    isFR ? "Adresse de la banque" : "Bank Address",
+    routing:     isFR ? "Code de routage" : "Routing / Sort Code",
+    routeVal:    currency === 'GBP' ? '60-16-13 (ApexCard UK)' : currency === 'USD' ? '021000021' : (isFR ? 'Zone SEPA' : 'SEPA Zone'),
+    instrs: {
+      EUR: isFR
+        ? ["Pour les virements SEPA, utilisez l'IBAN + BIC ci-dessus.", "Délai de traitement standard : 1 jour ouvré.", "Virement SEPA instantané disponible selon les banques participantes."]
+        : ["For SEPA transfers, use IBAN + BIC above.", "Standard processing time: 1 business day.", "Instant SEPA available for participating banks."],
+      GBP: isFR
+        ? ["Pour les virements UK : code de tri + numéro de compte.", "Pour les virements internationaux : IBAN + BIC.", "Faster Payments : dans les 2 heures."]
+        : ["For UK domestic: Sort Code + Account Number.", "For international: IBAN + BIC.", "Faster Payments: within 2 hours."],
+      USD: isFR
+        ? ["Pour les virements USD, incluez le code SWIFT/BIC.", "Indiquez le nom du titulaire en référence.", "Délai de traitement : 1 à 3 jours ouvrés."]
+        : ["For USD wire transfers, include SWIFT/BIC code.", "Include account holder name as reference.", "Processing time: 1–3 business days."]
+    },
+    stamp:       isFR ? "DOCUMENT VALIDE" : "VALID DOCUMENT",
+    footer1:     isFR ? "ApexCard Financial Services Ltd — Établissement financier réglementé — Dubaï, EAU" : "ApexCard Financial Services Ltd — Regulated financial institution — Dubai, UAE",
+    footer2:     isFR ? "Ce document est généré automatiquement et valide sans signature." : "This document is auto-generated and valid without signature.",
+  };
+
+  const instrs = T.instrs[currency] || T.instrs.USD;
+  const dateStr = new Date().toLocaleDateString(isFR ? 'fr-FR' : 'en-GB', {day:'2-digit',month:'2-digit',year:'numeric'});
+
+  const html = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="utf-8">
   <title>ApexCard RIB ${currency}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
@@ -1980,7 +2010,7 @@ async function downloadRIB(currency) {
     .doc-title{text-align:right}
     .doc-title h2{font-size:12px;font-weight:700;color:#fff}
     .doc-title p{font-size:8px;color:#94A3B8;margin-top:3px}
-    .body{padding:28px}
+    .body{padding:28px 32px}
     .section-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;color:#03040A}
     .divider-cyan{height:1.5px;background:linear-gradient(90deg,#0EA5E9,transparent);margin-bottom:14px}
     .divider-violet{height:1.5px;background:linear-gradient(90deg,#8B5CF6,transparent);margin-bottom:14px}
@@ -1990,51 +2020,48 @@ async function downloadRIB(currency) {
     .iban-box{background:#F8FAFF;border:1.5px solid #0EA5E9;border-radius:8px;padding:14px 16px;margin:14px 0}
     .iban-box .lbl{font-size:8px;color:#64748B;margin-bottom:4px}
     .iban-box .num{font-family:'Courier New',monospace;font-size:15px;font-weight:700;letter-spacing:1px;color:#03040A}
-    .instr-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;color:#03040A;margin-top:22px}
     .instr-list{list-style:none;padding:0;margin-top:10px}
     .instr-list li{font-size:8px;color:#475569;padding:4px 0;padding-left:12px;position:relative}
     .instr-list li:before{content:"•";position:absolute;left:0;color:#0EA5E9}
-    .footer{background:#03040A;color:#64748B;text-align:center;padding:14px 20px;font-size:7px;position:fixed;bottom:0;width:100%}
+    .footer{background:#03040A;color:#64748B;text-align:center;padding:14px 20px;font-size:7px;margin-top:40px}
     .footer a{color:#0EA5E9;text-decoration:none}
-    .stamp{display:inline-block;border:2px solid #10B981;color:#10B981;font-size:10px;font-weight:700;padding:4px 12px;border-radius:4px;letter-spacing:2px;margin-top:16px;transform:rotate(-2deg)}
-    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.footer{position:fixed}}
+    .stamp{display:inline-block;border:2px solid #10B981;color:#10B981;font-size:10px;font-weight:700;padding:4px 14px;border-radius:4px;letter-spacing:2px;margin-top:24px;transform:rotate(-2deg)}
+    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   </style></head><body>
   <div class="header">
     <div><div class="logo">⬡ APEXCARD</div><div class="logo-sub">BANKING WITHOUT BORDERS</div></div>
-    <div class="doc-title"><h2>${ribLabel}</h2><p>${sym} ${currency} Account &nbsp;·&nbsp; Generated ${dateStr}</p></div>
+    <div class="doc-title"><h2>${T.docTitle}</h2><p>${sym} ${currency} &nbsp;·&nbsp; ${T.generated} ${dateStr}</p></div>
   </div>
   <div class="body">
-    <div class="section-title">Account Holder</div>
+    <div class="section-title">${T.section1}</div>
     <div class="divider-cyan"></div>
-    <div class="row"><span class="label">Full Name</span><span class="val">${holderName}</span></div>
-    <div class="row"><span class="label">Account Currency</span><span class="val">${sym} ${currency}</span></div>
-    <div class="row"><span class="label">Account Type</span><span class="val">${accType}</span></div>
-    <div class="row"><span class="label">Status</span><span class="val" style="color:#10B981">Active ✓</span></div>
-
+    <div class="row"><span class="label">${T.fullName}</span><span class="val">${holderName}</span></div>
+    <div class="row"><span class="label">${T.currency}</span><span class="val">${sym} ${currency}</span></div>
+    <div class="row"><span class="label">${T.accType}</span><span class="val">${T.typeVal}</span></div>
+    <div class="row"><span class="label">${T.status}</span><span class="val" style="color:#10B981">${T.active}</span></div>
     <br>
-    <div class="section-title">Bank Account Details</div>
+    <div class="section-title">${T.section2}</div>
     <div class="divider-violet"></div>
     <div class="iban-box"><div class="lbl">IBAN</div><div class="num">${ibanNumber}</div></div>
     <div class="row"><span class="label">BIC / SWIFT</span><span class="val">${bicCode}</span></div>
-    <div class="row"><span class="label">Bank Name</span><span class="val">ApexCard Financial Services</span></div>
-    <div class="row"><span class="label">Bank Address</span><span class="val">20605 The8, Palm Jumeirah, Dubai, UAE</span></div>
-    <div class="row"><span class="label">Routing / Sort Code</span><span class="val">${routing}</span></div>
-
-    <div class="instr-title">Transfer Instructions</div>
+    <div class="row"><span class="label">${T.bankName}</span><span class="val">ApexCard Financial Services</span></div>
+    <div class="row"><span class="label">${T.bankAddr}</span><span class="val">20605 The8, Palm Jumeirah, Dubai, UAE</span></div>
+    <div class="row"><span class="label">${T.routing}</span><span class="val">${T.routeVal}</span></div>
+    <br>
+    <div class="section-title">${T.section3}</div>
     <div class="divider-cyan"></div>
     <ul class="instr-list">${instrs.map(i=>`<li>${i}</li>`).join('')}</ul>
-
-    <div style="text-align:center;margin-top:24px"><span class="stamp">DOCUMENT VALIDE</span></div>
+    <div style="text-align:center"><span class="stamp">${T.stamp}</span></div>
   </div>
   <div class="footer">
-    ApexCard Financial Services Ltd — Regulated financial institution — Dubai, UAE &nbsp;|&nbsp;
+    ${T.footer1}<br>${T.footer2}<br>
     <a href="mailto:support@apexcard.io">support@apexcard.io</a> &nbsp;|&nbsp; apexcard.io
   </div>
   <script>window.onload=()=>{window.print();}<\/script>
   </body></html>`;
 
   const win = window.open('', '_blank', 'width=850,height=1100');
-  if (!win) { showToast('⚠️ Autorisez les popups pour télécharger le RIB'); return; }
+  if (!win) { showToast('⚠️ ' + (isFR ? 'Autorisez les popups pour télécharger le RIB' : 'Allow popups to download RIB')); return; }
   win.document.write(html);
   win.document.close();
 }
