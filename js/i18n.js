@@ -432,6 +432,7 @@ const TRANSLATIONS = {
     'admin.nav.audit': 'Audit Log',
     'admin.nav.logins': 'Connexions',
     'admin.nav.settings': 'Paramètres système',
+    'admin.nav.swaps': 'Swap Monitor',
     'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Se déconnecter',
 
@@ -1251,6 +1252,7 @@ const TRANSLATIONS = {
     'admin.nav.audit': 'Audit Log',
     'admin.nav.logins': 'Login History',
     'admin.nav.settings': 'System Settings',
+    'admin.nav.swaps': 'Swap Monitor',
     'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Sign out',
 

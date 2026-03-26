@@ -445,6 +445,19 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
 .attest-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--muted)}
 .attest-seal{width:56px;height:56px;border:2px solid rgba(124,58,237,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(124,58,237,0.07)}
 @media(max-width:600px){.stmt-stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== SWAP MULTI-MODE TABS ===== */
+.swap-tabs{display:flex;gap:6px;margin-bottom:1.25rem;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:6px}
+.swap-tab{flex:1;padding:8px 4px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-family:inherit;font-size:0.72rem;font-weight:600;cursor:pointer;text-align:center;transition:all 0.2s;white-space:nowrap}
+.swap-tab:hover{background:rgba(124,58,237,0.08);color:var(--text)}
+.swap-tab.active{background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(124,58,237,0.4)}
+.swap-mode{display:none}
+.swap-mode.active{display:block}
+.swap-hist-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.swap-hist-table th{font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding:0.5rem 0.6rem;text-align:left;border-bottom:1px solid var(--border)}
+.swap-hist-table td{padding:0.65rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+.swap-hist-table tr:last-child td{border-bottom:none}
+.swap-hist-table tr:hover td{background:rgba(255,255,255,0.02)}
 </style>
 <link rel="stylesheet" href="css/responsive.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
@@ -717,41 +730,196 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="section-hdr">
         <div><div class="section-title"><span data-i18n="app.swap.title">Swap</span></div><div class="section-subtitle" data-i18n="app.swap.sub">DeFi-powered exchange</div></div>
       </div>
-      <div style="max-width:480px">
-        <div class="swap-box">
-          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem" data-i18n="app.swap.you_pay">You pay</div>
-          <div class="swap-token">
-            <div class="token-selector" onclick="openTokenSelect('from')">
-              <div class="token-icon" style="background:rgba(245,158,11,0.15)">₿</div>
-              <span>BTC</span> ▾
+      <div style="max-width:520px">
+
+        <!-- Tab switcher -->
+        <div class="swap-tabs">
+          <button class="swap-tab active" onclick="switchSwapTab('crypto',this)">⇄ Crypto</button>
+          <button class="swap-tab" onclick="switchSwapTab('fiat2crypto',this)">💶 Fiat → Crypto</button>
+          <button class="swap-tab" onclick="switchSwapTab('crypto2fiat',this)">💸 Crypto → Fiat</button>
+          <button class="swap-tab" onclick="switchSwapTab('fiat2fiat',this)">🔄 Fiat ↔ Fiat</button>
+        </div>
+
+        <!-- ── MODE: Crypto ↔ Crypto ── -->
+        <div class="swap-mode active" id="swap-mode-crypto">
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You pay</div>
+            <div class="swap-token">
+              <select id="cc-from" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcSwapCC()">
+                <option value="BTC">₿ BTC</option>
+                <option value="ETH">Ξ ETH</option>
+                <option value="SOL">◎ SOL</option>
+                <option value="USDT">₮ USDT</option>
+                <option value="BNB">⬡ BNB</option>
+              </select>
+              <input class="swap-amount-input" id="cc-from-amt" type="number" value="0.005" oninput="calcSwapCC()">
             </div>
-            <input class="swap-amount-input" id="swapFrom" type="number" value="0.005" oninput="calcSwap()">
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">Balance: 0.2012 BTC</div>
           </div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">Balance: 0.2012 BTC · <span style="color:#7C3AED;cursor:pointer" onclick="document.getElementById('swapFrom').value=0.2012;calcSwap()">MAX</span></div>
-        </div>
-
-        <div style="text-align:center;margin:-0.1rem 0;position:relative;z-index:1">
-          <button class="swap-arrow-btn" onclick="swapDir()">⇅</button>
-        </div>
-
-        <div class="swap-box">
-          <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem" data-i18n="app.swap.you_receive">You receive</div>
-          <div class="swap-token">
-            <div class="token-selector" onclick="openTokenSelect('to')">
-              <div class="token-icon" style="background:rgba(16,185,129,0.15)">₮</div>
-              <span>USDT</span> ▾
+          <div style="text-align:center;margin:-0.1rem 0;position:relative;z-index:1">
+            <button class="swap-arrow-btn" onclick="swapDirCC()">⇅</button>
+          </div>
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You receive</div>
+            <div class="swap-token">
+              <select id="cc-to" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcSwapCC()">
+                <option value="USDT" selected>₮ USDT</option>
+                <option value="BTC">₿ BTC</option>
+                <option value="ETH">Ξ ETH</option>
+                <option value="SOL">◎ SOL</option>
+                <option value="BNB">⬡ BNB</option>
+              </select>
+              <div id="cc-to-amt" style="font-size:1.8rem;font-weight:700;color:#10B981;text-align:right;min-width:160px">≈ 319.10</div>
             </div>
-            <div class="swap-amount-input" id="swapTo" style="text-align:right;font-size:1.8rem;font-weight:700;min-width:200px;color:#10B981">≈ $319.10</div>
+          </div>
+          <div class="card" style="margin-top:1rem;padding:1.25rem">
+            <div class="swap-info-row"><div class="swap-info-label">Rate</div><div id="cc-rate">1 BTC = 63,820 USDT</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Fee (0.25%)</div><div id="cc-fee">~$0.80</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">You receive (net)</div><div id="cc-net" style="color:#10B981;font-weight:600">318.30 USDT</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Est. time</div><div>~30 sec</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Minimum</div><div>0.0001 BTC</div></div>
+          </div>
+          <button class="btn-swap" onclick="doSwap()">Confirm Swap ⇄</button>
+        </div>
+
+        <!-- ── MODE: Fiat → Crypto ── -->
+        <div class="swap-mode" id="swap-mode-fiat2crypto">
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You pay (Fiat)</div>
+            <div class="swap-token">
+              <select id="f2c-from" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcFiatCrypto()">
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="USD">🇺🇸 USD</option>
+                <option value="GBP">🇬🇧 GBP</option>
+              </select>
+              <input class="swap-amount-input" id="f2c-from-amt" type="number" value="500" oninput="calcFiatCrypto()">
+            </div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">Balance: €8,420.50</div>
+          </div>
+          <div style="text-align:center;margin:-0.1rem 0;position:relative;z-index:1">
+            <div style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.1);margin:0 auto;font-size:1.1rem">↓</div>
+          </div>
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You receive (Crypto)</div>
+            <div class="swap-token">
+              <select id="f2c-to" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcFiatCrypto()">
+                <option value="BTC">₿ BTC</option>
+                <option value="ETH">Ξ ETH</option>
+                <option value="SOL">◎ SOL</option>
+                <option value="USDT">₮ USDT</option>
+                <option value="BNB">⬡ BNB</option>
+              </select>
+              <div id="f2c-to-amt" style="font-size:1.8rem;font-weight:700;color:#10B981;text-align:right;min-width:160px">≈ 0.00840</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem;padding:1.25rem">
+            <div class="swap-info-row"><div class="swap-info-label">Rate</div><div id="f2c-rate">1 EUR = 0.00001685 BTC</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Fee (1.5%)</div><div id="f2c-fee">~€7.50</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">You receive (net)</div><div id="f2c-net" style="color:#10B981;font-weight:600">0.00827 BTC</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Est. time</div><div>~2-5 min</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Minimum</div><div>€10</div></div>
+          </div>
+          <button class="btn-swap" onclick="doSwap()">Buy Crypto ⇄</button>
+        </div>
+
+        <!-- ── MODE: Crypto → Fiat ── -->
+        <div class="swap-mode" id="swap-mode-crypto2fiat">
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You sell (Crypto)</div>
+            <div class="swap-token">
+              <select id="c2f-from" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcCryptoFiat()">
+                <option value="BTC">₿ BTC</option>
+                <option value="ETH">Ξ ETH</option>
+                <option value="SOL">◎ SOL</option>
+                <option value="USDT">₮ USDT</option>
+                <option value="BNB">⬡ BNB</option>
+              </select>
+              <input class="swap-amount-input" id="c2f-from-amt" type="number" value="0.01" oninput="calcCryptoFiat()">
+            </div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">Balance: 0.2012 BTC</div>
+          </div>
+          <div style="text-align:center;margin:-0.1rem 0;position:relative;z-index:1">
+            <div style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.1);margin:0 auto;font-size:1.1rem">↓</div>
+          </div>
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You receive (Fiat)</div>
+            <div class="swap-token">
+              <select id="c2f-to" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcCryptoFiat()">
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="USD">🇺🇸 USD</option>
+                <option value="GBP">🇬🇧 GBP</option>
+              </select>
+              <div id="c2f-to-amt" style="font-size:1.8rem;font-weight:700;color:#10B981;text-align:right;min-width:160px">≈ €585.60</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem;padding:1.25rem">
+            <div class="swap-info-row"><div class="swap-info-label">Rate</div><div id="c2f-rate">1 BTC = €58,850</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Fee (1.5%)</div><div id="c2f-fee">~€8.96</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">You receive (net)</div><div id="c2f-net" style="color:#10B981;font-weight:600">€580.00</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Settlement</div><div>SEPA ~1 day</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Minimum</div><div>0.0001 BTC</div></div>
+          </div>
+          <button class="btn-swap" onclick="doSwap()">Sell Crypto ⇄</button>
+        </div>
+
+        <!-- ── MODE: Fiat ↔ Fiat ── -->
+        <div class="swap-mode" id="swap-mode-fiat2fiat">
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You send</div>
+            <div class="swap-token">
+              <select id="ff-from" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcFiatFiat()">
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="USD">🇺🇸 USD</option>
+                <option value="GBP">🇬🇧 GBP</option>
+              </select>
+              <input class="swap-amount-input" id="ff-from-amt" type="number" value="1000" oninput="calcFiatFiat()">
+            </div>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:0.5rem">Balance: €8,420.50</div>
+          </div>
+          <div style="text-align:center;margin:-0.1rem 0;position:relative;z-index:1">
+            <button class="swap-arrow-btn" onclick="swapDirFF()">⇅</button>
+          </div>
+          <div class="swap-box">
+            <div style="font-size:0.73rem;color:var(--muted);margin-bottom:0.75rem">You receive</div>
+            <div class="swap-token">
+              <select id="ff-to" class="token-selector" style="padding:0.4rem 0.75rem;font-size:0.9rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:var(--text);outline:none" onchange="calcFiatFiat()">
+                <option value="USD" selected>🇺🇸 USD</option>
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="GBP">🇬🇧 GBP</option>
+              </select>
+              <div id="ff-to-amt" style="font-size:1.8rem;font-weight:700;color:#10B981;text-align:right;min-width:160px">≈ 1079.58</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem;padding:1.25rem">
+            <div class="swap-info-row"><div class="swap-info-label">Rate</div><div id="ff-rate">1 EUR = 1.085 USD</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Fee (0.5%)</div><div id="ff-fee">~€5.00</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">You receive (net)</div><div id="ff-net" style="color:#10B981;font-weight:600">1,074.00 USD</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Est. time</div><div>Instant</div></div>
+            <div class="swap-info-row"><div class="swap-info-label">Minimum</div><div>€10</div></div>
+          </div>
+          <button class="btn-swap" onclick="doSwap()">Convert Currency ⇄</button>
+        </div>
+
+        <!-- ── Swap History ── -->
+        <div class="card" style="margin-top:1.5rem;padding:1.25rem">
+          <div style="font-size:0.88rem;font-weight:700;margin-bottom:1rem">Recent Swaps</div>
+          <div style="overflow-x:auto">
+            <table class="swap-hist-table">
+              <thead>
+                <tr><th>Date</th><th>Type</th><th>From</th><th>To</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:var(--muted)">Mar 24</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(124,58,237,0.15);color:#a78bfa">Crypto</span></td><td>0.05 BTC</td><td style="color:#10B981">3,191 USDT</td><td><span style="color:#10B981">✅</span></td></tr>
+                <tr><td style="color:var(--muted)">Mar 22</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(6,182,212,0.15);color:#06B6D4">Fiat→Crypto</span></td><td>€500 EUR</td><td style="color:#10B981">0.00840 BTC</td><td><span style="color:#10B981">✅</span></td></tr>
+                <tr><td style="color:var(--muted)">Mar 20</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(245,158,11,0.15);color:#F59E0B">Crypto→Fiat</span></td><td>1.5 ETH</td><td style="color:#10B981">€4,523</td><td><span style="color:#10B981">✅</span></td></tr>
+                <tr><td style="color:var(--muted)">Mar 18</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(16,185,129,0.15);color:#10B981">Fiat↔Fiat</span></td><td>£2,000 GBP</td><td style="color:#10B981">$2,540 USD</td><td><span style="color:#10B981">✅</span></td></tr>
+                <tr><td style="color:var(--muted)">Mar 15</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(124,58,237,0.15);color:#a78bfa">Crypto</span></td><td>200 SOL</td><td style="color:#10B981">1.04 ETH</td><td><span style="color:#10B981">✅</span></td></tr>
+                <tr><td style="color:var(--muted)">Mar 12</td><td><span style="padding:2px 6px;border-radius:4px;font-size:0.68rem;font-weight:700;background:rgba(6,182,212,0.15);color:#06B6D4">Fiat→Crypto</span></td><td>€1,000 EUR</td><td style="color:#F59E0B">⏳ 6.01 SOL</td><td><span style="color:#F59E0B">⏳</span></td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div class="card" style="margin-top:1rem;padding:1.25rem">
-          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.rate">Rate</div><div id="swapRateRow">1 BTC = 63,820 USDT</div></div>
-          <div class="swap-info-row"><div class="swap-info-label">Price Impact</div><div style="color:#10B981">0.04%</div></div>
-          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.fee">Network Fee</div><div>~$2.40</div></div>
-          <div class="swap-info-row"><div class="swap-info-label" data-i18n="app.swap.min">Minimum received</div><div>318.73 USDT</div></div>
-        </div>
-        <button class="btn-swap" onclick="doSwap()" data-i18n="app.swap.confirm">Confirm Swap ⇄</button>
       </div>
     </div>
 
@@ -1268,26 +1436,150 @@ const tickerEl = document.getElementById('ticker');
 const tickerHtml = tickers.map(x=>`<div class="ticker-item"><span class="ticker-coin">${x.s}</span><span class="ticker-price">${x.p}</span><span class="${x.up?'ticker-up':'ticker-dn'}">${x.c}</span></div>`).join('');
 if(tickerEl) tickerEl.innerHTML = tickerHtml + tickerHtml;
 
-// Swap state
-let swapFromToken = 'BTC';
-let swapToToken = 'USDT';
-const swapRates = { BTC:63820, ETH:3226, SOL:166.35, USDT:1, BNB:612 };
-function calcSwap() {
-  const v = parseFloat(document.getElementById('swapFrom').value) || 0;
-  const rate = swapRates[swapFromToken] || 1;
-  const toRate = swapRates[swapToToken] || 1;
-  const result = (v * rate / toRate);
-  document.getElementById('swapTo').textContent = '≈ ' + (swapToToken === 'USDT' ? '$' : '') + result.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:6});
-  const rateRow = document.getElementById('swapRateRow');
-  if (rateRow) rateRow.textContent = `1 ${swapFromToken} = ${(rate/toRate).toLocaleString(undefined,{maximumFractionDigits:6})} ${swapToToken}`;
+// Swap state — multi-mode
+const FIAT_RATES = { EUR: 1.085, USD: 1.0, GBP: 1.27 };
+const CRYPTO_RATES = { BTC: 63820, ETH: 3226, SOL: 166.35, USDT: 1.0, BNB: 612 };
+const SWAP_FEES = { crypto: 0.0025, fiat2crypto: 0.015, crypto2fiat: 0.015, fiat2fiat: 0.005 };
+let _activeSwapTab = 'crypto';
+
+function switchSwapTab(mode, btn) {
+  _activeSwapTab = mode;
+  document.querySelectorAll('.swap-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.swap-mode').forEach(m => m.classList.remove('active'));
+  const modeEl = document.getElementById('swap-mode-' + mode);
+  if (modeEl) modeEl.classList.add('active');
+  // Trigger calc for visible mode
+  if (mode === 'crypto') calcSwapCC();
+  else if (mode === 'fiat2crypto') calcFiatCrypto();
+  else if (mode === 'crypto2fiat') calcCryptoFiat();
+  else if (mode === 'fiat2fiat') calcFiatFiat();
 }
-function swapDir() {
-  [swapFromToken, swapToToken] = [swapToToken, swapFromToken];
-  document.querySelectorAll('.token-selector span')[0].textContent = swapFromToken;
-  document.querySelectorAll('.token-selector span')[1].textContent = swapToToken;
-  calcSwap();
-  showToast(t('toast.swap_tokens'));
+
+// Legacy calcSwap — routes to active mode
+function calcSwap() { calcSwapCC(); }
+
+function calcSwapCC() {
+  const fromSel = document.getElementById('cc-from');
+  const toSel   = document.getElementById('cc-to');
+  const amtEl   = document.getElementById('cc-from-amt');
+  if (!fromSel || !toSel || !amtEl) return;
+  const from = fromSel.value, to = toSel.value;
+  const amt  = parseFloat(amtEl.value) || 0;
+  const fromUSD = amt * (CRYPTO_RATES[from] || 1);
+  const toAmt   = fromUSD / (CRYPTO_RATES[to] || 1);
+  const fee     = fromUSD * SWAP_FEES.crypto;
+  const netAmt  = (fromUSD - fee) / (CRYPTO_RATES[to] || 1);
+  const rateVal = (CRYPTO_RATES[from] || 1) / (CRYPTO_RATES[to] || 1);
+  const fmt     = (v, d=6) => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:d});
+
+  const toAmtEl = document.getElementById('cc-to-amt');
+  if (toAmtEl) toAmtEl.textContent = '≈ ' + fmt(toAmt);
+  const rateEl = document.getElementById('cc-rate');
+  if (rateEl) rateEl.textContent = `1 ${from} = ${fmt(rateVal)} ${to}`;
+  const feeEl = document.getElementById('cc-fee');
+  if (feeEl) feeEl.textContent = '~$' + fee.toFixed(2);
+  const netEl = document.getElementById('cc-net');
+  if (netEl) netEl.textContent = fmt(netAmt) + ' ' + to;
 }
+
+function swapDirCC() {
+  const fromSel = document.getElementById('cc-from');
+  const toSel   = document.getElementById('cc-to');
+  if (!fromSel || !toSel) return;
+  const tmp = fromSel.value;
+  fromSel.value = toSel.value;
+  toSel.value = tmp;
+  calcSwapCC();
+}
+
+function calcFiatCrypto() {
+  const fromSel = document.getElementById('f2c-from');
+  const toSel   = document.getElementById('f2c-to');
+  const amtEl   = document.getElementById('f2c-from-amt');
+  if (!fromSel || !toSel || !amtEl) return;
+  const from   = fromSel.value, to = toSel.value;
+  const amt    = parseFloat(amtEl.value) || 0;
+  const inUSD  = amt * (FIAT_RATES[from] || 1);
+  const fee    = inUSD * SWAP_FEES.fiat2crypto;
+  const netUSD = inUSD - fee;
+  const cryptoAmt = netUSD / (CRYPTO_RATES[to] || 1);
+  const rateVal   = FIAT_RATES[from] / CRYPTO_RATES[to];
+  const fmt = (v, d=8) => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:d});
+
+  const toAmtEl = document.getElementById('f2c-to-amt');
+  if (toAmtEl) toAmtEl.textContent = '≈ ' + fmt(cryptoAmt);
+  const rateEl  = document.getElementById('f2c-rate');
+  if (rateEl)  rateEl.textContent = `1 ${from} = ${fmt(rateVal)} ${to}`;
+  const feeEl   = document.getElementById('f2c-fee');
+  if (feeEl)   feeEl.textContent = `~${from === 'EUR' ? '€' : from === 'GBP' ? '£' : '$'}${(amt * SWAP_FEES.fiat2crypto).toFixed(2)}`;
+  const netEl   = document.getElementById('f2c-net');
+  if (netEl)   netEl.textContent = fmt(cryptoAmt) + ' ' + to;
+}
+
+function calcCryptoFiat() {
+  const fromSel = document.getElementById('c2f-from');
+  const toSel   = document.getElementById('c2f-to');
+  const amtEl   = document.getElementById('c2f-from-amt');
+  if (!fromSel || !toSel || !amtEl) return;
+  const from   = fromSel.value, to = toSel.value;
+  const amt    = parseFloat(amtEl.value) || 0;
+  const usd    = amt * (CRYPTO_RATES[from] || 1);
+  const fiat   = usd / (FIAT_RATES[to] || 1);
+  const fee    = fiat * SWAP_FEES.crypto2fiat;
+  const netFiat = fiat - fee;
+  const rateUSD = (CRYPTO_RATES[from] || 1) / (FIAT_RATES[to] || 1);
+  const sym     = to === 'EUR' ? '€' : to === 'GBP' ? '£' : '$';
+  const fmt     = (v, d=2) => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:d});
+
+  const toAmtEl = document.getElementById('c2f-to-amt');
+  if (toAmtEl) toAmtEl.textContent = `≈ ${sym}${fmt(fiat)}`;
+  const rateEl  = document.getElementById('c2f-rate');
+  if (rateEl)  rateEl.textContent = `1 ${from} = ${sym}${fmt(rateUSD)}`;
+  const feeEl   = document.getElementById('c2f-fee');
+  if (feeEl)   feeEl.textContent = `~${sym}${fmt(fee)}`;
+  const netEl   = document.getElementById('c2f-net');
+  if (netEl)   netEl.textContent = `${sym}${fmt(netFiat)}`;
+}
+
+function calcFiatFiat() {
+  const fromSel = document.getElementById('ff-from');
+  const toSel   = document.getElementById('ff-to');
+  const amtEl   = document.getElementById('ff-from-amt');
+  if (!fromSel || !toSel || !amtEl) return;
+  const from   = fromSel.value, to = toSel.value;
+  const amt    = parseFloat(amtEl.value) || 0;
+  const inUSD  = amt * (FIAT_RATES[from] || 1);
+  const outAmt = inUSD / (FIAT_RATES[to] || 1);
+  const fee    = outAmt * SWAP_FEES.fiat2fiat;
+  const netAmt = outAmt - fee;
+  const rateVal = (FIAT_RATES[from] || 1) / (FIAT_RATES[to] || 1);
+  const toSym   = to === 'EUR' ? '€' : to === 'GBP' ? '£' : '$';
+  const fromSym = from === 'EUR' ? '€' : from === 'GBP' ? '£' : '$';
+  const fmt     = (v) => v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  const toAmtEl = document.getElementById('ff-to-amt');
+  if (toAmtEl) toAmtEl.textContent = `≈ ${fmt(outAmt)}`;
+  const rateEl  = document.getElementById('ff-rate');
+  if (rateEl)  rateEl.textContent = `1 ${from} = ${fmt(rateVal)} ${to}`;
+  const feeEl   = document.getElementById('ff-fee');
+  if (feeEl)   feeEl.textContent = `~${fromSym}${(amt * SWAP_FEES.fiat2fiat).toFixed(2)}`;
+  const netEl   = document.getElementById('ff-net');
+  if (netEl)   netEl.textContent = `${fmt(netAmt)} ${to}`;
+}
+
+function swapDirFF() {
+  const fromSel = document.getElementById('ff-from');
+  const toSel   = document.getElementById('ff-to');
+  if (!fromSel || !toSel) return;
+  const tmp = fromSel.value;
+  fromSel.value = toSel.value;
+  toSel.value = tmp;
+  calcFiatFiat();
+}
+
+// Legacy swapDir no-op (modes have their own swapDir)
+function swapDir() { swapDirCC(); }
 async function doSwap() {
   const v = parseFloat(document.getElementById('swapFrom').value) || 0;
   if (!v || v <= 0) { showToast(t('toast.swap_invalid'), 'info'); return; }
@@ -2783,11 +3075,20 @@ function downloadAttestation() {
   showToast(attestLang==='fr' ? "Attestation téléchargée — ouvrez puis Fichier > Imprimer > PDF" : 'Letter downloaded — open then File > Print > PDF');
 }
 
-// Init documents when the page becomes visible
+// Init documents / swap when page becomes visible
 const _origShowPage = showPage;
 showPage = function(id, el) {
   _origShowPage(id, el);
   if (id === 'documents') initDocuments();
+  if (id === 'swap') {
+    // Initialize all swap modes on first show
+    setTimeout(() => {
+      calcSwapCC();
+      calcFiatCrypto();
+      calcCryptoFiat();
+      calcFiatFiat();
+    }, 50);
+  }
 };
 </script>
 <script src="js/i18n.js" defer></script>

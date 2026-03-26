@@ -527,6 +527,7 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
     <div class="nav-item" data-page="kyc"><span class="nav-icon">🪪</span><span data-i18n="admin.nav.kyc">KYC Pending</span><span class="nav-badge" id="kyc-badge">12</span></div>
     <div class="nav-item" data-page="affiliates"><span class="nav-icon">🤝</span><span data-i18n="admin.nav.affiliates">Affiliés</span></div>
     <div class="nav-item" data-page="yield"><span class="nav-icon">📈</span><span data-i18n="admin.nav.yield">Yield</span></div>
+    <div class="nav-item" data-page="swaps"><span class="nav-icon">⇄</span><span data-i18n="admin.nav.swaps">Swap Monitor</span></div>
     <div class="nav-item" data-page="finances"><span class="nav-icon">💰</span><span data-i18n="admin.nav.finances">Finances P&L</span></div>
     <div class="nav-item" data-page="audit"><span class="nav-icon">🛡️</span><span data-i18n="admin.nav.audit">Audit Log</span></div>
     <div class="nav-item" data-page="logins"><span class="nav-icon">🔐</span><span data-i18n="admin.nav.logins">Connexions</span></div>
@@ -1089,6 +1090,188 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
             <div class="toggle" id="maintenance-toggle" onclick="toggleMaintenance()" title="Activer/Désactiver la maintenance"></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SWAP MONITOR PAGE
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-swaps">
+      <!-- KPI Cards -->
+      <div class="kpi-grid kpi-4" style="margin-bottom:20px">
+        <div class="kpi-card green">
+          <div class="kpi-label">Volume 30j</div>
+          <div class="kpi-value" style="color:var(--green)">$4.2M</div>
+          <div class="kpi-sub">+22% vs mois dernier</div>
+          <div class="kpi-icon">📦</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-label">Revenus frais</div>
+          <div class="kpi-value" style="color:var(--gold)">$10,500</div>
+          <div class="kpi-sub">Frais moyens 0.25–1.5%</div>
+          <div class="kpi-icon">💰</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Nb swaps</div>
+          <div class="kpi-value" style="color:var(--cyan)">4,247</div>
+          <div class="kpi-sub">+18% ce mois</div>
+          <div class="kpi-icon">🔄</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Taux succès</div>
+          <div class="kpi-value">99.2%</div>
+          <div class="kpi-sub">↑ +0.3% vs mois dernier</div>
+          <div class="kpi-icon">✅</div>
+        </div>
+      </div>
+
+      <!-- Répartition par type -->
+      <div class="section" style="margin-bottom:20px">
+        <div class="section-header"><div class="section-title">📊 Répartition par type de swap</div></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+              <span>⇄ Crypto ↔ Crypto</span><span style="font-weight:600">68% · 2,888 swaps</span>
+            </div>
+            <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+              <div style="width:68%;height:100%;background:linear-gradient(90deg,#7C3AED,#5b21b6);border-radius:5px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+              <span>💶 Fiat → Crypto</span><span style="font-weight:600">19% · 807 swaps</span>
+            </div>
+            <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+              <div style="width:19%;height:100%;background:linear-gradient(90deg,#06B6D4,#0284c7);border-radius:5px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+              <span>💸 Crypto → Fiat</span><span style="font-weight:600">10% · 425 swaps</span>
+            </div>
+            <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+              <div style="width:10%;height:100%;background:linear-gradient(90deg,#F59E0B,#d97706);border-radius:5px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+              <span>🔄 Fiat ↔ Fiat</span><span style="font-weight:600">3% · 127 swaps</span>
+            </div>
+            <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+              <div style="width:3%;height:100%;background:linear-gradient(90deg,#10B981,#059669);border-radius:5px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 6 paires -->
+      <div class="section" style="margin-bottom:20px">
+        <div class="section-header"><div class="section-title">🏆 Top 6 paires</div></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Paire</th><th>Volume 30j</th><th>Nb swaps</th><th>Frais générés</th><th>Tendance</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>BTC → USDT</b></td><td style="color:var(--cyan)">$1.2M</td><td>842</td><td style="color:var(--gold)">$3,000</td><td>📈</td></tr>
+              <tr><td><b>ETH → USDT</b></td><td style="color:var(--cyan)">$890K</td><td>1,240</td><td style="color:var(--gold)">$2,225</td><td>📈</td></tr>
+              <tr><td><b>EUR → BTC</b></td><td style="color:var(--cyan)">$420K</td><td>312</td><td style="color:var(--gold)">$6,300</td><td>📊</td></tr>
+              <tr><td><b>USDT → ETH</b></td><td style="color:var(--cyan)">$380K</td><td>892</td><td style="color:var(--gold)">$950</td><td>📉</td></tr>
+              <tr><td><b>GBP → USD</b></td><td style="color:var(--cyan)">$126K</td><td>441</td><td style="color:var(--gold)">$630</td><td>📊</td></tr>
+              <tr><td><b>BTC → EUR</b></td><td style="color:var(--cyan)">$110K</td><td>178</td><td style="color:var(--gold)">$1,650</td><td>📈</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Feed live swaps -->
+      <div class="section" style="margin-bottom:20px">
+        <div class="section-header">
+          <div class="section-title">⚡ Feed live — 10 derniers swaps</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green)"><span style="width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>Live</div>
+        </div>
+        <div id="swaps-feed-table">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>ID</th><th>User</th><th>Type</th><th>De</th><th>Vers</th><th>Montant</th><th>Frais</th><th>Statut</th><th>Heure</th><th>Action</th></tr>
+              </thead>
+              <tbody id="swaps-feed-tbody">
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8421</span></td><td>Ahmed K.</td><td><span class="badge badge-violet">Crypto</span></td><td>0.5 BTC</td><td>31,910 USDT</td><td style="color:var(--cyan)">$31,910</td><td style="color:var(--gold)">$79.78</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">14:32</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8420</span></td><td>Sofia M.</td><td><span class="badge badge-cyan">Fiat→Crypto</span></td><td>€1,000</td><td>0.01679 BTC</td><td style="color:var(--cyan)">$1,085</td><td style="color:var(--gold)">$16.28</td><td><span class="badge badge-gold">⏳ Pending</span></td><td style="color:var(--text3)">14:18</td><td><button class="btn btn-danger btn-sm" onclick="blockSwap('SW-8420')">🔴 Bloquer</button></td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8419</span></td><td>Pierre D.</td><td><span class="badge badge-violet">Crypto</span></td><td>5 ETH</td><td>16,130 USDT</td><td style="color:var(--cyan)">$16,130</td><td style="color:var(--gold)">$40.33</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">13:55</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8418</span></td><td>Elena V.</td><td><span class="badge badge-gold">Crypto→Fiat</span></td><td>2 ETH</td><td>€5,953</td><td style="color:var(--cyan)">$6,452</td><td style="color:var(--gold)">$96.78</td><td><span class="badge badge-cyan" style="background:rgba(6,182,212,0.15);color:var(--cyan)">🔄 Processing</span></td><td style="color:var(--text3)">13:41</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8417</span></td><td>Marcus J.</td><td><span class="badge badge-green" style="background:rgba(16,185,129,0.15);color:var(--green)">Fiat↔Fiat</span></td><td>£2,000</td><td>$2,540</td><td style="color:var(--cyan)">$2,540</td><td style="color:var(--gold)">$12.70</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">13:22</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8416</span></td><td>Nikita V.</td><td><span class="badge badge-violet">Crypto</span></td><td>500 SOL</td><td>2.58 ETH</td><td style="color:var(--cyan)">$83,175</td><td style="color:var(--gold)">$207.94</td><td><span class="badge badge-gold">⏳ Pending</span></td><td style="color:var(--text3)">12:58</td><td><button class="btn btn-danger btn-sm" onclick="blockSwap('SW-8416')">🔴 Bloquer</button></td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8415</span></td><td>Olga M.</td><td><span class="badge badge-cyan">Fiat→Crypto</span></td><td>€500</td><td>8.408 SOL</td><td style="color:var(--cyan)">$543</td><td style="color:var(--gold)">$8.14</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">12:44</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8414</span></td><td>Terry R.</td><td><span class="badge badge-violet">Crypto</span></td><td>0.1 BTC</td><td>6,382 USDT</td><td style="color:var(--cyan)">$6,382</td><td style="color:var(--gold)">$15.96</td><td><span class="badge badge-red">❌ Failed</span></td><td style="color:var(--text3)">12:31</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8413</span></td><td>Boris L.</td><td><span class="badge badge-gold">Crypto→Fiat</span></td><td>3 BNB</td><td>€1,686</td><td style="color:var(--cyan)">$1,836</td><td style="color:var(--gold)">$27.54</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">12:15</td><td>—</td></tr>
+                <tr><td><span style="font-family:monospace;font-size:10px;color:var(--text3)">SW-8412</span></td><td>Maria K.</td><td><span class="badge badge-green" style="background:rgba(16,185,129,0.15);color:var(--green)">Fiat↔Fiat</span></td><td>$800</td><td>€737</td><td style="color:var(--cyan)">$800</td><td style="color:var(--gold)">$4.00</td><td><span class="badge badge-green">✅ Completed</span></td><td style="color:var(--text3)">11:58</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertes anomalies -->
+      <div class="section" style="margin-bottom:20px">
+        <div class="section-header"><div class="section-title">⚠️ Alertes anomalies</div></div>
+        <div class="alert alert-red">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-body">
+            <div class="alert-title">Swap &gt;$10,000 — 2 en attente de review</div>
+            <div class="alert-desc">SW-8421 ($31,910) · SW-8416 ($83,175) — Dépassement seuil AML. Review manuelle requise.</div>
+          </div>
+          <button class="btn btn-danger btn-sm" style="margin-left:auto;flex-shrink:0" onclick="showToast('Swaps mis en review','info')">Review</button>
+        </div>
+        <div class="alert alert-gold" style="margin-top:8px">
+          <div class="alert-icon">⚡</div>
+          <div class="alert-body">
+            <div class="alert-title">Velocity check (>5 swaps/h) — 1 alerte</div>
+            <div class="alert-desc">Ahmed K. — 7 swaps en 45 min — IP: 185.220.101.42 — Vérification recommandée.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto;flex-shrink:0" onclick="showToast('Alerte velocity marquée','success')">Ignorer</button>
+        </div>
+      </div>
+
+      <!-- Config paires -->
+      <div class="section">
+        <div class="section-header"><div class="section-title">⚙️ Configuration des paires</div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">BTC ↔ USDT</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="0.25" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">ETH ↔ USDT</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="0.25" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">EUR → BTC</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="1.50" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">GBP → ETH</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="1.50" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">BTC → EUR</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="1.50" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">EUR ↔ USD</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="0.50" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">GBP ↔ USD</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="0.50" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:10px;font-size:13px">
+            <div><div style="font-weight:600">SOL ↔ BTC</div><div style="font-size:11px;color:var(--text3)">Fee: <input type="number" value="0.25" step="0.01" style="width:50px;background:transparent;border:none;color:var(--cyan);font-size:11px;font-family:inherit">%</div></div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="showToast('Configuration enregistrée','success')">💾 Enregistrer la configuration</button>
       </div>
     </div>
 
@@ -1950,12 +2133,13 @@ function navigateTo(pageId, title) {
   const pageTitles = {
     overview:'Vue d\'ensemble',users:'Utilisateurs',cards:'Cartes',
     transactions:'Transactions',kyc:'KYC Pending',affiliates:'Affiliés',
-    yield:'Yield',finances:'Finances P&L',audit:'Audit Log',logins:'Connexions',settings:'Paramètres système'
+    yield:'Yield',swaps:'Swap Monitor',finances:'Finances P&L',audit:'Audit Log',logins:'Connexions',settings:'Paramètres système'
   };
   if (pageId === 'audit') loadAuditLogs();
   if (pageId === 'logins') loadLoginAttempts();
   if (pageId === 'affiliates') loadAffiliates();
   if (pageId === 'yield') loadYield();
+  if (pageId === 'swaps') loadSwapsPage();
   if (pageId === 'ai') setTimeout(aiInit, 50);
   if (pageId === 'finances') loadFinances();
   document.getElementById('topbar-title').textContent = pageTitles[pageId] || title;
@@ -3156,6 +3340,38 @@ document.addEventListener('DOMContentLoaded', () => {
     attributes: true, attributeFilter: ['class'], subtree: true
   });
 });
+
+// =========================================
+// SWAP MONITOR
+// =========================================
+function loadSwapsPage() {
+  // The page is already rendered as static HTML mockup.
+  // In a real implementation, this would fetch live data from Supabase.
+  // For now, we just ensure the page is visible and nothing breaks.
+  const page = document.getElementById('page-swaps');
+  if (!page) return;
+  // Could refresh from DB here — for demo, content is static.
+}
+
+function blockSwap(swapId) {
+  document.getElementById('modal-confirm-title').textContent = '🔴 Bloquer ce swap';
+  document.getElementById('modal-confirm-body').textContent = `Confirmer le blocage du swap ${swapId} ? Cette action est irréversible et l\'utilisateur sera notifié.`;
+  document.getElementById('modal-confirm-ok').className = 'btn btn-danger';
+  document.getElementById('modal-confirm-ok').onclick = () => {
+    closeModal('modal-confirm');
+    // Remove the block button for this swap in the table
+    document.querySelectorAll('#swaps-feed-tbody tr').forEach(row => {
+      if (row.textContent.includes(swapId)) {
+        const statusCell = row.cells[7];
+        if (statusCell) statusCell.innerHTML = '<span class="badge badge-red">❌ Bloqué</span>';
+        const actionCell = row.cells[9];
+        if (actionCell) actionCell.innerHTML = '—';
+      }
+    });
+    showToast(`🔴 Swap ${swapId} bloqué`, 'error');
+  };
+  openModal('modal-confirm');
+}
 
 // =========================================
 // SECURE LOGOUT
