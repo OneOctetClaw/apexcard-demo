@@ -25,11 +25,11 @@
   }
 
   html, body {
-    width: 100%; height: 100%;
+    width: 100%; min-height: 100%;
     background: var(--bg);
     font-family: 'Space Grotesk', system-ui, sans-serif;
     color: var(--text);
-    overflow: hidden;
+    overflow-y: auto;
   }
 
   /* Orbs */
@@ -452,14 +452,14 @@
           👤 <strong>Client</strong> &nbsp;
           <code>user@apexcard.io</code> / <code>ApexUser2026!</code>
         </div>
-        <button class="demo-fill-btn" onclick="autofill('user@apexcard.io','ApexUser2026!','user')">Remplir</button>
+        <button class="demo-fill-btn" onclick="autofill('user')">Remplir</button>
       </div>
       <div class="demo-cred-item">
         <div class="demo-cred-label">
           🔑 <strong>Admin</strong> &nbsp;
           <code>admin@apexcard.io</code> / <code>ApexAdmin2026!</code>
         </div>
-        <button class="demo-fill-btn" onclick="autofill('admin@apexcard.io','ApexAdmin2026!','admin')">Remplir</button>
+        <button class="demo-fill-btn" onclick="autofill('admin')">Remplir</button>
       </div>
     </div>
 
@@ -705,10 +705,16 @@ async function quickLogin(role) {
 }
 
 // Autofill for demo credentials
-function autofill(email, password, role) {
-  document.getElementById('email').value = email;
-  document.getElementById('password').value = password;
-  currentRole = role;
+function autofill(role) {
+  if (role === 'user') {
+    document.getElementById('email').value = 'user@apexcard.io';
+    document.getElementById('password').value = 'ApexUser2026!';
+    currentRole = 'user';
+  } else if (role === 'admin') {
+    document.getElementById('email').value = 'admin@apexcard.io';
+    document.getElementById('password').value = 'ApexAdmin2026!';
+    currentRole = 'admin';
+  }
   document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.role-card')[role === 'admin' ? 1 : 0]?.classList.add('active');
   // Animate the button momentarily
