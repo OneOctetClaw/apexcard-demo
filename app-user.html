@@ -2629,7 +2629,7 @@ function downloadStatement() {
   <div class="hdr"><div><div class="logo">APEXCARD</div><div style="font-size:10px;color:#94a3b8;margin-top:3px">APEXCARD FINANCIAL SAS</div></div>
   <div class="hdr-r"><div style="font-size:13px;font-weight:700;color:#0f172a">${title}</div>
   <div>${stmtLang==='fr'?'Généré le':'Generated on'} : ${nowStr}</div>
-  <div>${stmtLang==='fr'?'Titulaire':'Holder'} : Jean-Philippe Nové</div>
+  <div>${stmtLang==='fr'?'Titulaire':'Holder'} : ${(currentProfile?.first_name||'') + ' ' + (currentProfile?.last_name||'')}</div>
   <div>IBAN : FR76 3000 4028 3788 0012 3456 789</div></div></div>
   <div class="stats">
     <div class="stat"><div class="stat-l">${d.total_in}</div><div class="stat-v pos">+$${fmt(totalIn)}</div></div>
@@ -2706,7 +2706,7 @@ function renderAttestation() {
     </div>
     <div class="attest-body">
       <p>${i.body1}</p>
-      <div class="attest-highlight">Jean-Philippe Nové</div>
+      <div class="attest-highlight">${(currentProfile?.first_name||'') + ' ' + (currentProfile?.last_name||'')}</div>
       <p>${i.body2}</p>
     </div>
     <table class="attest-table">
@@ -2755,7 +2755,7 @@ function downloadAttestation() {
     <div style="margin-top:6px">${i.ref} : ${ref}</div><div>${i.issued} : ${nowStr}</div></div>
   </div>
   <p>${i.body1}</p>
-  <div class="highlight">Jean-Philippe Nové</div>
+  <div class="highlight">${(currentProfile?.first_name||'') + ' ' + (currentProfile?.last_name||'')}</div>
   <p>${i.body2}</p>
   <table>
     <tr><td>${i.account}</td><td>ACX-2024-00847</td></tr>
