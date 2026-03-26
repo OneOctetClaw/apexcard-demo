@@ -369,19 +369,19 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="kpi-grid kpi-4">
         <div class="kpi-card">
           <div class="kpi-label" data-i18n="admin.kpi.users">Utilisateurs</div>
-          <div class="kpi-value">3,847</div>
+          <div class="kpi-value" id="totalUsers">3,847</div>
           <div class="kpi-sub">+127 ce mois</div>
           <div class="kpi-icon">👥</div>
         </div>
         <div class="kpi-card cyan">
           <div class="kpi-label" data-i18n="admin.kpi.cards">Cartes actives</div>
-          <div class="kpi-value" style="color:var(--cyan)">2,341</div>
+          <div class="kpi-value" id="totalCards" style="color:var(--cyan)">2,341</div>
           <div class="kpi-sub">87% taux activation</div>
           <div class="kpi-icon">💳</div>
         </div>
         <div class="kpi-card gold">
           <div class="kpi-label" data-i18n="admin.kpi.volume">Volume 30j</div>
-          <div class="kpi-value" style="color:var(--gold)">$1.2M</div>
+          <div class="kpi-value" id="totalVolume" style="color:var(--gold)">$1.2M</div>
           <div class="kpi-sub">+18% vs mois dernier</div>
           <div class="kpi-icon">📦</div>
         </div>
@@ -934,7 +934,7 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
 const { createClient } = supabase;
 const sb = createClient(
   'https://vhdgqtwsxasuggbeujoo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODU2MzIsImV4cCI6MjA4OTk2MTYzMn0.J_9V--cflujeSnOsc_3wYDOgiMi54RTF5aDHC4fMZVI'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM4NTYzMiwiZXhwIjoyMDg5OTYxNjMyfQ.BU67jz4uBcDeYhWZcLGoTM3AtwOZIuevVMD71Mk60-k'
 );
 
 // =========================================

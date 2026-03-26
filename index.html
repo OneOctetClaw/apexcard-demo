@@ -2919,6 +2919,16 @@ function initScrollEffects() {
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
+  // Immediately make visible elements already in viewport on load
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) el.classList.add('visible');
+  });
+  // Fallback: force all remaining invisible after 800ms (handles slow/no-JS observer)
+  setTimeout(() => {
+    document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => el.classList.add('visible'));
+  }, 800);
+
   // Scroll progress variable
   function updateScrollProgress() {
     const progress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
