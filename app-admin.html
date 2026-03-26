@@ -2372,6 +2372,92 @@ const sb = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoZGdxdHdzeGFzdWdnYmV1am9vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDM4NTYzMiwiZXhwIjoyMDg5OTYxNjMyfQ.BU67jz4uBcDeYhWZcLGoTM3AtwOZIuevVMD71Mk60-k'
 );
 
+// ══════════════════════════════════════════════
+// MOCK DATA — Demo mode (active when DB < 10 users)
+// ══════════════════════════════════════════════
+const MOCK_USERS = [
+  {id:'USR-001',name:'Ahmed Khalil',email:'ahmed.k@gmail.com',tier:2,cards:2,balance:'$84,200',volume:'$312,800',date:'2024-01-14',status:'Actif'},
+  {id:'USR-002',name:'Sofia Marchetti',email:'sofia.m@yahoo.fr',tier:2,cards:1,balance:'$42,100',volume:'$198,400',date:'2024-01-22',status:'Actif'},
+  {id:'USR-003',name:'Pierre Durand',email:'pierre.d@icloud.com',tier:1,cards:2,balance:'$12,840',volume:'$87,300',date:'2024-02-08',status:'Actif'},
+  {id:'USR-004',name:'Elena Volkov',email:'e.volkov@proton.me',tier:2,cards:1,balance:'$28,400',volume:'$142,600',date:'2024-02-15',status:'Actif'},
+  {id:'USR-005',name:'Marcus Johnson',email:'marcus.j@outlook.com',tier:1,cards:1,balance:'$3,200',volume:'$34,100',date:'2024-03-01',status:'Suspendu'},
+  {id:'USR-006',name:'Yuki Tanaka',email:'y.tanaka@gmail.com',tier:2,cards:2,balance:'$67,500',volume:'$256,000',date:'2024-03-10',status:'Actif'},
+  {id:'USR-007',name:'Fatima Al-Hassan',email:'f.alhassan@gmail.com',tier:1,cards:1,balance:'$8,900',volume:'$52,400',date:'2024-03-22',status:'Actif'},
+  {id:'USR-008',name:'Carlos Mendez',email:'c.mendez@proton.me',tier:1,cards:2,balance:'$15,600',volume:'$78,200',date:'2024-04-05',status:'Actif'},
+  {id:'USR-009',name:'Anna Kowalski',email:'a.kowalski@pm.me',tier:0,cards:1,balance:'$420',volume:'$3,800',date:'2024-04-18',status:'Pending'},
+  {id:'USR-010',name:'Dmitri Smirnov',email:'d.smirnov@mail.ru',tier:1,cards:1,balance:'$6,780',volume:'$41,200',date:'2024-05-02',status:'Actif'},
+  {id:'USR-011',name:'Isabelle Fontaine',email:'i.fontaine@gmail.com',tier:2,cards:1,balance:'$31,200',volume:'$167,800',date:'2024-05-14',status:'Actif'},
+  {id:'USR-012',name:'Ravi Patel',email:'r.patel@gmail.com',tier:1,cards:2,balance:'$9,400',volume:'$58,900',date:'2024-05-28',status:'Actif'},
+  {id:'USR-013',name:'Camille Bernard',email:'c.bernard@yahoo.fr',tier:0,cards:1,balance:'$840',volume:'$7,200',date:'2024-06-10',status:'Actif'},
+  {id:'USR-014',name:'Kenji Watanabe',email:'k.watanabe@gmail.com',tier:2,cards:2,balance:'$52,100',volume:'$234,500',date:'2024-06-22',status:'Actif'},
+  {id:'USR-015',name:'Amira Benali',email:'a.benali@proton.me',tier:1,cards:1,balance:'$4,200',volume:'$28,700',date:'2024-07-08',status:'Actif'},
+  {id:'USR-016',name:'Thomas Weber',email:'t.weber@gmail.com',tier:1,cards:1,balance:'$11,200',volume:'$63,400',date:'2024-07-19',status:'Actif'},
+  {id:'USR-017',name:'Priya Sharma',email:'p.sharma@pm.me',tier:2,cards:1,balance:'$18,900',volume:'$98,600',date:'2024-08-03',status:'Actif'},
+  {id:'USR-018',name:'Nikolai Petrov',email:'n.petrov@mail.ru',tier:0,cards:1,balance:'$240',volume:'$1,900',date:'2024-08-15',status:'Pending'},
+  {id:'USR-019',name:'Lucia Reyes',email:'l.reyes@gmail.com',tier:1,cards:2,balance:'$7,600',volume:'$44,300',date:'2024-09-02',status:'Actif'},
+  {id:'USR-020',name:'Omar Diallo',email:'o.diallo@gmail.com',tier:1,cards:1,balance:'$5,100',volume:'$32,600',date:'2024-09-18',status:'Actif'},
+];
+
+const MOCK_CARDS = [
+  {id:'CRD-0001',user:'Ahmed Khalil',type:'virtual',number:'4111 •••• •••• 7823',status:'active',balance:'$8,420',limit:'$15,000',lastTx:'2026-03-25'},
+  {id:'CRD-0002',user:'Ahmed Khalil',type:'gold',number:'5412 •••• •••• 3091',status:'active',balance:'$3,200',limit:'$25,000',lastTx:'2026-03-24'},
+  {id:'CRD-0003',user:'Sofia Marchetti',type:'virtual',number:'4916 •••• •••• 4421',status:'active',balance:'$2,100',limit:'$10,000',lastTx:'2026-03-25'},
+  {id:'CRD-0004',user:'Pierre Durand',type:'virtual',number:'4532 •••• •••• 8812',status:'active',balance:'$980',limit:'$8,000',lastTx:'2026-03-23'},
+  {id:'CRD-0005',user:'Pierre Durand',type:'gold',number:'5200 •••• •••• 6671',status:'active',balance:'$4,500',limit:'$20,000',lastTx:'2026-03-22'},
+  {id:'CRD-0006',user:'Elena Volkov',type:'virtual',number:'4111 •••• •••• 2234',status:'active',balance:'$1,840',limit:'$12,000',lastTx:'2026-03-25'},
+  {id:'CRD-0007',user:'Marcus Johnson',type:'virtual',number:'4916 •••• •••• 9982',status:'blocked',balance:'$0',limit:'$8,000',lastTx:'2026-02-14'},
+  {id:'CRD-0008',user:'Yuki Tanaka',type:'gold',number:'5412 •••• •••• 7743',status:'active',balance:'$12,400',limit:'$30,000',lastTx:'2026-03-25'},
+  {id:'CRD-0009',user:'Yuki Tanaka',type:'virtual',number:'4532 •••• •••• 1188',status:'active',balance:'$3,600',limit:'$10,000',lastTx:'2026-03-24'},
+  {id:'CRD-0010',user:'Fatima Al-Hassan',type:'virtual',number:'4111 •••• •••• 5543',status:'active',balance:'$1,200',limit:'$8,000',lastTx:'2026-03-23'},
+  {id:'CRD-0011',user:'Carlos Mendez',type:'virtual',number:'4916 •••• •••• 3312',status:'active',balance:'$2,800',limit:'$10,000',lastTx:'2026-03-22'},
+  {id:'CRD-0012',user:'Carlos Mendez',type:'gold',number:'5200 •••• •••• 8821',status:'active',balance:'$6,100',limit:'$20,000',lastTx:'2026-03-21'},
+  {id:'CRD-0013',user:'Anna Kowalski',type:'virtual',number:'4532 •••• •••• 4491',status:'pending',balance:'$0',limit:'$5,000',lastTx:'—'},
+  {id:'CRD-0014',user:'Isabelle Fontaine',type:'gold',number:'5412 •••• •••• 2298',status:'active',balance:'$9,800',limit:'$25,000',lastTx:'2026-03-25'},
+  {id:'CRD-0015',user:'Kenji Watanabe',type:'gold',number:'5200 •••• •••• 5567',status:'active',balance:'$14,200',limit:'$30,000',lastTx:'2026-03-25'},
+];
+
+const MOCK_TRANSACTIONS = [
+  {id:'TXN-78491',user:'Ahmed Khalil',type:'deposit',amount:'+$12,400',currency:'USDT',status:'completed',date:'2026-03-25 14:32'},
+  {id:'TXN-78490',user:'Yuki Tanaka',type:'withdrawal',amount:'-$8,400',currency:'BTC',status:'completed',date:'2026-03-25 13:55'},
+  {id:'TXN-78489',user:'Sofia Marchetti',type:'swap',amount:'+$3,200',currency:'ETH→USDT',status:'completed',date:'2026-03-25 13:12'},
+  {id:'TXN-78488',user:'Kenji Watanabe',type:'deposit',amount:'+$25,000',currency:'USDT',status:'pending',date:'2026-03-25 11:44',flagged:true},
+  {id:'TXN-78487',user:'Marcus Johnson',type:'withdrawal',amount:'-$8,400',currency:'BTC',status:'blocked',date:'2026-03-25 10:21',flagged:true},
+  {id:'TXN-78486',user:'Elena Volkov',type:'card',amount:'-$420',currency:'EUR',status:'completed',date:'2026-03-25 09:08'},
+  {id:'TXN-78485',user:'Pierre Durand',type:'swap',amount:'+$1,850',currency:'EUR→BTC',status:'completed',date:'2026-03-24 18:44'},
+  {id:'TXN-78484',user:'Isabelle Fontaine',type:'yield',amount:'+$624',currency:'USD',status:'completed',date:'2026-03-24 16:22'},
+  {id:'TXN-78483',user:'Carlos Mendez',type:'deposit',amount:'+$5,000',currency:'EUR',status:'completed',date:'2026-03-24 14:10'},
+  {id:'TXN-78482',user:'Ravi Patel',type:'withdrawal',amount:'-$2,100',currency:'ETH',status:'completed',date:'2026-03-24 11:33'},
+  {id:'TXN-78481',user:'Amira Benali',type:'swap',amount:'+$840',currency:'USDT→EUR',status:'completed',date:'2026-03-24 09:17'},
+  {id:'TXN-78480',user:'Fatima Al-Hassan',type:'card',amount:'-$280',currency:'GBP',status:'completed',date:'2026-03-23 20:45'},
+  {id:'TXN-78479',user:'Ahmed Khalil',type:'deposit',amount:'+$30,000',currency:'USDT',status:'completed',date:'2026-03-23 15:00'},
+  {id:'TXN-78478',user:'Thomas Weber',type:'swap',amount:'+$2,400',currency:'EUR→ETH',status:'completed',date:'2026-03-23 12:30'},
+  {id:'TXN-78477',user:'Omar Diallo',type:'affiliate',amount:'+$192',currency:'USD',status:'completed',date:'2026-03-22 10:00'},
+];
+
+const MOCK_KYC = [
+  {id:'USR-009',name:'Anna Kowalski',email:'a.kowalski@pm.me',type:'Tier 0 → 1',docs:'Passeport UE',submitted:'Il y a 18h',status:'pending'},
+  {id:'USR-018',name:'Nikolai Petrov',email:'n.petrov@mail.ru',type:'Tier 0 → 1',docs:'CNI + Selfie',submitted:'Il y a 24h',status:'pending'},
+  {id:'KYC-NEW-001',name:'Jean-Marc Dupont',email:'jm.dupont@gmail.com',type:'Tier 1 → 2',docs:'Justif. domicile',submitted:'Il y a 31h',status:'urgent'},
+  {id:'KYC-NEW-002',name:'Asel Nurmagambetova',email:'a.nurm@pm.me',type:'Tier 0 → 1',docs:'Passeport KZ',submitted:'Il y a 42h',status:'urgent'},
+  {id:'KYC-NEW-003',name:'Paulo Ferreira',email:'p.ferreira@gmail.com',type:'Tier 1 → 2',docs:'Extrait bancaire',submitted:'Il y a 48h',status:'urgent'},
+  {id:'KYC-NEW-004',name:'Marie Leclerc',email:'m.leclerc@yahoo.fr',type:'Tier 0 → 1',docs:'CNI française',submitted:'Il y a 6h',status:'pending'},
+  {id:'KYC-NEW-005',name:'Aleksei Voronov',email:'a.voronov@mail.ru',type:'Tier 1 → 2',docs:'Passeport RU',submitted:'Il y a 8h',status:'pending'},
+  {id:'KYC-NEW-006',name:'Fatou Dieng',email:'f.dieng@gmail.com',type:'Tier 0 → 1',docs:'CNI + Selfie',submitted:'Il y a 10h',status:'pending'},
+  {id:'KYC-NEW-007',name:'Haruto Yamamoto',email:'h.yamamoto@pm.me',type:'Tier 0 → 1',docs:'Passeport JP',submitted:'Il y a 12h',status:'pending'},
+  {id:'KYC-NEW-008',name:'Sara Al-Rashidi',email:'s.alrashidi@gmail.com',type:'Tier 1 → 2',docs:'Docs Emirates',submitted:'Il y a 14h',status:'pending'},
+  {id:'KYC-NEW-009',name:'Victor Okonkwo',email:'v.okonkwo@gmail.com',type:'Tier 0 → 1',docs:'Passeport NG',submitted:'Il y a 16h',status:'pending'},
+  {id:'KYC-NEW-010',name:'Nathalie Rousseau',email:'n.rousseau@gmail.com',type:'Tier 0 → 1',docs:'CNI + Justif.',submitted:'Il y a 4h',status:'pending'},
+];
+
+const MOCK_AFFILIATES = [
+  {rank:1,id:'AFF-001',name:'Ahmed Khalil',email:'ahmed.k@gmail.com',level:'L1',referrals:47,volume:'$312,800',commission:'$25,024',status:'Actif'},
+  {rank:2,id:'AFF-002',name:'Yuki Tanaka',email:'y.tanaka@gmail.com',level:'L1',referrals:31,volume:'$198,400',commission:'$15,872',status:'Actif'},
+  {rank:3,id:'AFF-003',name:'Isabelle Fontaine',email:'i.fontaine@gmail.com',level:'L1',referrals:24,volume:'$167,800',commission:'$13,424',status:'Actif'},
+  {rank:4,id:'AFF-004',name:'Kenji Watanabe',email:'k.watanabe@gmail.com',level:'L1',referrals:18,volume:'$142,600',commission:'$11,408',status:'Actif'},
+  {rank:5,id:'AFF-005',name:'Sofia Marchetti',email:'sofia.m@yahoo.fr',level:'L1',referrals:15,volume:'$98,600',commission:'$7,888',status:'Actif'},
+];
+// ── END MOCK DATA ──
+
 // =========================================
 // SECURITY: Admin auth guard
 // Only allow access to users in ADMIN_EMAILS whitelist
@@ -2427,18 +2513,24 @@ async function loadKPIs() {
     const volume = txData?.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0) || 0;
     const { count: kycCount } = await sb.from('profiles').select('*', { count: 'exact', head: true }).eq('kyc_status', 'pending');
 
-    // Update overview KPIs by ID (safe, won't affect other pages)
+    const isDemoMode = !userCount || userCount < 10;
+
     const elUsers  = document.getElementById('totalUsers');
     const elCards  = document.getElementById('totalCards');
     const elVolume = document.getElementById('totalVolume');
-    if (elUsers)  elUsers.textContent  = userCount?.toLocaleString()  || '3,847';
-    if (elCards)  elCards.textContent  = cardCount?.toLocaleString()  || '2,241';
-    if (elVolume) elVolume.textContent = volume > 0 ? '$' + (volume/1000000).toFixed(1) + 'M' : '$4.2M';
-    // Update KYC badge in sidebar
+    if (elUsers)  elUsers.textContent  = isDemoMode ? '3,847' : userCount.toLocaleString();
+    if (elCards)  elCards.textContent  = isDemoMode ? '2,241' : cardCount.toLocaleString();
+    if (elVolume) elVolume.textContent = isDemoMode ? '$4.2M' : (volume > 0 ? '$' + (volume/1000000).toFixed(1) + 'M' : '$0.0M');
+
+    // Revenue KPI (4th card — no ID, find by position within overview)
+    const overviewKpis = document.querySelectorAll('#page-overview .kpi-value');
+    if (overviewKpis[3]) overviewKpis[3].textContent = isDemoMode ? '$89,420' : '$' + Math.round(volume * 0.035).toLocaleString();
+
+    // KYC badge
     const kycBadge = document.getElementById('kyc-badge');
-    if (kycBadge && kycCount !== null) kycBadge.textContent = kycCount;
+    if (kycBadge) kycBadge.textContent = isDemoMode ? '12' : (kycCount || 0);
     const kycCountBadge = document.getElementById('kyc-count-badge');
-    if (kycCountBadge && kycCount !== null) kycCountBadge.textContent = `${kycCount} dossiers`;
+    if (kycCountBadge) kycCountBadge.textContent = isDemoMode ? '12 dossiers' : `${kycCount || 0} dossiers`;
   } catch(e) { console.error('loadKPIs error:', e); }
 }
 
@@ -2452,37 +2544,78 @@ async function loadUsers() {
     const tbody = document.getElementById('users-tbody');
     if (!tbody) return;
 
-    if (!users?.length) {
-      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state-admin"><svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="24" r="12" stroke="rgba(255,255,255,0.4)" stroke-width="2"/><path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="rgba(255,255,255,0.4)" stroke-width="2"/></svg><div class="es-title">Aucun utilisateur trouvé</div><div class="es-desc">Aucun utilisateur ne correspond aux critères actuels.</div></div></td></tr>`;
+    const isDemoMode = !users || users.length < 10;
+
+    if (isDemoMode) {
+      // Render mock users
+      tbody.innerHTML = MOCK_USERS.map(u => `
+        <tr onclick="openMockUserModal('${u.id}','${u.name}','${u.email}',${u.tier},'${u.status}')">
+          <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">${u.id}</span></td>
+          <td><b>${u.name}</b></td>
+          <td style="color:var(--text2)">${u.email}</td>
+          <td><span class="badge ${u.tier>=2?'badge-violet':u.tier===1?'badge-cyan':'badge-gray'}">Tier ${u.tier}</span></td>
+          <td style="text-align:center">${u.cards}</td>
+          <td><b>${u.balance}</b></td>
+          <td style="color:var(--cyan)">${u.volume}</td>
+          <td style="color:var(--text3)">${u.date}</td>
+          <td><span class="badge ${u.status==='Actif'?'badge-green':u.status==='Suspendu'?'badge-red':'badge-gold'}">● ${u.status}</span></td>
+        </tr>`).join('');
+
+      // Update users count display
+      const countEl = document.querySelector('#page-users .section-title span');
+      if (countEl) countEl.textContent = `(${MOCK_USERS.length} affichés sur 3,847)`;
       return;
     }
 
+    // Real Supabase data
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text3)">Aucun utilisateur</td></tr>`;
+      return;
+    }
     tbody.innerHTML = users.map((u, i) => {
       const sId = sanitize(u.id), sFirst = sanitize(u.first_name || ''), sLast = sanitize(u.last_name || ''), sEmail = sanitize(u.email || ''), sPlan = sanitize(u.plan || '-'), sKycStatus = sanitize(u.kyc_status || 'pending');
       const tier = u.kyc_tier || 0;
       const accountStatus = u.account_status || 'active';
       const isSuspended = accountStatus === 'suspended';
       return `
-      <tr onclick="openUserDetailModal('${sId}','${sFirst} ${sLast}', '${sEmail}', '${sPlan}', '0', ${tier}, '${sKycStatus}', '${accountStatus}')" style="${isSuspended ? 'opacity:0.7' : ''}">
+      <tr onclick="openUserDetailModal('${sId}','${sFirst} ${sLast}', '${sEmail}', '${sPlan}', '0', ${tier}, '${sKycStatus}', '${accountStatus}')">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${String(i+1).padStart(4,'0')}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
         <td style="color:var(--text2)">${sEmail}</td>
-        <td><span class="badge ${tier >= 2 ? 'badge-violet' : tier === 1 ? 'badge-cyan' : 'badge-gray'}">Tier ${tier}</span></td>
+        <td><span class="badge ${tier>=2?'badge-violet':tier===1?'badge-cyan':'badge-gray'}">Tier ${tier}</span></td>
         <td style="text-align:center">-</td>
         <td><b>-</b></td>
         <td style="color:var(--cyan)">-</td>
         <td style="color:var(--text3)">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
-        <td>
-          <span class="badge ${isSuspended ? 'badge-red' : u.kyc_status === 'approved' ? 'badge-green' : u.kyc_status === 'rejected' ? 'badge-red' : 'badge-gold'}">
-            ● ${isSuspended ? 'Suspendu' : u.kyc_status === 'approved' ? 'Actif' : u.kyc_status === 'rejected' ? 'Rejeté' : 'Pending'}
-          </span>
-        </td>
-      </tr>
-    `}).join('');
-
-    const h1 = document.querySelector('#page-users h1');
-    if (h1) h1.innerHTML = `Utilisateurs <span style="color:var(--text3);font-size:16px">(${users.length})</span>`;
+        <td><span class="badge ${isSuspended?'badge-red':u.kyc_status==='approved'?'badge-green':u.kyc_status==='rejected'?'badge-red':'badge-gold'}">● ${isSuspended?'Suspendu':u.kyc_status==='approved'?'Actif':u.kyc_status==='rejected'?'Rejeté':'Pending'}</span></td>
+      </tr>`}).join('');
   } catch(e) { console.error('loadUsers error:', e); }
+}
+
+function openMockUserModal(id, name, email, tier, status) {
+  document.getElementById('modal-user-title').textContent = `👤 ${name}`;
+  const isSuspended = status === 'Suspendu';
+  document.getElementById('modal-user-body').innerHTML = `
+    <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value" style="font-family:monospace">${id}</span></div>
+    <div class="detail-row"><span class="detail-label">Nom</span><span class="detail-value">${name}</span></div>
+    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${email}</span></div>
+    <div class="detail-row"><span class="detail-label">KYC Tier</span><span class="detail-value"><span class="badge ${tier>=2?'badge-violet':tier===1?'badge-cyan':'badge-gray'}">Tier ${tier}</span></span></div>
+    <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value"><span class="badge ${isSuspended?'badge-red':'badge-green'}">${isSuspended?'⛔ Suspendu':'✅ Actif'}</span></span></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      ${isSuspended
+        ? `<button class="btn btn-success btn-sm" onclick="showToast('Compte réactivé (démo)', 'success');closeModal('modal-user')">✅ Réactiver</button>`
+        : `<button class="btn btn-danger btn-sm" onclick="showToast('Compte suspendu (démo)', 'info');closeModal('modal-user')">⛔ Suspendre</button>`}
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Mode démo — Supabase non connecté', 'info')">📊 Détails complets</button>
+    </div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin-bottom:8px">⚙️ Override Limites</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Limit retrait / jour</div><input type="number" class="fee-input" style="width:100%" placeholder="ex: 5000"></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Limit virement / jour</div><input type="number" class="fee-input" style="width:100%" placeholder="ex: 10000"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="showToast('Limites mises à jour (démo)', 'success')">💾 Appliquer</button>
+    </div>`;
+  openModal('modal-user');
 }
 
 function openUserDetailModal(userId, name, email, plan, balance, tier, kycStatus, accountStatus) {
@@ -2527,33 +2660,51 @@ async function loadCards() {
       .order('created_at', { ascending: false })
       .limit(50);
 
-    if (!cards?.length) return;
-
     const tbody = document.getElementById('cards-tbody');
     if (!tbody) return;
 
+    const isDemoMode = !cards || cards.length < 5;
+
+    if (isDemoMode) {
+      tbody.innerHTML = MOCK_CARDS.map(c => `
+        <tr>
+          <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">${c.id}</span></td>
+          <td><b>${c.user}</b></td>
+          <td><span class="badge ${c.type==='gold'?'badge-gold':c.type==='physical'?'badge-cyan':'badge-violet'}">${c.type}</span></td>
+          <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${c.number}</td>
+          <td><span class="badge ${c.status==='active'?'badge-green':c.status==='pending'?'badge-gold':'badge-red'}">● ${c.status}</span></td>
+          <td style="color:var(--green);font-weight:600">${c.balance}</td>
+          <td>${c.limit}</td>
+          <td style="color:var(--text3)">${c.lastTx}</td>
+          <td><button class="btn ${c.status==='blocked'?'btn-success':'btn-danger'} btn-sm" onclick="showToast('Action enregistrée (démo)', 'info')">${c.status==='blocked'?'🔓 Débloquer':'🚫 Bloquer'}</button></td>
+        </tr>`).join('');
+
+      // Update card count badge
+      const countBadge = document.querySelector('#page-cards .badge');
+      if (countBadge && countBadge.textContent.includes('cartes')) countBadge.textContent = `${MOCK_CARDS.length} cartes`;
+      return;
+    }
+
+    // Real Supabase data
+    if (!cards.length) return;
     tbody.innerHTML = cards.map(c => {
       const sId = sanitize(c.id.slice(0,8)), sFullId = sanitize(c.id), sFirst = sanitize(c.profiles?.first_name||''), sLast = sanitize(c.profiles?.last_name||''), sType = sanitize(c.type||''), sMasked = sanitize(c.masked_number||'•••• •••• •••• ????'), sStatus = sanitize(c.status||'');
       const isBlocked = c.status === 'blocked';
       return `
-      <tr onclick="openCardDetailModal('${sFullId}', '${sFirst} ${sLast}', '${sType}', '${sMasked}', '${parseFloat(c.balance||0).toFixed(2)}', '${parseFloat(c.monthly_limit||0).toFixed(0)}')">
+      <tr onclick="openCardDetailModal('${sFullId}','${sFirst} ${sLast}','${sType}','${sMasked}','${parseFloat(c.balance||0).toFixed(2)}','${parseFloat(c.monthly_limit||0).toFixed(0)}')">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sId}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
-        <td><span class="badge ${c.type === 'gold' ? 'badge-gold' : c.type === 'physical' ? 'badge-cyan' : 'badge-violet'}">${sType}</span></td>
+        <td><span class="badge ${c.type==='gold'?'badge-gold':c.type==='physical'?'badge-cyan':'badge-violet'}">${sType}</span></td>
         <td style="font-family:'Space Grotesk',sans-serif;font-size:13px">${sMasked}</td>
-        <td><span class="badge ${c.status === 'active' ? 'badge-green' : c.status === 'pending' ? 'badge-gold' : 'badge-red'}">● ${sStatus}</span></td>
+        <td><span class="badge ${c.status==='active'?'badge-green':c.status==='pending'?'badge-gold':'badge-red'}">● ${sStatus}</span></td>
         <td style="color:var(--green);font-weight:600">$${parseFloat(c.balance||0).toFixed(2)}</td>
         <td>$${parseFloat(c.monthly_limit||0).toFixed(0)}</td>
         <td style="color:var(--text3)">${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
         <td style="display:flex;gap:6px">
-          ${c.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();activateCard('${sFullId}')">✓ Activer</button>` : ''}
-          ${isBlocked
-            ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}', false)">🔓 Débloquer</button>`
-            : `<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}', true)">🚫 Bloquer</button>`
-          }
+          ${c.status==='pending'?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();activateCard('${sFullId}')">✓ Activer</button>`:''}
+          ${isBlocked?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}',false)">🔓 Débloquer</button>`:`<button class="btn btn-danger btn-sm" onclick="event.stopPropagation();toggleCardBlock('${sFullId}',true)">🚫 Bloquer</button>`}
         </td>
-      </tr>
-    `}).join('');
+      </tr>`}).join('');
   } catch(e) { console.error('loadCards error:', e); }
 }
 
@@ -2644,33 +2795,45 @@ async function loadTransactions() {
       .order('created_at', { ascending: false })
       .limit(100);
 
-    if (!txs?.length) return;
-
     const tbody = document.getElementById('tx-tbody');
     if (!tbody) return;
 
+    const isDemoMode = !txs || txs.length < 5;
+
+    if (isDemoMode) {
+      tbody.innerHTML = MOCK_TRANSACTIONS.map(t => `
+        <tr style="${t.flagged?'background:rgba(239,68,68,0.06)':''}">
+          <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">${t.id}</span></td>
+          <td><b>${t.user}</b></td>
+          <td><span class="badge badge-violet">${t.type}</span></td>
+          <td style="${t.amount.startsWith('+')?'color:var(--green)':'color:var(--red)'};font-weight:600">${t.amount}${t.flagged?' 🚨':''}</td>
+          <td><span class="badge badge-gray">${t.currency}</span></td>
+          <td><span class="badge ${t.status==='completed'?'badge-green':t.status==='pending'?'badge-gold':'badge-red'}">${t.status}</span>
+            ${t.status==='pending'?`<div style="display:flex;gap:4px;margin-top:4px"><button class="btn btn-success btn-sm" onclick="showToast('Transaction approuvée (démo)','success')">✓ OK</button><button class="btn btn-danger btn-sm" onclick="showToast('Transaction refusée (démo)','info')">✗ KO</button></div>`:''}
+          </td>
+          <td style="color:var(--text3)">${t.date}</td>
+        </tr>`).join('');
+      return;
+    }
+
+    // Real Supabase data
+    if (!txs.length) return;
     tbody.innerHTML = txs.map(t => {
-      // AML: flag transactions > 10,000 (AMLD5 threshold)
-      const flagged = parseFloat(t.amount || 0) > 10000;
-      const isCredit = t.type === 'deposit' || t.type === 'yield' || t.type === 'commission';
-      const isPendingWithdrawal = t.type === 'withdrawal' && t.status === 'pending';
-      const sFirst = sanitize(t.profiles?.first_name||''), sLast = sanitize(t.profiles?.last_name||''), sType = sanitize(t.type||''), sCurrency = sanitize(t.currency||'USD'), sStatus = sanitize(t.status||''), sTxId = sanitize(t.id), sUserId = sanitize(t.user_id||'');
-      return `<tr style="${flagged ? 'background:rgba(239,68,68,0.06)' : ''}">
+      const flagged = parseFloat(t.amount||0) > 10000;
+      const isCredit = ['deposit','yield','commission'].includes(t.type);
+      const isPending = t.type==='withdrawal' && t.status==='pending';
+      const sFirst=sanitize(t.profiles?.first_name||''), sLast=sanitize(t.profiles?.last_name||''), sType=sanitize(t.type||''), sCurrency=sanitize(t.currency||'USD'), sStatus=sanitize(t.status||''), sTxId=sanitize(t.id), sUserId=sanitize(t.user_id||'');
+      return `<tr style="${flagged?'background:rgba(239,68,68,0.06)':''}">
         <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">#${sanitize(t.id.slice(0,8))}</span></td>
         <td><b>${sFirst} ${sLast}</b></td>
         <td><span class="badge badge-violet">${sType}</span></td>
-        <td style="${isCredit ? 'color:var(--green)' : ''};font-weight:600">${isCredit ? '+' : '-'}$${parseFloat(t.amount||0).toFixed(2)}${flagged ? ' 🚨' : ''}</td>
+        <td style="${isCredit?'color:var(--green)':''};font-weight:600">${isCredit?'+':'-'}$${parseFloat(t.amount||0).toFixed(2)}${flagged?' 🚨':''}</td>
         <td><span class="badge badge-gray">${sCurrency}</span></td>
-        <td>
-          <span class="badge ${t.status === 'completed' ? 'badge-green' : t.status === 'pending' ? 'badge-gold' : 'badge-red'}">${sStatus}</span>
-          ${isPendingWithdrawal ? `<div style="display:flex;gap:4px;margin-top:4px">
-            <button class="btn btn-success btn-sm" onclick="approveWithdrawal('${sTxId}','${sUserId}')">✓ OK</button>
-            <button class="btn btn-danger btn-sm" onclick="rejectWithdrawal('${sTxId}','${sUserId}')">✗ KO</button>
-          </div>` : ''}
+        <td><span class="badge ${t.status==='completed'?'badge-green':t.status==='pending'?'badge-gold':'badge-red'}">${sStatus}</span>
+          ${isPending?`<div style="display:flex;gap:4px;margin-top:4px"><button class="btn btn-success btn-sm" onclick="approveWithdrawal('${sTxId}','${sUserId}')">✓ OK</button><button class="btn btn-danger btn-sm" onclick="rejectWithdrawal('${sTxId}','${sUserId}')">✗ KO</button></div>`:''}
         </td>
         <td style="color:var(--text3)">${new Date(t.created_at).toLocaleDateString('fr-FR')}</td>
-      </tr>`;
-    }).join('');
+      </tr>`;}).join('');
   } catch(e) { console.error('loadTransactions error:', e); }
 }
 
@@ -2695,6 +2858,45 @@ async function loadKYCPending() {
         const { data: extraProfiles } = await sb.from('profiles').select('*').in('id', extraIds);
         if (extraProfiles) allPending.push(...extraProfiles);
       }
+    }
+
+    const isKycDemoMode = !allPending.length || allPending.length < 3;
+    if (isKycDemoMode) {
+      // Render MOCK_KYC
+      const kycTbody = document.getElementById('kyc-tbody') || document.querySelector('#page-kyc tbody');
+      if (kycTbody) {
+        kycTbody.innerHTML = MOCK_KYC.map(k => `
+          <tr>
+            <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">${k.id}</span></td>
+            <td><b>${k.name}</b></td>
+            <td style="color:var(--text2);font-size:12px">${k.email}</td>
+            <td><span class="badge badge-cyan">${k.type}</span></td>
+            <td style="font-size:12px">${k.docs}</td>
+            <td style="font-size:12px;color:${k.status==='urgent'?'var(--red)':'var(--text3)'}">${k.submitted} ${k.status==='urgent'?'⚠️':''}</td>
+            <td style="display:flex;gap:6px">
+              <button class="btn btn-success btn-sm" onclick="showToast('KYC approuvé (démo)','success')">✓ Approuver</button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('KYC refusé (démo)','info')">✗ Refuser</button>
+            </td>
+          </tr>`).join('');
+      } else if (grid) {
+        grid.innerHTML = MOCK_KYC.map(k => `
+          <div class="kyc-card">
+            <div class="kyc-name">${k.name}</div>
+            <div class="kyc-meta">${k.type} · ${k.submitted} ${k.status==='urgent'?'⚠️':''}</div>
+            <div class="kyc-docs">📄 ${k.docs}</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${k.email}</div>
+            <div class="kyc-actions">
+              <button class="btn btn-success btn-sm" onclick="showToast('KYC approuvé (démo)','success')">✓ Approuver</button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('KYC refusé (démo)','info')">✗ Refuser</button>
+            </div>
+          </div>`).join('');
+      }
+      // Update KYC count
+      const kycBadge = document.getElementById('kyc-badge');
+      if (kycBadge) kycBadge.textContent = '12';
+      const kycCountBadge = document.getElementById('kyc-count-badge');
+      if (kycCountBadge) kycCountBadge.textContent = '12 dossiers';
+      return;
     }
 
     if (!allPending.length) {
@@ -3059,19 +3261,19 @@ function navigateTo(pageId, title) {
 // TOP USERS
 // =========================================
 function renderTopUsers() {
-  const top5 = USERS.slice(0,5);
-  const html = top5.map((u,i) => `
-    <div class="top-user">
-      <div class="top-rank" style="color:${TOP_COLORS[i]}">${i+1}</div>
-      <div class="top-avatar" style="background:${TOP_COLORS[i]}22;color:${TOP_COLORS[i]}">${u.name.split(' ').map(w=>w[0]).join('')}</div>
-      <div class="top-info">
-        <div class="top-name">${u.name}</div>
-        <div class="top-email">${u.email}</div>
+  const topSrc = (typeof MOCK_USERS !== 'undefined' && MOCK_USERS.length >= 5) ? MOCK_USERS : USERS;
+  document.getElementById('top-users-list').innerHTML = topSrc.slice(0,5).map((u,i) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${i+1}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px">${u.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${u.email}</div>
       </div>
-      <div class="top-vol">${u.volume}</div>
-    </div>
-  `).join('');
-  document.getElementById('top-users-list').innerHTML = html;
+      <div style="text-align:right">
+        <div style="font-weight:600;color:var(--cyan)">${u.volume}</div>
+        <div style="font-size:11px;color:var(--text3)">Vol. 30j</div>
+      </div>
+    </div>`).join('');
 }
 
 // =========================================
@@ -3316,20 +3518,45 @@ async function loadAffiliates() {
       .select('*, referrer:profiles!referrer_id(email, first_name, last_name), referred:profiles!referred_id(email)')
       .order('created_at', { ascending: false })
       .limit(100);
-    if (!referrals || !referrals.length) return;
+
     const tbody = document.getElementById('affiliates-tbody');
     if (!tbody) return;
+
     // Aggregate by referrer
     const aggMap = {};
-    referrals.forEach(r => {
-      const key = r.referrer_id;
-      if (!aggMap[key]) {
-        aggMap[key] = { name: `${r.referrer?.first_name||''} ${r.referrer?.last_name||''}`.trim() || r.referrer?.email || key.slice(0,8), referrals: 0, volume: 0, commissions: 0, level: `L${r.level||1}` };
+    if (referrals) {
+      referrals.forEach(r => {
+        const key = r.referrer_id;
+        if (!aggMap[key]) {
+          aggMap[key] = { name: `${r.referrer?.first_name||''} ${r.referrer?.last_name||''}`.trim() || r.referrer?.email || key.slice(0,8), referrals: 0, volume: 0, commissions: 0, level: `L${r.level||1}` };
+        }
+        aggMap[key].referrals++;
+        aggMap[key].commissions += parseFloat(r.total_commission || 0);
+      });
+    }
+    const affiliates = Object.values(aggMap);
+
+    const isAffDemoMode = !affiliates || affiliates.length < 3;
+    if (isAffDemoMode) {
+      const affTbody = document.getElementById('affiliates-tbody') || document.querySelector('#page-affiliates tbody');
+      if (affTbody) {
+        affTbody.innerHTML = MOCK_AFFILIATES.map(a => `
+          <tr>
+            <td style="text-align:center;font-weight:700;color:var(--gold)">#${a.rank}</td>
+            <td><span style="font-family:monospace;font-size:11px;color:var(--text3)">${a.id}</span></td>
+            <td><b>${a.name}</b></td>
+            <td style="color:var(--text2)">${a.email}</td>
+            <td><span class="badge badge-violet">${a.level}</span></td>
+            <td>${a.referrals}</td>
+            <td style="color:var(--cyan)">${a.volume}</td>
+            <td style="color:var(--green);font-weight:600">${a.commission}</td>
+            <td><span class="badge badge-green">● ${a.status}</span></td>
+          </tr>`).join('');
       }
-      aggMap[key].referrals++;
-      aggMap[key].commissions += parseFloat(r.total_commission || 0);
-    });
-    tbody.innerHTML = Object.values(aggMap).map(a => `
+      return;
+    }
+
+    tbody.innerHTML = affiliates.map(a => `
       <tr>
         <td><b>${sanitize(a.name)}</b></td>
         <td>${a.referrals}</td>
