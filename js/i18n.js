@@ -432,6 +432,7 @@ const TRANSLATIONS = {
     'admin.nav.audit': 'Audit Log',
     'admin.nav.logins': 'Connexions',
     'admin.nav.settings': 'Paramètres système',
+    'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Se déconnecter',
 
     'admin.kpi.users': 'Utilisateurs',
@@ -1250,6 +1251,7 @@ const TRANSLATIONS = {
     'admin.nav.audit': 'Audit Log',
     'admin.nav.logins': 'Login History',
     'admin.nav.settings': 'System Settings',
+    'admin.nav.ai': 'AI Copilot',
     'admin.logout': 'Sign out',
 
     'admin.kpi.users': 'Users',

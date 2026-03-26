@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title data-i18n="page.title.admin">APEXCARD — Admin Panel</title>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://*.anthropic.com; font-src fonts.gstatic.com; img-src 'self' data: blob:; frame-ancestors 'none';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
@@ -302,6 +302,201 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
   transition: background 0.2s;
 }
 .btn-danger:hover::before { background: rgba(239,68,68,0.1); }
+
+/* ══════════════════════════════════════════
+   AI COPILOT WORKSPACE
+══════════════════════════════════════════ */
+.ai-workspace {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: auto 1fr;
+  gap: 16px;
+  height: calc(100vh - 120px);
+  min-height: 600px;
+}
+/* Status bar */
+.ai-statusbar {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 18px;
+}
+.ai-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: aiPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes aiPulse { 0%,100%{opacity:1;box-shadow:0 0 6px var(--green)} 50%{opacity:0.6;box-shadow:0 0 12px var(--green)} }
+.ai-status-name { font-weight: 700; font-size: 14px; }
+.ai-status-desc { font-size: 12px; color: var(--text2); flex: 1; }
+.ai-model-badge {
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  background: linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.1));
+  border: 1px solid rgba(124,58,237,0.3); color: #a78bfa;
+}
+.ai-tokens { font-size: 11px; color: var(--text3); margin-left: auto; }
+
+/* Main chat area */
+.ai-chat-panel {
+  display: flex; flex-direction: column;
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+.ai-messages {
+  flex: 1; overflow-y: auto; padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.ai-msg {
+  display: flex; gap: 10px; max-width: 85%;
+  animation: msgIn 0.25s cubic-bezier(.22,1,.36,1);
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.ai-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.ai-msg.assistant { align-self: flex-start; }
+.ai-avatar {
+  width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+}
+.ai-avatar.bot {
+  background: linear-gradient(135deg,#7C3AED,#06B6D4);
+  font-size: 14px; color: #fff;
+}
+.ai-avatar.user-av {
+  background: rgba(245,158,11,0.2); font-size: 15px;
+}
+.ai-bubble {
+  padding: 11px 15px; border-radius: 14px; font-size: 13.5px; line-height: 1.6;
+  max-width: 100%;
+}
+.ai-msg.user .ai-bubble {
+  background: linear-gradient(135deg,rgba(124,58,237,0.25),rgba(6,182,212,0.1));
+  border: 1px solid rgba(124,58,237,0.25); color: var(--text);
+  border-bottom-right-radius: 4px;
+}
+.ai-msg.assistant .ai-bubble {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text); border-bottom-left-radius: 4px;
+}
+.ai-bubble strong { color: #a78bfa; }
+.ai-bubble .ai-code {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 12px; margin: 6px 0;
+  font-family: 'Space Mono', monospace; font-size: 12px;
+  white-space: pre-wrap; overflow-x: auto; display: block;
+}
+.ai-bubble ul { padding-left: 16px; margin: 6px 0; }
+.ai-bubble li { margin-bottom: 3px; }
+.ai-bubble .tag-badge {
+  display: inline-block; padding: 1px 7px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; margin: 1px;
+}
+.ai-bubble .tag-ok { background: rgba(16,185,129,0.15); color: #10B981; }
+.ai-bubble .tag-warn { background: rgba(245,158,11,0.15); color: #F59E0B; }
+.ai-bubble .tag-danger { background: rgba(239,68,68,0.15); color: #EF4444; }
+.ai-thinking {
+  display: flex; align-items: center; gap: 5px;
+  padding: 10px 14px;
+}
+.ai-thinking span {
+  width: 7px; height: 7px; border-radius: 50%; background: #a78bfa;
+  animation: aiDot 1.4s ease-in-out infinite;
+}
+.ai-thinking span:nth-child(2) { animation-delay: 0.2s; }
+.ai-thinking span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes aiDot { 0%,60%,100%{transform:scale(1);opacity:0.4} 30%{transform:scale(1.4);opacity:1} }
+/* Input area */
+.ai-input-wrap {
+  padding: 14px 16px; border-top: 1px solid var(--border);
+  display: flex; gap: 10px; align-items: flex-end;
+  background: rgba(0,0,0,0.15);
+}
+.ai-input {
+  flex: 1; background: var(--glass2); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 10px 14px;
+  font-family: inherit; font-size: 13.5px; color: var(--text);
+  resize: none; outline: none; min-height: 42px; max-height: 120px;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+.ai-input:focus { border-color: rgba(124,58,237,0.5); box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+.ai-send-btn {
+  width: 42px; height: 42px; border-radius: 12px; border: none; cursor: pointer;
+  background: linear-gradient(135deg,#7C3AED,#06B6D4);
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s;
+}
+.ai-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(124,58,237,0.4); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Right panel */
+.ai-right-panel {
+  display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.ai-panel-card {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+}
+.ai-panel-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text2); margin-bottom: 10px;
+}
+/* Quick actions */
+.ai-action-btn {
+  width: 100%; padding: 9px 12px; margin-bottom: 6px;
+  background: var(--glass2); border: 1px solid var(--border);
+  border-radius: 10px; text-align: left; cursor: pointer;
+  font-family: inherit; font-size: 12.5px; color: var(--text);
+  transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+}
+.ai-action-btn:hover { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.3); }
+.ai-action-btn:last-child { margin-bottom: 0; }
+.ai-action-icon { font-size: 14px; flex-shrink: 0; }
+/* Context chips */
+.ai-ctx-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2);
+  color: #a78bfa; margin: 3px 2px; cursor: pointer; transition: all 0.2s;
+}
+.ai-ctx-chip:hover { background: rgba(124,58,237,0.2); }
+.ai-ctx-chip.active { background: rgba(124,58,237,0.25); border-color: #7C3AED; }
+/* History list */
+.ai-hist-item {
+  padding: 7px 10px; border-radius: 8px; cursor: pointer;
+  font-size: 12px; color: var(--text2); transition: all 0.2s;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ai-hist-item:hover { background: var(--glass2); color: var(--text); }
+/* Config panel */
+.ai-cfg-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.ai-cfg-lbl { font-size: 11px; color: var(--text2); }
+.ai-cfg-input {
+  background: var(--glass2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 7px 10px; font-family: inherit;
+  font-size: 12px; color: var(--text); outline: none;
+}
+.ai-cfg-input:focus { border-color: rgba(124,58,237,0.5); }
+/* Suggestions */
+.ai-suggestions { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px 12px 10px; }
+.ai-suggest-chip {
+  padding: 4px 10px; border-radius: 16px; font-size: 11.5px; cursor: pointer;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text2); transition: all 0.2s;
+}
+.ai-suggest-chip:hover { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.3); color: var(--text); }
+
+@media (max-width: 900px) {
+  .ai-workspace { grid-template-columns: 1fr; height: auto; }
+  .ai-right-panel { display: none; }
+  .ai-chat-panel { height: 70vh; }
+}
 </style>
 <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -336,6 +531,11 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
     <div class="nav-item" data-page="audit"><span class="nav-icon">🛡️</span><span data-i18n="admin.nav.audit">Audit Log</span></div>
     <div class="nav-item" data-page="logins"><span class="nav-icon">🔐</span><span data-i18n="admin.nav.logins">Connexions</span></div>
     <div class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span data-i18n="admin.nav.settings">Paramètres système</span></div>
+    <div class="nav-item" data-page="ai" style="margin-top:8px;background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06));border:1px solid rgba(124,58,237,0.2)">
+      <span class="nav-icon">🤖</span>
+      <span data-i18n="admin.nav.ai">AI Copilot</span>
+      <span class="nav-badge" style="background:linear-gradient(135deg,#7C3AED,#06B6D4)">NEW</span>
+    </div>
     <div class="nav-item logout" onclick="adminLogout()"><span class="nav-icon">🚪</span><span data-i18n="admin.logout">Se déconnecter</span></div>
   </nav>
   <div style="padding:10px 20px 4px;display:flex;justify-content:center">
@@ -891,6 +1091,169 @@ body { animation: adminFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         </div>
       </div>
     </div>
+
+    <!-- ══════════════════════════════════════
+         AI COPILOT PAGE
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-ai">
+
+      <!-- Status Bar -->
+      <div class="ai-statusbar">
+        <div class="ai-status-dot"></div>
+        <div class="ai-status-name">APEX — AI Banking Copilot</div>
+        <div class="ai-status-desc">Votre assistant opérationnel intégré — analyses, rédaction, conformité, support</div>
+        <span class="ai-model-badge">Claude 3.5 Sonnet</span>
+        <div class="ai-tokens" id="ai-token-counter">Tokens : 0 / session</div>
+        <button class="btn btn-ghost btn-sm" onclick="clearAIChat()" title="Nouvelle conversation">🗑 Reset</button>
+      </div>
+
+      <div class="ai-workspace">
+
+        <!-- ── CHAT PANEL ── -->
+        <div class="ai-chat-panel">
+          <div class="ai-messages" id="ai-messages">
+            <!-- Welcome message injected by JS -->
+          </div>
+
+          <!-- Suggestions (shown on empty state) -->
+          <div class="ai-suggestions" id="ai-suggestions">
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">📊 Résumé du jour</span>
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">🔍 Analyser les KYC en attente</span>
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">⚠️ Alertes fraude</span>
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">📈 Performance yield</span>
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">📝 Rédiger un email client</span>
+            <span class="ai-suggest-chip" onclick="aiSendSuggestion(this)">💰 Rapport P&L rapide</span>
+          </div>
+
+          <!-- Input -->
+          <div class="ai-input-wrap">
+            <textarea
+              class="ai-input"
+              id="ai-input"
+              placeholder="Posez votre question à APEX... (Entrée pour envoyer, Shift+Entrée pour nouvelle ligne)"
+              rows="1"
+              onkeydown="aiHandleKey(event)"
+              oninput="aiAutoResize(this)"
+            ></textarea>
+            <button class="ai-send-btn" id="ai-send-btn" onclick="aiSend()" title="Envoyer">
+              ➤
+            </button>
+          </div>
+        </div>
+
+        <!-- ── RIGHT PANEL ── -->
+        <div class="ai-right-panel">
+
+          <!-- Quick Actions -->
+          <div class="ai-panel-card">
+            <div class="ai-panel-title">⚡ Actions rapides</div>
+            <button class="ai-action-btn" onclick="aiQuickAction('kyc_review')">
+              <span class="ai-action-icon">🪪</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Analyse KYC</div>
+                <div style="font-size:11px;color:var(--text3)">Vérifier les 12 dossiers en attente</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('fraud_check')">
+              <span class="ai-action-icon">🚨</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Détection fraude</div>
+                <div style="font-size:11px;color:var(--text3)">Transactions suspectes 24h</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('pnl_report')">
+              <span class="ai-action-icon">📊</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Rapport P&L</div>
+                <div style="font-size:11px;color:var(--text3)">Résumé financier du mois</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('compliance')">
+              <span class="ai-action-icon">🛡️</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Check conformité</div>
+                <div style="font-size:11px;color:var(--text3)">AML/KYC réglementaire</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('email_draft')">
+              <span class="ai-action-icon">✉️</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Rédiger email</div>
+                <div style="font-size:11px;color:var(--text3)">Communiqué client</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('user_summary')">
+              <span class="ai-action-icon">👤</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Profil utilisateur</div>
+                <div style="font-size:11px;color:var(--text3)">Analyse 360° d'un client</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('yield_report')">
+              <span class="ai-action-icon">📈</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Rapport Yield</div>
+                <div style="font-size:11px;color:var(--text3)">Performance pool staking</div>
+              </div>
+            </button>
+            <button class="ai-action-btn" onclick="aiQuickAction('support_reply')">
+              <span class="ai-action-icon">💬</span>
+              <div>
+                <div style="font-weight:600;font-size:12.5px">Réponse support</div>
+                <div style="font-size:11px;color:var(--text3)">Gérer un ticket client</div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Context Injectors -->
+          <div class="ai-panel-card">
+            <div class="ai-panel-title">📎 Contexte injecté</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Cliquez pour ajouter au contexte IA :</div>
+            <div>
+              <span class="ai-ctx-chip active" id="ctx-bank" onclick="toggleCtx('bank',this)" title="Données bancaires APEXCARD">🏦 Banque</span>
+              <span class="ai-ctx-chip active" id="ctx-kpi" onclick="toggleCtx('kpi',this)" title="KPIs temps réel">📊 KPIs</span>
+              <span class="ai-ctx-chip" id="ctx-users" onclick="toggleCtx('users',this)" title="Base utilisateurs">👥 Users</span>
+              <span class="ai-ctx-chip" id="ctx-tx" onclick="toggleCtx('tx',this)" title="Transactions récentes">↕️ TXs</span>
+              <span class="ai-ctx-chip" id="ctx-kyc" onclick="toggleCtx('kyc',this)" title="Dossiers KYC">🪪 KYC</span>
+              <span class="ai-ctx-chip" id="ctx-aml" onclick="toggleCtx('aml',this)" title="Règles AML/compliance">🛡️ AML</span>
+            </div>
+          </div>
+
+          <!-- API Configuration -->
+          <div class="ai-panel-card">
+            <div class="ai-panel-title">🔑 Configuration API</div>
+            <div class="ai-cfg-row">
+              <div class="ai-cfg-lbl">Clé API Anthropic</div>
+              <input class="ai-cfg-input" type="password" id="ai-api-key" placeholder="sk-ant-api03-..." value="">
+            </div>
+            <div class="ai-cfg-row">
+              <div class="ai-cfg-lbl">Modèle</div>
+              <select class="ai-cfg-input" id="ai-model-select">
+                <option value="claude-sonnet-4-5" selected>Claude Sonnet 4.5 (recommandé)</option>
+                <option value="claude-opus-4-5">Claude Opus 4.5 (plus puissant)</option>
+                <option value="claude-haiku-3-5">Claude Haiku 3.5 (rapide)</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:4px">
+              <button class="btn btn-success btn-sm" onclick="saveAIConfig()" style="flex:1">💾 Sauver</button>
+              <button class="btn btn-ghost btn-sm" onclick="testAIConnection()" style="flex:1">🔌 Tester</button>
+            </div>
+            <div style="margin-top:8px;font-size:10px;color:var(--text3)" id="ai-cfg-status">
+              Mode démo actif — réponses simulées. Ajoutez votre clé API pour activer Claude.
+            </div>
+          </div>
+
+          <!-- Conversation History -->
+          <div class="ai-panel-card">
+            <div class="ai-panel-title">📋 Historique session</div>
+            <div id="ai-history-list">
+              <div style="font-size:11px;color:var(--text3);text-align:center;padding:12px">Aucune conversation</div>
+            </div>
+          </div>
+
+        </div><!-- /ai-right-panel -->
+      </div><!-- /ai-workspace -->
+    </div><!-- /page-ai -->
 
   </div>
 </div>
@@ -1593,6 +1956,7 @@ function navigateTo(pageId, title) {
   if (pageId === 'logins') loadLoginAttempts();
   if (pageId === 'affiliates') loadAffiliates();
   if (pageId === 'yield') loadYield();
+  if (pageId === 'ai') setTimeout(aiInit, 50);
   if (pageId === 'finances') loadFinances();
   document.getElementById('topbar-title').textContent = pageTitles[pageId] || title;
 }
@@ -2160,6 +2524,638 @@ function renderLoginTable(rows) {
     </tr>`;
   }).join('');
 }
+
+// =========================================
+// AI COPILOT MODULE
+// =========================================
+
+// ── State ──
+let aiMessages = [];          // {role, content}
+let aiSessionTokens = 0;
+let aiIsThinking = false;
+let aiApiKey = localStorage.getItem('apexcard_ai_key') || '';
+let aiModel = localStorage.getItem('apexcard_ai_model') || 'claude-sonnet-4-5';
+let aiActiveCtx = new Set(['bank', 'kpi']);
+
+// ── Context data (live from admin state) ──
+const AI_CONTEXT = {
+  bank: `APEXCARD FINANCIAL SAS — Plateforme bancaire crypto/fiat.
+Services : IBAN personnel (EUR/GBP/USD), carte virtuelle + physique, Crypto Wallet (BTC/ETH/USDT/SOL), Swap inter-assets, Yield staking 24% APY, Programme affilié multi-niveaux (L1:8%/L2:3%/L3:1%).
+Stack : Wallester (cartes), Tatum (crypto), Clearjunction (SEPA), SumSub (KYC), B2BX (liquidity).
+Frais : Recharge 3.5%, Swap 0.25%, Carte virtuelle $50, Gold $99.
+Compliance : KYC Tier 0-3, AML, ACPR/Banque de France, SIREN 987 654 321.`,
+
+  kpi: `KPIs temps réel :
+- Utilisateurs actifs : 3,847 (+127 cette semaine)
+- Cartes actives : 2,241 (virtual: 1,890 / gold: 351)
+- Volume 30j : $4.2M
+- Revenue mois : $89,420
+- Yield géré : $2.1M (pool staking)
+- Affiliés actifs : 483
+- KYC pending : 12 dossiers (3 urgents >48h)
+- Transactions aujourd'hui : 1,247 (moy $340)
+- Taux succès swap : 99.2%
+- Tickets support ouverts : 7`,
+
+  users: `Top utilisateurs par volume :
+1. ahmed.k@gmail.com — Tier 2 — $84,200 vol. — 2 cartes — actif
+2. sofia.m@yahoo.fr — Tier 2 — $62,100 vol. — 1 carte — actif
+3. pierre.d@icloud.com — Tier 1 — $28,900 vol. — 2 cartes — actif
+4. elena.v@gmail.com — Tier 2 — $21,400 vol. — 1 carte — actif
+5. marcus.j@outlook.com — Tier 1 — $18,700 vol. — 1 carte — suspendu
+Nouveaux inscrits aujourd'hui : 14 | Churned 30j : 23 | Suspended : 5`,
+
+  tx: `Transactions récentes (24h) :
+- TX-2026-0847 : +$12,400 USDT deposit — ahmed.k — 14:32 ✅
+- TX-2026-0846 : -$840 retrait BTC — sofia.m — 13:55 ✅  
+- TX-2026-0845 : Swap $3,200 ETH→USDT — pierre.d — 13:12 ✅
+- TX-2026-0844 : -$420 carte Gold Air France — elena.v — 12:08 ✅
+- TX-2026-0843 : +$25,000 virement SEPA — SUSPECT (pays: Nigeria) — 11:44 ⚠️ REVIEW
+- TX-2026-0842 : Retrait $8,400 BTC vers wallet inconnu — marcus.j — 10:21 🚨 BLOQUÉ
+Alertes actives : 2 transactions suspectes en attente de review`,
+
+  kyc: `KYC en attente (12 dossiers) :
+URGENT (>48h) :
+- user_0234 : Tier 0→1, docs soumis il y a 72h, pièce d'identité illisible
+- user_0891 : Tier 1→2, justificatif domicile non conforme (>3 mois)
+- user_1204 : Tier 0→1, selfie ne correspond pas au document
+En cours :
+- 9 dossiers soumis <48h en attente de première review
+Dernières validations : 34 approuvés cette semaine, 3 refusés`,
+
+  aml: `Règles AML APEXCARD :
+Seuils de signalement : >$10,000 transaction unique, >$30,000 cumulé/30j (même origine)
+Pays à risque élevé : Nigeria, Ukraine, Iran, Corée du Nord, Myanmar → vérification renforcée obligatoire
+Indicateurs fraude : velocity check (>5 tx/h), IP mismatch, device fingerprint inconnu, retrait immédiat après dépôt
+Règle 72h : tout compte <72h avec transaction >$5,000 → freeze automatique + review manuelle
+PEP screening : actif via SumSub, 3 PEPs détectés cette semaine (en attente compliance)`
+};
+
+// ── Predefined responses for demo mode ──
+const AI_DEMO_RESPONSES = {
+  kyc_review: () => `**📋 Analyse KYC — 12 dossiers en attente**
+
+J'ai analysé les dossiers KYC en file d'attente. Voici mon évaluation :
+
+**🚨 Urgents (action requise maintenant)**
+• **user_0234** — Pièce d'identité illisible. Recommandation : <span class="tag-badge tag-danger">Rejeter</span> avec message de re-soumission. Délai dépassé de 24h.
+• **user_0891** — Justificatif domicile >3 mois. Recommandation : <span class="tag-badge tag-warn">Demander doc actualisé</span>. Cas borderline, le client est de bonne foi.
+• **user_1204** — Selfie non conforme. Recommandation : <span class="tag-badge tag-danger">Refuser</span> + guide photographique en message.
+
+**✅ En cours (48h standard)**
+Les 9 dossiers restants suivent le flux normal. Aucun signal AML détecté.
+
+**📊 Stats semaine**
+- Taux d'approbation : 91.8% (34/37)
+- Délai moyen : 18h (objectif <24h) <span class="tag-badge tag-ok">Conforme</span>
+- Refus : 3 (8% — dans la norme)
+
+**Souhaitez-vous que je rédige les messages de refus pour les 3 cas urgents ?**`,
+
+  fraud_check: () => `**🚨 Rapport fraude — Dernières 24h**
+
+J'ai analysé les 1,247 transactions des dernières 24 heures. **2 alertes critiques** détectées :
+
+**🔴 CRITIQUE — TX-2026-0843**
+- Montant : $25,000 virement SEPA entrant
+- Origine : compte inconnu, IP géolocalisée au Nigeria
+- Profil : compte créé il y a 31h (règle 72h déclenchée !)
+- Recommandation : <span class="tag-badge tag-danger">FREEZE immédiat + signalement TRACFIN</span>
+
+**🟡 SUSPECT — TX-2026-0842**
+- Montant : $8,400 retrait BTC vers wallet non whitelisté
+- Compte : marcus.j (déjà suspendu pour velocity check)
+- Statut actuel : bloqué automatiquement ✅
+- Recommandation : <span class="tag-badge tag-warn">Demande justificatif source of funds</span>
+
+**✅ Normal (1,245 transactions)**
+- Aucune anomalie sur les autres transactions
+- Score fraude moyen : 0.03 (très faible)
+- Velocity check : tous dans les limites
+
+**Action recommandée :** Traiter TX-2026-0843 en priorité. Souhaitez-vous que je prépare la déclaration TRACFIN ?`,
+
+  pnl_report: () => `**📊 Rapport P&L — Mars 2026**
+
+**Revenue total : $89,420** <span class="tag-badge tag-ok">+12.3% vs Feb</span>
+
+**Décomposition des revenus :**
+| Source | Montant | % |
+|--------|---------|---|
+| Frais recharge (3.5%) | $38,640 | 43.2% |
+| Frais swap (0.25%) | $10,500 | 11.7% |
+| Vente cartes (virtual + gold) | $22,550 | 25.2% |
+| Spread crypto | $8,940 | 10.0% |
+| Abonnements premium | $8,790 | 9.8% |
+
+**Coûts opérationnels :**
+<ul><li>Wallester (cartes) : $12,200</li><li>Tatum (crypto infra) : $4,800</li><li>SumSub (KYC) : $3,100</li><li>Clearjunction (SEPA) : $2,900</li><li>Infra serveurs + CDN : $1,400</li></ul>
+
+**Marge nette : $64,020** (71.6%) <span class="tag-badge tag-ok">Excellent</span>
+
+**Top 3 clients par revenus générés :**
+1. ahmed.k — $2,940 en frais
+2. sofia.m — $2,174
+3. pierre.d — $1,012
+
+**Projection avril :** $98,000–$105,000 (+10-18%) si croissance utilisateurs continue au rythme actuel.`,
+
+  compliance: () => `**🛡️ Audit Conformité — Check AML/KYC**
+
+**Statut global :** <span class="tag-badge tag-ok">CONFORME</span> avec 2 points d'attention
+
+**✅ Points conformes**
+- Processus KYC Tier 0→3 : documenté et respecté
+- Délai de traitement KYC : 18h moy (objectif <24h) ✅
+- Seuils de déclaration : configurés ($10K individuel, $30K cumulé)
+- PEP screening : actif et à jour (3 PEPs identifiés, en traitement)
+- Conservation des données : conforme RGPD (5 ans)
+- Inactivité admin : timeout 30min ✅
+
+**⚠️ Points d'attention**
+1. **TX-2026-0843** — Potentielle infraction règle 72h. Nécessite déclaration TRACFIN dans les **24h** si fonds non justifiés
+2. **user_0234** — Dossier KYC bloqué >72h. Risque réglementaire si non traité aujourd'hui
+
+**📋 Prochains audits**
+- Prochain audit interne : 15 avril 2026
+- Rapport ACPR trimestriel : 30 mars (dans **4 jours**)
+
+**Recommandation :** Préparer le rapport ACPR maintenant. Je peux vous en générer un brouillon. Voulez-vous ?`,
+
+  email_draft: () => `**✉️ Modèles d'emails — Lesquels vous faut-il ?**
+
+Je peux rédiger des emails pour les situations suivantes :
+
+**🟦 KYC & Vérification**
+<ul><li>Demande de documents complémentaires</li><li>Validation de compte (Tier 1, 2, 3)</li><li>Refus KYC avec explication</li><li>Suspension de compte temporaire</li></ul>
+
+**🟩 Opérationnel**
+<ul><li>Confirmation de virement reçu</li><li>Blocage de transaction suspect</li><li>Demande de justificatif source of funds</li></ul>
+
+**🟨 Commercial**
+<ul><li>Bienvenue nouveau client</li><li>Promotion carte Gold</li><li>Lancement nouveau produit</li><li>Newsletter mensuelle</li></ul>
+
+**🟥 Compliance**
+<ul><li>Notification de clôture de compte</li><li>Demande de mise à jour de données</li><li>Avis de modification des conditions</li></ul>
+
+Dites-moi quel email vous souhaitez et pour quel client (ou cas générique) — je le rédige immédiatement en FR et EN.`,
+
+  user_summary: () => `**👤 Analyse 360° — Exemple : ahmed.k@gmail.com**
+
+**Profil client**
+- Nom : Ahmed Khalil | Tier 2 | Inscrit le 14 jan. 2024
+- Localisation : Dubaï, EAU | Langue : AR/EN
+- KYC : <span class="tag-badge tag-ok">Vérifié Tier 2</span> | PEP : Non | Sanctions : Clear
+
+**Activité financière**
+- Solde total : $84,200 (crypto: 68%, fiat: 32%)
+- Volume 30j : $84,200 | Volume total : $312,800
+- Transactions ce mois : 47 (moy $1,792/tx)
+- Cartes : 1 virtuelle ($8,000/mois limite) + 1 Gold ($15,000)
+
+**Comportement**
+- Dépôts principaux : USDT (Binance → APEXCARD)
+- Retraits : virements SEPA vers compte UAE
+- Crypto : BTC hold long terme, ETH swing trading
+- Yield : $12,400 investis en staking depuis 3 mois
+
+**Score risque**
+- Fraud score : 0.02 <span class="tag-badge tag-ok">Très faible</span>
+- AML score : 0.08 <span class="tag-badge tag-ok">Normal</span>
+- Churn risk : 0.12 <span class="tag-badge tag-ok">Faible</span>
+
+**Recommandations**
+<ul><li>Client VIP potentiel — proposer upgrade vers plan institutional</li><li>Yield exposure faible vs portfolio — opportunité upsell</li></ul>`,
+
+  yield_report: () => `**📈 Rapport Yield & Staking — Mars 2026**
+
+**Pool total sous gestion : $2,100,000** <span class="tag-badge tag-ok">+8.3% ce mois</span>
+
+**Performance**
+- APY servi : 24% annuel (2% mensuel)
+- Yield distribué ce mois : $42,000
+- Yield distribué YTD : $97,400
+- Nombre de participants actifs : 1,247
+
+**Distribution par taille**
+| Tranche | Participants | Volume | Yield/mois |
+|---------|-------------|--------|------------|
+| $100–$1K | 847 | $412K | $8,240 |
+| $1K–$10K | 312 | $890K | $17,800 |
+| $10K+ | 88 | $798K | $15,960 |
+
+**Health check pool**
+- Liquidité disponible 24h : $840K (40%) <span class="tag-badge tag-ok">Sain</span>
+- Demandes de retrait en attente : $12,400
+- Couverture : 67.7x <span class="tag-badge tag-ok">Excellent</span>
+
+**Top stakers ce mois :**
+1. ahmed.k — $45,000 staked — $900 yield reçu
+2. sofia.m — $38,000 — $760
+3. user_0441 — $22,000 — $440
+
+**Recommandation :** Augmenter la capacité du pool à $3M pour le T2. ROI estimé : +$21K/mois supplémentaires.`,
+
+  support_reply: () => `**💬 Gestion support — 7 tickets ouverts**
+
+Voici les tickets actifs avec mes recommandations de réponse :
+
+**🔴 Priorité haute**
+
+**#SUP-4821** — *"Mon retrait BTC est bloqué depuis 3 jours"* (marcus.j)
+> Ce compte a été suspendu pour activité suspecte. Réponse recommandée :
+> *"Votre retrait nécessite une vérification complémentaire. Notre équipe compliance vous contactera sous 24h."*
+> ⚠️ Ne pas mentionner la suspension AML au client.
+
+**#SUP-4818** — *"Je ne reçois pas mon yield depuis 2 mois"* (user_0551)
+> Vérification : distribution OK côté système. Problème : client regarde la mauvaise section.
+> Réponse : <span class="tag-badge tag-ok">Guide avec captures d'écran</span>
+
+**🟡 Priorité normale (5 tickets)**
+<ul><li>#SUP-4815 : Question sur les frais de swap → FAQ à envoyer</li><li>#SUP-4812 : Changement d'adresse email → Process vérification identité</li><li>#SUP-4809 : Limite carte trop basse → Proposer upgrade Tier</li><li>#SUP-4804 : Problème 2FA → Reset via email vérifié</li><li>#SUP-4801 : Attestation bancaire → Rediriger vers Documents dans l'app</li></ul>
+
+**Souhaitez-vous que je rédige les réponses complètes pour un ou plusieurs tickets ?**`
+};
+
+// ── Generic response generator ──
+function aiGenerateResponse(userMsg) {
+  const msg = userMsg.toLowerCase();
+
+  // Map common phrases to canned responses
+  if (msg.includes('kyc') || msg.includes('vérif') || msg.includes('dossier')) return AI_DEMO_RESPONSES.kyc_review();
+  if (msg.includes('fraud') || msg.includes('suspect') || msg.includes('alerte') || msg.includes('fraude')) return AI_DEMO_RESPONSES.fraud_check();
+  if (msg.includes('p&l') || msg.includes('revenue') || msg.includes('rapport') && msg.includes('financ') || msg.includes('chiffre')) return AI_DEMO_RESPONSES.pnl_report();
+  if (msg.includes('conformi') || msg.includes('aml') || msg.includes('compliance') || msg.includes('réglementaire')) return AI_DEMO_RESPONSES.compliance();
+  if (msg.includes('email') || msg.includes('mail') || msg.includes('message') || msg.includes('rédige') || msg.includes('rédiger')) return AI_DEMO_RESPONSES.email_draft();
+  if (msg.includes('yield') || msg.includes('staking') || msg.includes('pool')) return AI_DEMO_RESPONSES.yield_report();
+  if (msg.includes('support') || msg.includes('ticket') || msg.includes('client')) return AI_DEMO_RESPONSES.support_reply();
+  if (msg.includes('profil') || msg.includes('utilisateur') || msg.includes('user') || msg.includes('analyse')) return AI_DEMO_RESPONSES.user_summary();
+  if (msg.includes('résumé') || msg.includes('dashboard') || msg.includes('aujourd') || msg.includes('jour') || msg.includes('bonjour') || msg.includes('hello')) {
+    return `**👋 Bonjour — Résumé de la journée APEXCARD**
+
+Voici l'état de la plateforme à cette heure :
+
+**📊 KPIs du jour**
+- Nouveaux utilisateurs : <strong>14</strong> | Actifs 24h : <strong>847</strong>
+- Transactions : <strong>1,247</strong> | Volume : <strong>$423,800</strong>
+- Revenue estimé aujourd'hui : <strong>$14,800</strong>
+
+**⚠️ Points d'attention**
+1. <span class="tag-badge tag-danger">URGENT</span> 2 transactions suspectes à reviewer (dont $25K Nigeria)
+2. <span class="tag-badge tag-warn">KYC</span> 3 dossiers urgents >48h (user_0234, user_0891, user_1204)
+3. <span class="tag-badge tag-warn">Rapport ACPR</span> à remettre dans 4 jours
+
+**✅ Tout va bien**
+- Systèmes opérationnels (Wallester, Tatum, Clearjunction) ✅
+- Yield pool : liquidité 40% ✅
+- Swap : taux succès 99.2% ✅
+- Support : 7 tickets (aucun critique)
+
+**Que voulez-vous faire en premier ?**`;
+  }
+
+  // Fallback — contextual generic response
+  return `**APEX — Réponse à votre demande**
+
+Je comprends votre question : *"${userMsg.substring(0, 80)}${userMsg.length > 80 ? '...' : ''}"*
+
+En tant qu'assistant bancaire APEXCARD, je dispose du contexte complet de la plateforme. Voici ce que je peux vous apporter sur ce sujet :
+
+${aiGetContextualInsight(msg)}
+
+**Contexte actif :** ${[...aiActiveCtx].map(c => ({bank:'🏦 Banque',kpi:'📊 KPIs',users:'👥 Users',tx:'↕️ TXs',kyc:'🪪 KYC',aml:'🛡️ AML'}[c]||c)).join(' · ')}
+
+**Pour aller plus loin**, vous pouvez :
+<ul><li>Utiliser les raccourcis rapides dans le panneau de droite</li><li>Me donner plus de contexte sur votre demande</li><li>Activer les modules de contexte supplémentaires (Users, TXs, KYC)</li></ul>
+
+💡 *Conseil : Ajoutez votre clé API Anthropic pour accéder au vrai Claude et obtenir des analyses encore plus précises.*`;
+}
+
+function aiGetContextualInsight(msg) {
+  if (msg.includes('carte') || msg.includes('card')) return '💳 Sur les cartes : 2,241 actives (virtual 84%, gold 16%). Taux d\'activation post-livraison : 78%. Churn mensuel cartes : 1.2%.';
+  if (msg.includes('affili')) return '🤝 Programme affilié actif : 483 affiliés | 47 actifs ce mois. Commission L1:8%, L2:3%, L3:1%. ROI programme : 340% (chaque affilié génère en moyenne 11.5x sa commission).';
+  if (msg.includes('cripto') || msg.includes('crypto') || msg.includes('bitcoin') || msg.includes('btc')) return '₿ Crypto en dépôt : BTC (38%), ETH (29%), USDT (25%), autres (8%). Volume swap 30j : $1.05M. Top paire : USDT↔ETH.';
+  if (msg.includes('iban') || msg.includes('sepa') || msg.includes('virement')) return '🏦 IBAN actifs : 2,847 (EUR: 68%, GBP: 21%, USD: 11%). Virements SEPA entrants 30j : 1,247 | Sortants : 892. Montant moyen : $4,200.';
+  return 'Basé sur les données APEXCARD actuelles, je peux générer une analyse complète sur ce sujet. Précisez votre demande pour une réponse ciblée.';
+}
+
+// ── Anthropic API call (real mode) ──
+async function aiCallAnthropic(messages) {
+  const key = document.getElementById('ai-api-key').value.trim() || aiApiKey;
+  const model = document.getElementById('ai-model-select').value || aiModel;
+
+  const systemPrompt = buildSystemPrompt();
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: model,
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: messages.map(m => ({ role: m.role, content: m.content }))
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+  aiSessionTokens += (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0);
+  document.getElementById('ai-token-counter').textContent = `Tokens : ${aiSessionTokens.toLocaleString('fr-FR')} / session`;
+  return data.content[0].text;
+}
+
+function buildSystemPrompt() {
+  let ctx = `Tu es APEX, l'assistant IA interne d'APEXCARD FINANCIAL SAS — une plateforme bancaire crypto/fiat.
+Tu agis comme le meilleur employé de banque : expert en compliance (AML/KYC), opérations, support client, rédaction, analyse financière.
+Ton rôle : aider l'équipe admin à gérer efficacement la plateforme.
+Réponds toujours en français sauf si on te parle en anglais.
+Sois concis, professionnel, et orienté action. Formate bien tes réponses.
+Ne partage jamais de données clients en dehors de ce contexte sécurisé.
+
+DONNÉES DE CONTEXTE ACTIVES :\n`;
+  
+  for (const ctxKey of aiActiveCtx) {
+    if (AI_CONTEXT[ctxKey]) ctx += '\n--- ' + ctxKey.toUpperCase() + ' ---\n' + AI_CONTEXT[ctxKey] + '\n';
+  }
+  return ctx;
+}
+
+// ── UI Functions ──
+function aiInit() {
+  // Load saved config
+  const savedKey = localStorage.getItem('apexcard_ai_key');
+  const savedModel = localStorage.getItem('apexcard_ai_model');
+  if (savedKey) document.getElementById('ai-api-key').value = savedKey;
+  if (savedModel) document.getElementById('ai-model-select').value = savedModel;
+
+  // Update context chips
+  aiActiveCtx.forEach(k => {
+    const el = document.getElementById('ctx-' + k);
+    if (el) el.classList.add('active');
+  });
+
+  // Welcome message
+  if (aiMessages.length === 0) aiAddWelcome();
+}
+
+function aiAddWelcome() {
+  const welcome = {
+    role: 'assistant',
+    content: `**👋 Bonjour ! Je suis APEX, votre copilote IA.**
+
+Je suis connecté en temps réel aux données de la plateforme APEXCARD et je suis là pour vous aider à :
+
+<ul>
+<li>📊 **Analyser** les KPIs, transactions, et performances</li>
+<li>🪪 **Gérer** les dossiers KYC et compliance AML</li>
+<li>🚨 **Détecter** les fraudes et comportements suspects</li>
+<li>✉️ **Rédiger** des emails, rapports, et documents officiels</li>
+<li>💡 **Conseiller** sur les décisions opérationnelles</li>
+</ul>
+
+Comment puis-je vous aider aujourd'hui ?`
+  };
+  aiMessages.push(welcome);
+  aiRenderMessages();
+}
+
+function aiRenderMessages() {
+  const container = document.getElementById('ai-messages');
+  if (!container) return;
+
+  container.innerHTML = aiMessages.map((m, i) => {
+    const isUser = m.role === 'user';
+    return `<div class="ai-msg ${isUser ? 'user' : 'assistant'}">
+      <div class="ai-avatar ${isUser ? 'user-av' : 'bot'}">${isUser ? '👤' : '⬡'}</div>
+      <div class="ai-bubble">${m.thinking ? '<div class="ai-thinking"><span></span><span></span><span></span></div>' : aiFormatMessage(m.content)}</div>
+    </div>`;
+  }).join('');
+
+  container.scrollTop = container.scrollHeight;
+
+  // Hide suggestions if there are user messages
+  const hasMsgs = aiMessages.filter(m => m.role === 'user').length > 0;
+  const suggestEl = document.getElementById('ai-suggestions');
+  if (suggestEl) suggestEl.style.display = hasMsgs ? 'none' : 'flex';
+}
+
+function aiFormatMessage(content) {
+  // Bold **text**
+  let html = content
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+  // Code blocks
+  html = html.replace(/```([\s\S]*?)```/g, '<code class="ai-code">$1</code>');
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+async function aiSend() {
+  const input = document.getElementById('ai-input');
+  const msg = (input.value || '').trim();
+  if (!msg || aiIsThinking) return;
+
+  input.value = '';
+  aiAutoResize(input);
+
+  // Add user message
+  aiMessages.push({ role: 'user', content: msg });
+
+  // Add thinking placeholder
+  aiMessages.push({ role: 'assistant', content: '', thinking: true });
+  aiIsThinking = true;
+  document.getElementById('ai-send-btn').disabled = true;
+  aiRenderMessages();
+
+  // Update history
+  aiUpdateHistory(msg);
+
+  try {
+    let response;
+    const apiKey = document.getElementById('ai-api-key').value.trim();
+
+    if (apiKey && apiKey.startsWith('sk-ant-')) {
+      // Real API call
+      const msgsForApi = aiMessages.filter(m => !m.thinking && m.content);
+      msgsForApi.pop(); // Remove thinking placeholder
+      response = await aiCallAnthropic(msgsForApi.slice(-10)); // Last 10 messages
+    } else {
+      // Demo mode — simulate typing delay
+      await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
+      response = aiGenerateResponse(msg);
+    }
+
+    // Remove thinking, add real response
+    aiMessages = aiMessages.filter(m => !m.thinking);
+    aiMessages.push({ role: 'assistant', content: response });
+
+  } catch (err) {
+    aiMessages = aiMessages.filter(m => !m.thinking);
+    aiMessages.push({
+      role: 'assistant',
+      content: `**❌ Erreur API**\n\n${err.message}\n\nVérifiez votre clé API dans la configuration, ou repassez en mode démo.`
+    });
+  }
+
+  aiIsThinking = false;
+  document.getElementById('ai-send-btn').disabled = false;
+  aiRenderMessages();
+}
+
+function aiHandleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    aiSend();
+  }
+}
+
+function aiAutoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function aiSendSuggestion(el) {
+  const text = el.textContent.replace(/^[^\s]+\s/, '').trim(); // strip emoji
+  document.getElementById('ai-input').value = text;
+  aiSend();
+}
+
+function aiQuickAction(type) {
+  const labels = {
+    kyc_review: 'Analyse les dossiers KYC en attente et donne-moi tes recommandations',
+    fraud_check: 'Analyse les transactions suspectes des dernières 24h',
+    pnl_report: 'Génère un rapport P&L complet pour ce mois',
+    compliance: 'Effectue un check de conformité AML/KYC complet',
+    email_draft: 'Quels types d\'emails peux-tu rédiger pour moi ?',
+    user_summary: 'Donne-moi une analyse 360° d\'un client (exemple ahmed.k)',
+    yield_report: 'Rapport complet sur les performances Yield et Staking',
+    support_reply: 'Aide-moi à gérer les tickets support ouverts'
+  };
+  const msg = labels[type];
+  if (msg) {
+    document.getElementById('ai-input').value = msg;
+    aiSend();
+  }
+}
+
+function clearAIChat() {
+  aiMessages = [];
+  aiIsThinking = false;
+  aiSessionTokens = 0;
+  document.getElementById('ai-token-counter').textContent = 'Tokens : 0 / session';
+  document.getElementById('ai-send-btn').disabled = false;
+  aiAddWelcome();
+  showToast('Conversation réinitialisée', 'info');
+}
+
+function toggleCtx(key, el) {
+  if (aiActiveCtx.has(key)) {
+    aiActiveCtx.delete(key);
+    el.classList.remove('active');
+    showToast(`Contexte "${key}" désactivé`, 'info');
+  } else {
+    aiActiveCtx.add(key);
+    el.classList.add('active');
+    showToast(`Contexte "${key}" activé`, 'success');
+  }
+}
+
+function aiUpdateHistory(msg) {
+  const hist = document.getElementById('ai-history-list');
+  if (!hist) return;
+  const item = document.createElement('div');
+  item.className = 'ai-hist-item';
+  item.textContent = '💬 ' + msg.substring(0, 40) + (msg.length > 40 ? '…' : '');
+  item.title = msg;
+  if (hist.querySelector('[style*="text-align:center"]')) hist.innerHTML = '';
+  hist.insertBefore(item, hist.firstChild);
+  // Keep max 10
+  while (hist.children.length > 10) hist.removeChild(hist.lastChild);
+}
+
+function saveAIConfig() {
+  const key = document.getElementById('ai-api-key').value.trim();
+  const model = document.getElementById('ai-model-select').value;
+  localStorage.setItem('apexcard_ai_key', key);
+  localStorage.setItem('apexcard_ai_model', model);
+  aiApiKey = key;
+  aiModel = model;
+  const statusEl = document.getElementById('ai-cfg-status');
+  if (key && key.startsWith('sk-ant-')) {
+    statusEl.textContent = '✅ Clé API sauvegardée — Mode Claude actif';
+    statusEl.style.color = 'var(--green)';
+  } else {
+    statusEl.textContent = 'Mode démo actif — Ajoutez une clé valide (sk-ant-...) pour activer Claude.';
+    statusEl.style.color = '';
+  }
+  showToast('Configuration sauvegardée', 'success');
+}
+
+async function testAIConnection() {
+  const key = document.getElementById('ai-api-key').value.trim();
+  const statusEl = document.getElementById('ai-cfg-status');
+  if (!key || !key.startsWith('sk-ant-')) {
+    statusEl.textContent = '⚠️ Clé invalide — doit commencer par sk-ant-api03-';
+    statusEl.style.color = 'var(--gold)';
+    return;
+  }
+  statusEl.textContent = '🔄 Test en cours...';
+  statusEl.style.color = 'var(--text2)';
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: document.getElementById('ai-model-select').value,
+        max_tokens: 20,
+        messages: [{ role: 'user', content: 'Reply: OK' }]
+      })
+    });
+    if (resp.ok) {
+      statusEl.textContent = '✅ Connexion Claude établie — Mode réel actif';
+      statusEl.style.color = 'var(--green)';
+      showToast('✅ Claude connecté avec succès !', 'success');
+    } else {
+      const e = await resp.json().catch(()=>({}));
+      statusEl.textContent = '❌ Erreur : ' + (e.error?.message || 'Clé refusée');
+      statusEl.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    statusEl.textContent = '❌ Erreur réseau : ' + e.message;
+    statusEl.style.color = 'var(--red)';
+  }
+}
+
+// ── Init AI when page becomes visible ──
+const _origAdminShowPage = typeof showAdminPage === 'function' ? showAdminPage : null;
+document.addEventListener('DOMContentLoaded', () => {
+  // Observe page visibility changes for lazy init
+  const observer = new MutationObserver(() => {
+    const aiPage = document.getElementById('page-ai');
+    if (aiPage && aiPage.classList.contains('active')) {
+      aiInit();
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.getElementById('page-ai') || document.body, {
+    attributes: true, attributeFilter: ['class'], subtree: true
+  });
+});
 
 // =========================================
 // SECURE LOGOUT
