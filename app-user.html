@@ -403,6 +403,48 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
 
 /* ── MODAL ANIMATION: handled in base style above ── */
 .modal{animation:scaleIn 0.3s cubic-bezier(.22,1,.36,1)}
+
+/* ══ DOCUMENTS ══ */
+.doc-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.doc-filter-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:0.75rem;cursor:pointer;transition:all 0.2s;font-family:inherit}
+.doc-filter-btn.active,.doc-filter-btn:hover{background:rgba(124,58,237,0.15);border-color:var(--violet);color:var(--text)}
+.doc-lang-sel{display:flex;gap:6px;margin-left:auto}
+.doc-lang-btn{padding:4px 11px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:0.75rem;cursor:pointer;font-weight:600;transition:all 0.2s;font-family:inherit}
+.doc-lang-btn.active{background:rgba(6,182,212,0.15);border-color:var(--cyan);color:var(--cyan)}
+.stmt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.stmt-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
+.stmt-stat-lbl{font-size:0.68rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em}
+.stmt-stat-val{font-size:1.1rem;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.stmt-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.stmt-row:last-child{border-bottom:none}
+.stmt-type-badge{font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:5px;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap}
+.stype-fiat{background:rgba(6,182,212,0.12);color:#06B6D4}
+.stype-crypto{background:rgba(124,58,237,0.12);color:#a78bfa}
+.stype-swap{background:rgba(245,158,11,0.12);color:#F59E0B}
+.stype-yield{background:rgba(16,185,129,0.12);color:#10B981}
+.stype-card{background:rgba(239,68,68,0.12);color:#EF4444}
+.stype-affiliate{background:rgba(249,115,22,0.12);color:#f97316}
+.stmt-name{font-size:0.87rem;font-weight:600}
+.stmt-detail{font-size:0.72rem;color:var(--muted);margin-top:1px}
+.stmt-amt{font-size:0.9rem;font-weight:700;font-family:'Space Grotesk',sans-serif;text-align:right;min-width:85px}
+.stmt-ref{font-size:0.65rem;color:var(--muted);margin-top:1px;text-align:right}
+.doc-btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:1.25rem}
+.doc-action-btn{padding:0.65rem 1.1rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.doc-action-btn.primary{background:linear-gradient(135deg,#7C3AED,#06B6D4);border:none;color:#fff}
+.doc-action-btn:hover{transform:translateY(-1px)}
+.attest-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative}
+.attest-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px}
+.attest-logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#7C3AED,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.attest-ref{font-size:0.7rem;color:var(--muted);text-align:right;line-height:1.7}
+.attest-body{font-size:0.82rem;line-height:1.85;color:var(--text);margin-bottom:16px}
+.attest-highlight{font-size:0.97rem;font-weight:700;padding:10px 14px;background:rgba(124,58,237,0.1);border-left:3px solid var(--violet);border-radius:0 8px 8px 0;margin:12px 0}
+.attest-table{width:100%;border-collapse:collapse;margin:12px 0}
+.attest-table td{padding:7px 0;font-size:0.8rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.attest-table td:first-child{color:var(--muted);width:44%}
+.attest-table td:last-child{font-weight:600}
+.attest-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--muted)}
+.attest-seal{width:56px;height:56px;border:2px solid rgba(124,58,237,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(124,58,237,0.07)}
+@media(max-width:600px){.stmt-stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 <link rel="stylesheet" href="css/responsive.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
@@ -452,6 +494,7 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
       <div class="sb-section" data-i18n="app.section.account">Account</div>
       <div class="nav-item" onclick="showPage('affiliate', this)"><span class="nav-icon">👥</span> <span data-i18n="app.nav.affiliate">Parrainage</span> <span class="nav-badge">47</span></div>
       <div class="nav-item" onclick="showPage('kyc', this)"><span class="nav-icon">✓</span> <span data-i18n="app.nav.kyc">KYC Verification</span></div>
+      <div class="nav-item" onclick="showPage('documents', this)"><span class="nav-icon">📄</span> <span data-i18n="app.nav.documents">Documents</span></div>
       <div class="nav-item" onclick="showPage('settings', this)"><span class="nav-icon">⚙</span> <span data-i18n="app.nav.settings">Settings</span></div>
     </nav>
 
@@ -1044,6 +1087,66 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
           </div>
           <div style="font-size:0.78rem;color:var(--muted)">Referral link: <span id="setRefLink" class="ref-link-display" style="color:#a78bfa;cursor:pointer" onclick="copyCode()">https://apexcard.io/ref/...</span></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ DOCUMENTS ══ -->
+    <div class="page-section" id="page-documents">
+      <div class="section-hdr">
+        <div>
+          <div class="section-title"><span data-i18n="app.documents.title">Documents</span></div>
+          <div class="section-subtitle" data-i18n="app.documents.sub">Account statements &amp; official letters</div>
+        </div>
+      </div>
+
+      <!-- Account Statement -->
+      <div class="card card-glow-violet" style="margin-bottom:1.25rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px">
+          <div style="font-size:1rem;font-weight:700">📊 <span data-i18n="app.documents.stmt_title">Account Statement</span></div>
+          <div class="doc-lang-sel">
+            <button class="doc-lang-btn active" id="stmt-lang-fr" onclick="setStmtLang('fr')">🇫🇷 FR</button>
+            <button class="doc-lang-btn" id="stmt-lang-en" onclick="setStmtLang('en')">🇬🇧 EN</button>
+          </div>
+        </div>
+
+        <div class="doc-filters">
+          <button class="doc-filter-btn active" onclick="filterStmt(this,'all')" data-i18n="app.documents.filter.all">All</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'fiat')">Fiat</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'crypto')">Crypto</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'swap')">Swap</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'yield')">Yield</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'card')" data-i18n="app.documents.filter.card">Card</button>
+          <button class="doc-filter-btn" onclick="filterStmt(this,'affiliate')" data-i18n="app.documents.filter.affiliate">Affiliate</button>
+        </div>
+
+        <div class="stmt-stats" id="stmt-stats"></div>
+        <div id="stmt-list"></div>
+
+        <div class="doc-btn-row">
+          <button class="doc-action-btn primary" onclick="downloadStatement()">⬇ <span id="stmt-dl-lbl">Télécharger le relevé</span></button>
+          <button class="doc-action-btn" onclick="downloadStatement()">🖨 <span id="stmt-print-lbl">Imprimer</span></button>
+        </div>
+      </div>
+
+      <!-- Attestation / Letter of Confirmation -->
+      <div class="card card-glow-cyan">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px">
+          <div style="font-size:1rem;font-weight:700">📜 <span data-i18n="app.documents.attest_title">Bank Confirmation Letter</span></div>
+          <div class="doc-lang-sel">
+            <button class="doc-lang-btn active" id="attest-lang-fr" onclick="setAttestLang('fr')">🇫🇷 FR</button>
+            <button class="doc-lang-btn" id="attest-lang-en" onclick="setAttestLang('en')">🇬🇧 EN</button>
+          </div>
+        </div>
+
+        <div class="attest-wrap" id="attest-preview">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="doc-btn-row">
+          <button class="doc-action-btn primary" onclick="downloadAttestation()">⬇ <span id="attest-dl-lbl">Télécharger l'attestation</span></button>
+          <button class="doc-action-btn" onclick="downloadAttestation()">🖨 <span id="attest-print-lbl">Imprimer</span></button>
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted)" id="attest-note-el">Ce document est valable comme justificatif bancaire officiel.</div>
       </div>
     </div>
 
@@ -2357,6 +2460,335 @@ async function doLogout() {
 // Init — DOMContentLoaded may have already fired by the time this script parses,
 // so call initApp directly (we're at end of body, DOM is ready)
 initApp().catch(e => console.error('initApp error:', e));
+
+// ═══════════════════════════════════════════════════════
+// ══ DOCUMENTS MODULE ══
+// ═══════════════════════════════════════════════════════
+
+const ALL_TX = [
+  // FIAT
+  { id:'TX-2026-0031', type:'fiat',      icon:'💰', name:'Virement SEPA reçu',   nameEn:'SEPA Transfer Received',  counterpart:'Pierre Martin',          date:'2026-03-16', dateFr:'16 mars 2026',    dateEn:'Mar 16, 2026',   amount:+5800,   cur:'EUR' },
+  { id:'TX-2026-0024', type:'card',      icon:'🛒', name:'Amazon Prime',          nameEn:'Amazon Prime',            counterpart:'AMAZON EU SARL',          date:'2026-03-16', dateFr:'16 mars 2026',    dateEn:'Mar 16, 2026',   amount:-14.99,  cur:'USD' },
+  { id:'TX-2026-0025', type:'card',      icon:'✈️', name:'Air France',            nameEn:'Air France',              counterpart:'AIR FRANCE KLM',          date:'2026-03-13', dateFr:'13 mars 2026',    dateEn:'Mar 13, 2026',   amount:-420,    cur:'EUR' },
+  { id:'TX-2026-0023', type:'card',      icon:'🍕', name:'Deliveroo',             nameEn:'Deliveroo',               counterpart:'DELIVEROO FR',            date:'2026-03-12', dateFr:'12 mars 2026',    dateEn:'Mar 12, 2026',   amount:-28.50,  cur:'EUR' },
+  // CRYPTO
+  { id:'TX-2026-0028', type:'crypto',    icon:'📥', name:'Dépôt USDT',            nameEn:'USDT Deposit',            counterpart:'Wallet externe',          date:'2026-03-14', dateFr:'14 mars 2026',    dateEn:'Mar 14, 2026',   amount:+2000,   cur:'USDT' },
+  { id:'TX-2026-0022', type:'crypto',    icon:'📤', name:'Retrait BTC',           nameEn:'BTC Withdrawal',          counterpart:'bc1q…4a2f',               date:'2026-03-08', dateFr:'08 mars 2026',    dateEn:'Mar 8, 2026',    amount:-0.05,   cur:'BTC' },
+  { id:'TX-2026-0018', type:'crypto',    icon:'📥', name:'Dépôt ETH',             nameEn:'ETH Deposit',             counterpart:'0x4F…c3B2',               date:'2026-03-01', dateFr:'01 mars 2026',    dateEn:'Mar 1, 2026',    amount:+1.5,    cur:'ETH' },
+  // SWAP
+  { id:'TX-2026-0029', type:'swap',      icon:'💹', name:'Swap ETH → USDT',       nameEn:'Swap ETH → USDT',         counterpart:'Protocol interne',        date:'2026-03-15', dateFr:'15 mars 2026',    dateEn:'Mar 15, 2026',   amount:+3124,   cur:'USD' },
+  { id:'TX-2026-0021', type:'swap',      icon:'🔄', name:'Swap BTC → ETH',        nameEn:'Swap BTC → ETH',          counterpart:'Protocol interne',        date:'2026-03-07', dateFr:'07 mars 2026',    dateEn:'Mar 7, 2026',    amount:-0.05,   cur:'BTC' },
+  { id:'TX-2026-0015', type:'swap',      icon:'💱', name:'Swap USDT → BNB',       nameEn:'Swap USDT → BNB',         counterpart:'Protocol interne',        date:'2026-02-22', dateFr:'22 févr. 2026',   dateEn:'Feb 22, 2026',   amount:-500,    cur:'USDT' },
+  // YIELD
+  { id:'TX-2026-0026', type:'yield',     icon:'📈', name:'Yield mensuel',          nameEn:'Monthly Yield',           counterpart:'APEXCARD Yield Pool',     date:'2026-03-10', dateFr:'10 mars 2026',    dateEn:'Mar 10, 2026',   amount:+240,    cur:'USD' },
+  { id:'TX-2026-0010', type:'yield',     icon:'📈', name:'Yield mensuel',          nameEn:'Monthly Yield',           counterpart:'APEXCARD Yield Pool',     date:'2026-02-10', dateFr:'10 févr. 2026',   dateEn:'Feb 10, 2026',   amount:+218,    cur:'USD' },
+  { id:'TX-2026-0005', type:'yield',     icon:'📈', name:'Yield mensuel',          nameEn:'Monthly Yield',           counterpart:'APEXCARD Yield Pool',     date:'2026-01-10', dateFr:'10 janv. 2026',   dateEn:'Jan 10, 2026',   amount:+195,    cur:'USD' },
+  // AFFILIATE
+  { id:'TX-2026-0027', type:'affiliate', icon:'👥', name:'Commission affilié L1',  nameEn:'Affiliate Commission L1', counterpart:'3 filleuls actifs',        date:'2026-03-08', dateFr:'08 mars 2026',    dateEn:'Mar 8, 2026',    amount:+89,     cur:'USD' },
+  { id:'TX-2026-0012', type:'affiliate', icon:'👥', name:'Commission affilié L2',  nameEn:'Affiliate Commission L2', counterpart:'2 filleuls L2',            date:'2026-02-15', dateFr:'15 févr. 2026',   dateEn:'Feb 15, 2026',   amount:+42,     cur:'USD' },
+];
+
+const DOC_I18N = {
+  fr: {
+    stmt_dl: 'Télécharger le relevé', stmt_print: 'Imprimer',
+    total_in: 'Total entrées', total_out: 'Total sorties', net: 'Flux net', count: 'Transactions',
+    type_lbl: { fiat:'Fiat', crypto:'Crypto', swap:'Swap', yield:'Yield', card:'Carte', affiliate:'Affilié' },
+    attest_dl: "Télécharger l'attestation", attest_print: 'Imprimer',
+    attest_note: 'Ce document est valable comme justificatif bancaire officiel.',
+  },
+  en: {
+    stmt_dl: 'Download Statement', stmt_print: 'Print',
+    total_in: 'Total In', total_out: 'Total Out', net: 'Net Flow', count: 'Transactions',
+    type_lbl: { fiat:'Fiat', crypto:'Crypto', swap:'Swap', yield:'Yield', card:'Card', affiliate:'Affiliate' },
+    attest_dl: 'Download Attestation', attest_print: 'Print',
+    attest_note: 'This document is valid as an official bank confirmation letter.',
+  }
+};
+
+const ATTEST_I18N = {
+  fr: {
+    title: 'ATTESTATION DE TITULAIRE DE COMPTE',
+    body1: 'APEXCARD FINANCIAL SAS, établissement de paiement agréé, atteste par la présente que :',
+    body2: "est titulaire d'un compte de paiement ouvert dans nos livres sous la référence ci-dessous, conformément aux dispositions légales et réglementaires en vigueur.",
+    ref: 'Référence', issued: "Date d'émission",
+    account: 'N° de compte', iban: 'IBAN', bic: 'BIC/SWIFT',
+    opened: "Date d'ouverture", status: 'Statut', kyc: 'Niveau KYC',
+    balance: 'Solde disponible (indicatif)', currency: 'Devise principale',
+    statusVal: 'Actif — Vérifié', kycVal: 'Tier 2 — Vérifié',
+    openDate: '12 janvier 2024',
+    conclusion: "Ce document est délivré à la demande du titulaire pour servir et valoir ce que de droit, notamment auprès de tout établissement financier, administration ou autorité compétente.",
+    signed: 'Direction des opérations',
+    regNo: 'SIREN 987 654 321 — Autorité de tutelle : ACPR / Banque de France',
+  },
+  en: {
+    title: 'ACCOUNT HOLDER CONFIRMATION LETTER',
+    body1: 'APEXCARD FINANCIAL SAS, licensed payment institution, hereby confirms that:',
+    body2: 'is the registered holder of a payment account in our books under the reference below, in accordance with applicable legal and regulatory requirements.',
+    ref: 'Reference', issued: 'Issue Date',
+    account: 'Account No.', iban: 'IBAN', bic: 'BIC/SWIFT',
+    opened: 'Opening Date', status: 'Account Status', kyc: 'KYC Level',
+    balance: 'Available Balance (indicative)', currency: 'Primary Currency',
+    statusVal: 'Active — Verified', kycVal: 'Tier 2 — Verified',
+    openDate: 'January 12, 2024',
+    conclusion: "This document is issued at the account holder's request for all legal and financial purposes, including banking institutions, government agencies, and regulatory authorities.",
+    signed: 'Director of Operations',
+    regNo: 'SIREN 987 654 321 — Supervisory Authority: ACPR / Banque de France',
+  }
+};
+
+let stmtLang = 'fr', attestLang = 'fr', stmtFilter = 'all';
+
+function initDocuments() {
+  renderStatement();
+  renderAttestation();
+}
+
+// ─── STATEMENT ───
+function setStmtLang(l) {
+  stmtLang = l;
+  document.getElementById('stmt-lang-fr').classList.toggle('active', l==='fr');
+  document.getElementById('stmt-lang-en').classList.toggle('active', l==='en');
+  const d = DOC_I18N[l];
+  document.getElementById('stmt-dl-lbl').textContent = d.stmt_dl;
+  document.getElementById('stmt-print-lbl').textContent = d.stmt_print;
+  renderStatement();
+}
+
+function filterStmt(btn, type) {
+  document.querySelectorAll('.doc-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  stmtFilter = type;
+  renderStatement();
+}
+
+function renderStatement() {
+  const d = DOC_I18N[stmtLang];
+  const data = stmtFilter === 'all' ? ALL_TX : ALL_TX.filter(t => t.type === stmtFilter);
+  const totalIn  = data.filter(t=>t.amount>0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  const totalOut = data.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  const net = totalIn - totalOut;
+  const fmt = v => Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  document.getElementById('stmt-stats').innerHTML = `
+    <div class="stmt-stat"><div class="stmt-stat-lbl">${d.total_in}</div><div class="stmt-stat-val" style="color:var(--green)">+$${fmt(totalIn)}</div></div>
+    <div class="stmt-stat"><div class="stmt-stat-lbl">${d.total_out}</div><div class="stmt-stat-val" style="color:var(--red)">-$${fmt(totalOut)}</div></div>
+    <div class="stmt-stat"><div class="stmt-stat-lbl">${d.net}</div><div class="stmt-stat-val" style="color:${net>=0?'var(--green)':'var(--red)'}">${net>=0?'+':''}-$${fmt(Math.abs(net)).replace('-','')}</div></div>
+    <div class="stmt-stat"><div class="stmt-stat-lbl">${d.count}</div><div class="stmt-stat-val">${data.length}</div></div>
+  `;
+
+  document.getElementById('stmt-list').innerHTML = [...data].sort((a,b)=>b.date.localeCompare(a.date)).map(t => {
+    const pos = t.amount > 0;
+    const nm = stmtLang==='en' ? t.nameEn : t.name;
+    const dt = stmtLang==='en' ? t.dateEn : t.dateFr;
+    const tlbl = d.type_lbl[t.type] || t.type;
+    return `<div class="stmt-row">
+      <div style="font-size:1.3rem;width:32px;text-align:center;flex-shrink:0">${t.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span class="stmt-name">${nm}</span>
+          <span class="stmt-type-badge stype-${t.type}">${tlbl}</span>
+        </div>
+        <div class="stmt-detail">${dt} · ${t.counterpart}</div>
+      </div>
+      <div>
+        <div class="stmt-amt" style="color:${pos?'var(--green)':'var(--red)'}">${pos?'+':'-'}${fmt(Math.abs(t.amount))} ${t.cur}</div>
+        <div class="stmt-ref">${t.id}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function downloadStatement() {
+  const d = DOC_I18N[stmtLang];
+  const data = stmtFilter === 'all' ? ALL_TX : ALL_TX.filter(t => t.type === stmtFilter);
+  const now = new Date();
+  const nowStr = now.toLocaleDateString(stmtLang==='fr'?'fr-FR':'en-GB',{year:'numeric',month:'long',day:'numeric'});
+  const title = stmtLang==='fr' ? 'Relevé de compte — APEXCARD' : 'Account Statement — APEXCARD';
+  const subtitle = stmtLang==='fr' ? 'Toutes transactions — Fiat, Crypto, Swap, Yield, Affilié' : 'All transactions — Fiat, Crypto, Swap, Yield, Affiliate';
+  const totalIn  = data.filter(t=>t.amount>0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  const totalOut = data.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  const net = totalIn - totalOut;
+  const fmt = v => Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const typeColors = {fiat:'#06B6D4',crypto:'#7C3AED',swap:'#F59E0B',yield:'#10B981',card:'#EF4444',affiliate:'#f97316'};
+
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#0f172a;background:#fff;padding:40px}
+  .hdr{display:flex;justify-content:space-between;padding-bottom:16px;border-bottom:3px solid #7C3AED;margin-bottom:20px}
+  .logo{font-size:22px;font-weight:900;color:#7C3AED}.hdr-r{text-align:right;font-size:11px;color:#64748b}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .stat{border:1px solid #e2e8f0;border-radius:8px;padding:10px}
+  .stat-l{font-size:10px;color:#94a3b8;text-transform:uppercase;margin-bottom:3px}
+  .stat-v{font-size:15px;font-weight:700}
+  table{width:100%;border-collapse:collapse}
+  th{background:#f8fafc;padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;color:#94a3b8;border-bottom:2px solid #e2e8f0}
+  td{padding:8px 10px;border-bottom:1px solid #f1f5f9;font-size:11px}
+  .badge{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase}
+  .pos{color:#059669;font-weight:700}.neg{color:#dc2626;font-weight:700}
+  .footer{margin-top:28px;padding-top:12px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:10px;color:#94a3b8}
+  </style></head><body>
+  <div class="hdr"><div><div class="logo">APEXCARD</div><div style="font-size:10px;color:#94a3b8;margin-top:3px">APEXCARD FINANCIAL SAS</div></div>
+  <div class="hdr-r"><div style="font-size:13px;font-weight:700;color:#0f172a">${title}</div>
+  <div>${stmtLang==='fr'?'Généré le':'Generated on'} : ${nowStr}</div>
+  <div>${stmtLang==='fr'?'Titulaire':'Holder'} : Jean-Philippe Nové</div>
+  <div>IBAN : FR76 3000 4028 3788 0012 3456 789</div></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-l">${d.total_in}</div><div class="stat-v pos">+$${fmt(totalIn)}</div></div>
+    <div class="stat"><div class="stat-l">${d.total_out}</div><div class="stat-v neg">-$${fmt(totalOut)}</div></div>
+    <div class="stat"><div class="stat-l">${d.net}</div><div class="stat-v" style="color:${net>=0?'#059669':'#dc2626'}">${net>=0?'+':'-'}$${fmt(Math.abs(net))}</div></div>
+    <div class="stat"><div class="stat-l">${d.count}</div><div class="stat-v">${data.length}</div></div>
+  </div>
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px">${subtitle}</div>
+  <table><thead><tr>
+    <th>${stmtLang==='fr'?'Réf.':'Ref.'}</th>
+    <th>${stmtLang==='fr'?'Date':'Date'}</th>
+    <th>${stmtLang==='fr'?'Description':'Description'}</th>
+    <th>${stmtLang==='fr'?'Contrepartie':'Counterparty'}</th>
+    <th>${stmtLang==='fr'?'Type':'Type'}</th>
+    <th style="text-align:right">${stmtLang==='fr'?'Montant':'Amount'}</th>
+  </tr></thead><tbody>`;
+
+  [...data].sort((a,b)=>b.date.localeCompare(a.date)).forEach(t => {
+    const pos = t.amount>0;
+    const nm  = stmtLang==='en'?t.nameEn:t.name;
+    const dt  = stmtLang==='en'?t.dateEn:t.dateFr;
+    const tlbl = d.type_lbl[t.type]||t.type;
+    const c = typeColors[t.type]||'#94a3b8';
+    html += `<tr><td style="font-size:10px;color:#94a3b8">${t.id}</td><td>${dt}</td><td>${nm}</td><td style="color:#64748b">${t.counterpart}</td>
+      <td><span class="badge" style="background:${c}20;color:${c}">${tlbl}</span></td>
+      <td style="text-align:right" class="${pos?'pos':'neg'}">${pos?'+':'-'}${fmt(Math.abs(t.amount))} ${t.cur}</td></tr>`;
+  });
+
+  html += `</tbody></table>
+  <div class="footer"><div>APEXCARD Official Document · ${stmtLang==='fr'?'Page 1/1':'Page 1/1'}</div><div>${stmtLang==='fr'?'Généré le':'Generated on'} ${nowStr}</div></div>
+  </body></html>`;
+
+  const blob = new Blob([html],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `APEXCARD_Statement_${now.toISOString().slice(0,10)}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(stmtLang==='fr' ? 'Relevé téléchargé — ouvrez puis Fichier > Imprimer > PDF' : 'Statement downloaded — open then File > Print > PDF');
+}
+
+// ─── ATTESTATION ───
+function setAttestLang(l) {
+  attestLang = l;
+  document.getElementById('attest-lang-fr').classList.toggle('active', l==='fr');
+  document.getElementById('attest-lang-en').classList.toggle('active', l==='en');
+  const d = DOC_I18N[l];
+  document.getElementById('attest-dl-lbl').textContent = d.attest_dl;
+  document.getElementById('attest-print-lbl').textContent = d.attest_print;
+  document.getElementById('attest-note-el').textContent = d.attest_note;
+  renderAttestation();
+}
+
+function getAttestRef() {
+  const n = new Date();
+  return 'ATT-' + n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + Math.floor(Math.random()*9000+1000);
+}
+
+function renderAttestation() {
+  const i = ATTEST_I18N[attestLang];
+  const now = new Date();
+  const nowStr = now.toLocaleDateString(attestLang==='fr'?'fr-FR':'en-GB',{year:'numeric',month:'long',day:'numeric'});
+  const ref = getAttestRef();
+  document.getElementById('attest-preview').innerHTML = `
+    <div class="attest-header">
+      <div>
+        <div class="attest-logo">APEXCARD</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:3px">APEXCARD FINANCIAL SAS</div>
+      </div>
+      <div class="attest-ref">
+        <div style="font-weight:700;font-size:0.85rem;color:var(--text)">${i.title}</div>
+        <div style="margin-top:5px">${i.ref} : <strong>${ref}</strong></div>
+        <div>${i.issued} : ${nowStr}</div>
+      </div>
+    </div>
+    <div class="attest-body">
+      <p>${i.body1}</p>
+      <div class="attest-highlight">Jean-Philippe Nové</div>
+      <p>${i.body2}</p>
+    </div>
+    <table class="attest-table">
+      <tr><td>${i.account}</td><td>ACX-2024-00847</td></tr>
+      <tr><td>${i.iban}</td><td>FR76 3000 4028 3788 0012 3456 789</td></tr>
+      <tr><td>${i.bic}</td><td>APEXFRP1XXX</td></tr>
+      <tr><td>${i.opened}</td><td>${i.openDate}</td></tr>
+      <tr><td>${i.status}</td><td style="color:var(--green)">${i.statusVal}</td></tr>
+      <tr><td>${i.kyc}</td><td>${i.kycVal}</td></tr>
+      <tr><td>${i.balance}</td><td>$30,041.00 USD</td></tr>
+      <tr><td>${i.currency}</td><td>USD / EUR / USDT</td></tr>
+    </table>
+    <div class="attest-body" style="font-size:0.75rem;color:var(--muted);margin-top:14px">${i.conclusion}</div>
+    <div class="attest-footer">
+      <div>
+        <div style="font-size:0.82rem;font-weight:700;color:var(--text)">${i.signed}</div>
+        <div>APEXCARD FINANCIAL SAS</div>
+        <div style="margin-top:3px;font-size:0.68rem">${i.regNo}</div>
+      </div>
+      <div class="attest-seal">🔐</div>
+    </div>`;
+}
+
+function downloadAttestation() {
+  const i = ATTEST_I18N[attestLang];
+  const now = new Date();
+  const nowStr = now.toLocaleDateString(attestLang==='fr'?'fr-FR':'en-GB',{year:'numeric',month:'long',day:'numeric'});
+  const ref = getAttestRef();
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${i.title} — APEXCARD</title>
+  <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Georgia,'Times New Roman',serif;font-size:12px;color:#0f172a;background:#fff;padding:60px 72px;max-width:760px;margin:0 auto}
+  .hdr{display:flex;justify-content:space-between;padding-bottom:20px;border-bottom:3px solid #7C3AED;margin-bottom:28px}
+  .logo{font-family:Arial,sans-serif;font-size:24px;font-weight:900;color:#7C3AED}
+  .hdr-r{text-align:right;font-size:11px;color:#64748b}
+  .highlight{font-size:15px;font-weight:700;padding:10px 16px;background:#f5f3ff;border-left:4px solid #7C3AED;margin:14px 0}
+  table{width:100%;border-collapse:collapse;margin:16px 0}
+  td{padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:11px}td:first-child{color:#64748b;width:44%}td:last-child{font-weight:600}
+  .footer{margin-top:44px;display:flex;justify-content:space-between;align-items:flex-end}
+  .seal{width:64px;height:64px;border:2px solid #7C3AED88;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+  .legal{font-size:9px;color:#94a3b8;text-align:center;margin-top:36px;padding-top:10px;border-top:1px solid #e2e8f0}
+  p{line-height:1.85;margin-bottom:10px}
+  </style></head><body>
+  <div class="hdr">
+    <div><div class="logo">APEXCARD</div><div style="font-family:Arial;font-size:10px;color:#94a3b8;margin-top:3px">APEXCARD FINANCIAL SAS</div></div>
+    <div class="hdr-r"><div style="font-size:13px;font-weight:700;color:#0f172a">${i.title}</div>
+    <div style="margin-top:6px">${i.ref} : ${ref}</div><div>${i.issued} : ${nowStr}</div></div>
+  </div>
+  <p>${i.body1}</p>
+  <div class="highlight">Jean-Philippe Nové</div>
+  <p>${i.body2}</p>
+  <table>
+    <tr><td>${i.account}</td><td>ACX-2024-00847</td></tr>
+    <tr><td>${i.iban}</td><td>FR76 3000 4028 3788 0012 3456 789</td></tr>
+    <tr><td>${i.bic}</td><td>APEXFRP1XXX</td></tr>
+    <tr><td>${i.opened}</td><td>${i.openDate}</td></tr>
+    <tr><td>${i.status}</td><td style="color:#059669">${i.statusVal}</td></tr>
+    <tr><td>${i.kyc}</td><td>${i.kycVal}</td></tr>
+    <tr><td>${i.balance}</td><td>$30,041.00 USD</td></tr>
+    <tr><td>${i.currency}</td><td>USD / EUR / USDT</td></tr>
+  </table>
+  <p style="font-size:11px;color:#475569">${i.conclusion}</p>
+  <div class="footer">
+    <div><div style="font-weight:700;font-size:13px">${i.signed}</div><div>APEXCARD FINANCIAL SAS</div><div style="font-size:9px;color:#94a3b8;margin-top:3px">${i.regNo}</div></div>
+    <div class="seal">🔐</div>
+  </div>
+  <div class="legal">APEXCARD Official Document · ${ref} · ${nowStr}</div>
+  </body></html>`;
+
+  const blob = new Blob([html],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `APEXCARD_Attestation_${now.toISOString().slice(0,10)}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(attestLang==='fr' ? "Attestation téléchargée — ouvrez puis Fichier > Imprimer > PDF" : 'Letter downloaded — open then File > Print > PDF');
+}
+
+// Init documents when the page becomes visible
+const _origShowPage = showPage;
+showPage = function(id, el) {
+  _origShowPage(id, el);
+  if (id === 'documents') initDocuments();
+};
 </script>
 <script src="js/i18n.js" defer></script>
 <script defer>
