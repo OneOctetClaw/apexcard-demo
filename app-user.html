@@ -2354,10 +2354,9 @@ async function doLogout() {
   window.location.href = 'index.html';
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', function() {
-  initApp().catch(e => console.error('initApp error:', e));
-});
+// Init — DOMContentLoaded may have already fired by the time this script parses,
+// so call initApp directly (we're at end of body, DOM is ready)
+initApp().catch(e => console.error('initApp error:', e));
 </script>
 <script src="js/i18n.js" defer></script>
 <script defer>
