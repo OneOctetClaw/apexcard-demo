@@ -547,20 +547,20 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         <div class="card card-glow-cyan">
           <div style="font-size:0.88rem;font-weight:700;margin-bottom:1.25rem" data-i18n="app.dashboard.portfolio_alloc">Portfolio Allocation</div>
           <div class="donut-wrap">
-            <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+            <svg id="portfolio-donut" class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
               <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="20"/>
-              <circle cx="60" cy="60" r="45" fill="none" stroke="#F59E0B" stroke-width="20" stroke-dasharray="104 178" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
-              <circle cx="60" cy="60" r="45" fill="none" stroke="#7C3AED" stroke-width="20" stroke-dasharray="84 198" stroke-dashoffset="-104" transform="rotate(-90 60 60)"/>
-              <circle cx="60" cy="60" r="45" fill="none" stroke="#10B981" stroke-width="20" stroke-dasharray="40 242" stroke-dashoffset="-188" transform="rotate(-90 60 60)"/>
-              <circle cx="60" cy="60" r="45" fill="none" stroke="#06B6D4" stroke-width="20" stroke-dasharray="54 228" stroke-dashoffset="-228" transform="rotate(-90 60 60)"/>
-              <text x="60" y="55" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="Space Grotesk">$30K</text>
+              <circle id="donut-BTC" cx="60" cy="60" r="45" fill="none" stroke="#F59E0B" stroke-width="20" stroke-dasharray="0 283" stroke-dashoffset="0" transform="rotate(-90 60 60)" style="transition:stroke-dasharray 0.8s ease"/>
+              <circle id="donut-ETH" cx="60" cy="60" r="45" fill="none" stroke="#7C3AED" stroke-width="20" stroke-dasharray="0 283" stroke-dashoffset="0" transform="rotate(-90 60 60)" style="transition:stroke-dasharray 0.8s ease"/>
+              <circle id="donut-SOL" cx="60" cy="60" r="45" fill="none" stroke="#10B981" stroke-width="20" stroke-dasharray="0 283" stroke-dashoffset="0" transform="rotate(-90 60 60)" style="transition:stroke-dasharray 0.8s ease"/>
+              <circle id="donut-USDT" cx="60" cy="60" r="45" fill="none" stroke="#06B6D4" stroke-width="20" stroke-dasharray="0 283" stroke-dashoffset="0" transform="rotate(-90 60 60)" style="transition:stroke-dasharray 0.8s ease"/>
+              <text id="donut-total" x="60" y="55" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="Space Grotesk">...</text>
               <text x="60" y="68" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="8">total</text>
             </svg>
-            <div class="donut-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div> BTC — 42.8%</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#7C3AED"></div> ETH — 30.6%</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div> SOL — 11.7%</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#06B6D4"></div> USDT — 15.0%</div>
+            <div class="donut-legend" id="portfolio-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div> <span id="legend-BTC">BTC — —</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#7C3AED"></div> <span id="legend-ETH">ETH — —</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div> <span id="legend-SOL">SOL — —</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#06B6D4"></div> <span id="legend-USDT">USDT — —</span></div>
             </div>
           </div>
         </div>
@@ -1847,6 +1847,9 @@ async function initApp() {
       }
     });
 
+    // === Update Portfolio Allocation Donut (dashboard) ===
+    updatePortfolioDonut(assetMap, cryptoPrices);
+
     // Update KPI cards
     const walletKpis = document.querySelectorAll('#page-wallet .kpi-val');
     const assetOrder = ['BTC','ETH','SOL','USDT'];
@@ -1866,6 +1869,54 @@ async function initApp() {
       modalDefs['deposit'].body = `<label class="modal-label">Send to address</label><div style="font-family:monospace;font-size:0.82rem;padding:0.9rem;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid var(--border);word-break:break-all;color:var(--text)">${wallets[0].deposit_address}</div><button class="btn-primary" style="margin-top:0.75rem;background:rgba(255,255,255,0.04)" onclick="copyText('${wallets[0].deposit_address}')">📋 Copy Address</button><button class="btn-primary" onclick="closeModal()">Done</button>`;
     }
   }
+}
+
+// === PORTFOLIO DONUT CHART ===
+function updatePortfolioDonut(assetMap, cryptoPrices) {
+  const assets = ['BTC','ETH','SOL','USDT'];
+  const colors = { BTC:'#F59E0B', ETH:'#7C3AED', SOL:'#10B981', USDT:'#06B6D4' };
+  const circumference = 2 * Math.PI * 45; // ~282.7
+
+  // Calcule la valeur USD de chaque asset
+  const usdValues = {};
+  let total = 0;
+  assets.forEach(asset => {
+    const w = assetMap[asset];
+    const bal = w ? parseFloat(w.balance || 0) : 0;
+    const usd = bal * (cryptoPrices[asset] || 1);
+    usdValues[asset] = usd;
+    total += usd;
+  });
+
+  if (total === 0) return;
+
+  // Met à jour le total au centre
+  const totalEl = document.getElementById('donut-total');
+  if (totalEl) {
+    const totalK = total >= 1000 ? '$' + (total/1000).toFixed(1) + 'K' : '$' + Math.round(total);
+    totalEl.textContent = totalK;
+  }
+
+  // Calcule et applique les dash arrays pour chaque arc
+  let offset = 0;
+  assets.forEach(asset => {
+    const pct = total > 0 ? usdValues[asset] / total : 0;
+    const arc = pct * circumference;
+    const gap = circumference - arc;
+
+    const circle = document.getElementById('donut-' + asset);
+    if (circle) {
+      circle.setAttribute('stroke-dasharray', `${arc.toFixed(2)} ${gap.toFixed(2)}`);
+      circle.setAttribute('stroke-dashoffset', (-offset).toFixed(2));
+    }
+    offset += arc;
+
+    // Légende
+    const legend = document.getElementById('legend-' + asset);
+    if (legend) {
+      legend.textContent = `${asset} — ${(pct * 100).toFixed(1)}%`;
+    }
+  });
 }
 
 // === NOTIFICATIONS ===
