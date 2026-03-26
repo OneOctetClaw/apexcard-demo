@@ -1941,8 +1941,9 @@ function t(key) {
 function applyTranslations(lang) {
   const tr = TRANSLATIONS[lang] || TRANSLATIONS['fr'];
 
-  // Text content
+  // Text content — skip elements marked as dynamically populated by JS
   document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (el.hasAttribute('data-dynamic')) return; // managed by Supabase/JS, skip
     const key = el.getAttribute('data-i18n');
     if (tr[key] !== undefined) {
       // Allow innerHTML for keys containing HTML

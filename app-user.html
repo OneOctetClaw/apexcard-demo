@@ -2355,9 +2355,11 @@ async function doLogout() {
   window.location.href = 'index.html';
 }
 
-// Init app on load
-initApp().catch(e => console.error('initApp error:', e));
+// Init app on load — i18n already applied before this runs
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.i18n) window.i18n.initLang();
+  initApp().catch(e => console.error('initApp error:', e));
+});
 </script>
-<script>document.addEventListener('DOMContentLoaded', function(){ if(window.i18n) window.i18n.initLang(); })</script>
 </body>
 </html>
