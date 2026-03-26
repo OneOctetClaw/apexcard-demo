@@ -499,6 +499,13 @@ body { animation: appFadeIn 0.45s cubic-bezier(.22,1,.36,1) both; }
         <div class="balance-label" data-i18n="app.dashboard.balance_label">Valeur totale du portefeuille</div>
         <div class="balance-amount"><span id="balanceCounter">$0</span></div>
         <div class="balance-change" data-i18n="app.dashboard.change">↑ +12.4% &nbsp; +$3,301.25 this month</div>
+        <div id="balance-breakdown" style="display:flex;gap:1rem;justify-content:center;margin-top:0.5rem;font-size:0.78rem;color:var(--muted);flex-wrap:wrap">
+          <span>💰 Crypto <strong id="balance-crypto">$0</strong></span>
+          <span style="opacity:0.4">|</span>
+          <span>🏦 Fiat <strong id="balance-fiat">$0</strong></span>
+          <span style="opacity:0.4">|</span>
+          <span>💳 Cards <strong id="balance-cards">$0</strong></span>
+        </div>
       </div>
 
       <div class="ticker-wrap">
@@ -1079,13 +1086,65 @@ function animateCounter(el, target, prefix) {
     if (!start) start = ts;
     const prog = Math.min((ts - start) / dur, 1);
     const ease = 1 - Math.pow(1 - prog, 3);
-    el.textContent = prefix + Math.floor(ease * target).toLocaleString();
+    const val = ease * target;
+    el.textContent = prefix + val.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
     if (prog < 1) requestAnimationFrame(step);
-    else el.textContent = prefix + target.toLocaleString();
+    else el.textContent = prefix + target.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
   };
   requestAnimationFrame(step);
 }
-animateCounter(document.getElementById('balanceCounter'), 30041, '$');
+
+const CRYPTO_PRICES = { BTC: 63820, ETH: 3226, SOL: 166.35, USDT: 1.00 };
+const FX_RATES = { EUR: 1.08, GBP: 1.27, USD: 1.00, AED: 0.272 };
+
+async function computeAndDisplayTotalBalance(userId) {
+  try {
+    const [{ data: wallets }, { data: ibans }, { data: cards }] = await Promise.all([
+      sb.from('wallets').select('currency,balance').eq('user_id', userId),
+      sb.from('ibans').select('currency,balance').eq('user_id', userId),
+      sb.from('cards').select('balance,status').eq('user_id', userId).eq('status', 'active')
+    ]);
+
+    // Crypto total (USD)
+    let cryptoTotal = 0;
+    (wallets || []).forEach(w => {
+      const price = CRYPTO_PRICES[w.currency?.toUpperCase()] || 0;
+      cryptoTotal += parseFloat(w.balance || 0) * price;
+    });
+
+    // Fiat total (USD)
+    let fiatTotal = 0;
+    (ibans || []).forEach(ib => {
+      const rate = FX_RATES[ib.currency?.toUpperCase()] || 1;
+      fiatTotal += parseFloat(ib.balance || 0) * rate;
+    });
+
+    // Cards total (USD)
+    let cardsTotal = 0;
+    (cards || []).forEach(c => {
+      cardsTotal += parseFloat(c.balance || 0);
+    });
+
+    const grandTotal = cryptoTotal + fiatTotal + cardsTotal;
+
+    const fmt = v => '$' + v.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+
+    const balEl = document.getElementById('balanceCounter');
+    if (balEl) animateCounter(balEl, grandTotal, '$');
+
+    const cryptoEl = document.getElementById('balance-crypto');
+    const fiatEl = document.getElementById('balance-fiat');
+    const cardsEl = document.getElementById('balance-cards');
+    if (cryptoEl) cryptoEl.textContent = fmt(cryptoTotal);
+    if (fiatEl) fiatEl.textContent = fmt(fiatTotal);
+    if (cardsEl) cardsEl.textContent = fmt(cardsTotal);
+
+    return grandTotal;
+  } catch (e) {
+    console.warn('computeAndDisplayTotalBalance error:', e);
+    return 0;
+  }
+}
 
 // Clock
 function updateClock() {
@@ -1700,14 +1759,8 @@ async function initApp() {
       }).join('');
     }
 
-    // Balance totale = sum des deposits - sum des payments/withdrawals
-    const balance = txs.reduce((sum, tx) => {
-      const isCredit = tx.type === 'deposit' || tx.type === 'yield' || tx.type === 'commission';
-      return sum + (isCredit ? parseFloat(tx.amount||0) : -parseFloat(tx.amount||0));
-    }, 0);
-    if (balance > 0) {
-      animateCounter(document.getElementById('balanceCounter'), balance, '$');
-    }
+    // Balance totale = agrégée depuis wallets + ibans + cards
+    computeAndDisplayTotalBalance(userId);
   } else {
     // Empty state
     if (txFeed) txFeed.innerHTML = `
