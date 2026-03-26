@@ -1161,9 +1161,9 @@ const tickers = [
   {s:'BNB',p:'$612',c:'+2.1%',up:true},{s:'XRP',p:'$0.62',c:'-1.4%',up:false},
   {s:'ADA',p:'$0.48',c:'+0.8%',up:true},{s:'AVAX',p:'$38.20',c:'+4.2%',up:true},
 ];
-const t = document.getElementById('ticker');
-const html = tickers.map(x=>`<div class="ticker-item"><span class="ticker-coin">${x.s}</span><span class="ticker-price">${x.p}</span><span class="${x.up?'ticker-up':'ticker-dn'}">${x.c}</span></div>`).join('');
-t.innerHTML = html + html;
+const tickerEl = document.getElementById('ticker');
+const tickerHtml = tickers.map(x=>`<div class="ticker-item"><span class="ticker-coin">${x.s}</span><span class="ticker-price">${x.p}</span><span class="${x.up?'ticker-up':'ticker-dn'}">${x.c}</span></div>`).join('');
+if(tickerEl) tickerEl.innerHTML = tickerHtml + tickerHtml;
 
 // Swap state
 let swapFromToken = 'BTC';
